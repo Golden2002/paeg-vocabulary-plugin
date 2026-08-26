@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# 运行时数据（git 铁律：运行数据不入库）
+output/
+data/*.json
+data/*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# 测试产物
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 系统
+Thumbs.db
+.DS_Store
