@@ -194,3 +194,19 @@ PAEG 工具生态
 ## License
 
 MIT
+
+## 参考文献
+
+本项目的能力设计参考了以下资源：
+
+| 参考 | 网址 | 参考内容 |
+|---|---|---|
+| **Nation BNC/COCA 词族表** | https://www.wgtn.ac.nz/lals/resources/paul-nations-resources/vocabulary-lists | 10000 词族 10 档（难度分位 family_q 信号） |
+| **CMU Pronouncing Dictionary** | https://github.com/cmusphinx/cmudict | 126,052 词 ARPAbet 音标（IPA 转换） |
+| **ECDICT 英汉词典** | https://github.com/skywind3000/ECDICT | 77 万词中文释义+词频（MIT） |
+| **kaikki Wiktionary** | https://kaikki.org/dictionary/ | 学科术语辞典（philosophy/biology/physics/chemistry 等 722 topics） |
+| **CEFR-J Vocabulary Profile** | https://github.com/openlanguageprofiles/olp-en-cefrj | CEFR 分级词表（A1-C2） |
+| **Oxford 3000** | https://www.oxfordlearnersdictionaries.com/wordlists/ | CEFR 分级权威词表 |
+| **《生命现象学》/《The Bell Jar》渲染模板** | 用户英语学习资产 | Bell Jar 精美 CSS 模板（渲染引擎完整复用） |
+
+> 注：词库数据为第三方开源数据（各自主许可）；下载脚本 scripts/download_wordbank.py 按需获取。
