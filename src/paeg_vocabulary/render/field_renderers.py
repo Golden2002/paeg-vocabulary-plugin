@@ -82,13 +82,24 @@ def _render_morpheme(e: VocabularyEntry) -> str:
         return ""
     parts = []
     if e.morpheme.prefix:
-        p = e.morpheme.prefix
-        parts.append(f'{p.get("p", "")}「{p.get("meaning", "")}」')
+        if isinstance(e.morpheme.prefix, dict):
+            p = e.morpheme.prefix
+            parts.append(f'{p.get("p", "")}「{p.get("meaning", "")}」')
+        elif isinstance(e.morpheme.prefix, list):
+            for item in e.morpheme.prefix:
+                if isinstance(item, dict):
+                    parts.append(f'{item.get("p", "")}「{item.get("meaning", "")}」')
     for r in e.morpheme.roots:
-        parts.append(f'{r.get("root", "")}({r.get("lang", "")}「{r.get("meaning", "")}」)')
+        if isinstance(r, dict):
+            parts.append(f'{r.get("root", "")}({r.get("lang", "")}「{r.get("meaning", "")}」)')
     if e.morpheme.suffix:
-        s = e.morpheme.suffix
-        parts.append(f'{s.get("s", "")}「{s.get("meaning", "")}」')
+        if isinstance(e.morpheme.suffix, dict):
+            s = e.morpheme.suffix
+            parts.append(f'{s.get("s", "")}「{s.get("meaning", "")}」')
+        elif isinstance(e.morpheme.suffix, list):
+            for item in e.morpheme.suffix:
+                if isinstance(item, dict):
+                    parts.append(f'{item.get("s", "")}「{item.get("meaning", "")}」')
     if not parts:
         return ""
     return f'<div class="morpheme">构词：{" + ".join(parts)}</div>'

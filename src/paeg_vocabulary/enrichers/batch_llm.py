@@ -119,11 +119,18 @@ def _merge_to_entry(entry, data: Dict[str, Any]) -> None:
         entry.etymology = data["etymology"]
     if data.get("morpheme"):
         m_data = data["morpheme"]
-        entry.morpheme = Morpheme(
-            roots=[dict(r) for r in m_data.get("roots", []) if isinstance(r, dict)],
-            prefix=m_data.get("prefix"),
-            suffix=m_data.get("suffix"),
-        )
+        if isinstance(m_data, dict):
+            prefix = m_data.get("prefix")
+            if isinstance(prefix, list):
+                prefix = prefix[0] if prefix else None
+            suffix = m_data.get("suffix")
+            if isinstance(suffix, list):
+                suffix = suffix[0] if suffix else None
+            entry.morpheme = Morpheme(
+                roots=[dict(r) for r in m_data.get("roots", []) if isinstance(r, dict)],
+                prefix=prefix if isinstance(prefix, dict) else None,
+                suffix=suffix if isinstance(suffix, dict) else None,
+            )
     if data.get("senses"):
         entry.senses = [
             Sense(sense_id=f"1.{i + 1}", gloss_zh=s.get("zh", ""),
