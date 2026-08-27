@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>外语词汇表制作</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #FAF8F4; color: #1F1B16; }
+  .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+  h1 { font-size: 24px; margin-bottom: 6px; color: #3D55E8; }
+  .sub { color: #5C534A; margin-bottom: 24px; font-size: 14px; line-height: 1.7; }
+  .card { background: #fff; border: 1px solid #e2dccf; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 16px; margin-bottom: 12px; color: #1F1B16; }
+  .steps { display: flex; gap: 8px; margin-bottom: 20px; font-size: 13px; color: #5C534A; flex-wrap: wrap; }
+  .steps .s { background: #fff; border: 1px solid #e2dccf; padding: 6px 14px; border-radius: 16px; }
+  .steps .s.active { background: #4F6BFF; color: #fff; border-color: #4F6BFF; }
+  label { display: block; font-size: 13px; color: #5C534A; margin: 10px 0 6px; }
+  select, input[type=file] { width: 100%; border: 1px solid #d8d2c6; border-radius: 8px; padding: 10px 12px; font-size: 14px; background: #fff; }
+  .drop-zone { border: 2px dashed #d8d2c6; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; color: #5C534A; font-size: 14px; transition: all .2s; }
+  .drop-zone:hover, .drop-zone.drag { border-color: #4F6BFF; color: #4F6BFF; background: #F5F2EC; }
+  .drop-zone .icon { font-size: 32px; margin-bottom: 8px; }
+  button { background: #4F6BFF; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 15px; cursor: pointer; margin-top: 12px; }
+  button:hover { background: #3D55E8; }
+  button:disabled { background: #b8c2e8; cursor: not-allowed; }
+  .result { margin-top: 12px; background: #F5F2EC; border-radius: 8px; padding: 14px; font-size: 14px; line-height: 1.7; display: none; }
+  .result.show { display: block; }
+  .result .stat { display: inline-block; background: #fff; border: 1px solid #e2dccf; border-radius: 8px; padding: 8px 14px; margin: 4px; }
+  .result .stat b { display: block; font-size: 18px; color: #3D55E8; }
+  .result .stat span { font-size: 11px; color: #5C534A; }
+  .dl { margin-top: 10px; }
+  .dl a { display: inline-block; margin: 4px 8px 4px 0; padding: 8px 16px; background: #4F6BFF; color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; }
+  .dl a.secondary { background: #fff; color: #4F6BFF; border: 1px solid #4F6BFF; }
+  .error { color: #c0392b; font-size: 13px; margin-top: 8px; }
+  .hint { font-size: 12px; color: #8a8378; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>外语词汇表制作</h1>
+  <p class="sub">上传一本外文原著 PDF，为你生成结构化学习词汇表——音标、中英释义、词源、原著例句、固定搭配、CEFR 难度分级、熟词生义，附词频统计与语言风格分析。</p>
+
+  <div class="steps">
+    <span class="s active">① 上传 PDF</span>
+    <span class="s">② 选择水平</span>
+    <span class="s">③ 生成词汇表</span>
+    <span class="s">④ 下载使用</span>
+  </div>
+
+  <div class="card">
+    <h2>① 上传书籍 PDF</h2>
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="icon">📕</div>
+      <div>点击选择 或 拖拽 PDF 到此处</div>
+      <div class="hint">支持英语/德语/法语/西班牙语原著（如《The Bell Jar》《The Phenomenon of Life》）</div>
+    </div>
+    <input type="file" id="file-input" accept=".pdf" style="display:none">
+    <div id="file-name" style="margin-top:8px;font-size:13px;color:#3D55E8"></div>
+    <div class="error" id="err1"></div>
+  </div>
+
+  <div class="card" id="level-card" style="display:none">
+    <h2>② 选择你的英语水平</h2>
+    <label>水平档位（决定词汇表难度范围——覆盖你水平之上的学习词汇）</label>
+    <select id="preset-select">
+      <option value="">加载档位中…</option>
+    </select>
+    <div class="hint">例：雅思 6.5 → 覆盖约 3000 词；雅思 7.5 → 约 2200 词；雅思 8.0 → 约 1600 词（水平越高生词越少）</div>
+  </div>
+
+  <div class="card" id="gen-card" style="display:none">
+    <h2>③ 生成词汇表</h2>
+    <button id="gen-btn" onclick="generateVocab()">开始制作词汇表</button>
+    <div class="hint">制作需要数分钟（全书提取→清洗→难度筛选→信息补全→渲染）——请耐心等待</div>
+    <div class="error" id="err2"></div>
+    <div class="result" id="result"></div>
+  </div>
+</div>
+
+<script>
+let currentPdfPath = '';
+let presets = [];
+
+// 拖拽上传
+const dz = document.getElementById('drop-zone');
+['dragover', 'dragenter'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
+['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag'); }));
+dz.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) uploadFile(f); });
+document.getElementById('file-input').addEventListener('change', e => { const f = e.target.files[0]; if (f) uploadFile(f); });
+
+async function uploadFile(file) {
+  document.getElementById('err1').textContent = '';
+  if (!file.name.toLowerCase().endsWith('.pdf')) { document.getElementById('err1').textContent = '仅支持 PDF 文件'; return; }
+  document.getElementById('file-name').textContent = '已选择：' + file.name;
+  const fd = new FormData();
+  fd.append('file', file);
+  const r = await fetch('/api/upload', { method: 'POST', body: fd });
+  const d = await r.json();
+  if (!d.ok) { document.getElementById('err1').textContent = d.error || '上传失败'; return; }
+  currentPdfPath = d.pdf_path;
+  document.getElementById('level-card').style.display = 'block';
+  document.getElementById('gen-card').style.display = 'block';
+  loadPresets();
+}
+
+async function loadPresets() {
+  const r = await fetch('/api/presets');
+  const d = await r.json();
+  if (d.ok && d.presets) {
+    presets = d.presets;
+    const sel = document.getElementById('preset-select');
+    sel.innerHTML = d.presets.map(p => `<option value="${p.id}">${p.label}</option>`).join('');
+    // 默认雅思 7.5
+    const ielts = d.presets.findIndex(p => p.id === 'ielts-7.5');
+    if (ielts >= 0) sel.selectedIndex = ielts;
+  } else {
+    document.getElementById('preset-select').innerHTML = '<option value="">全部词汇</option>';
+  }
+}
+
+async function generateVocab() {
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.textContent = '制作中（约 5-20 分钟）…';
+  document.getElementById('err2').textContent = '';
+  const preset = document.getElementById('preset-select').value;
+  const r = await fetch('/api/generate', {
+    method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ pdf_path: currentPdfPath, preset: preset })
+  });
+  btn.disabled = false;
+  btn.textContent = '开始制作词汇表';
+  const d = await r.json();
+  if (!d.ok) { document.getElementById('err2').textContent = d.error || '制作失败'; return; }
+  showResult(d);
+}
+
+function showResult(d) {
+  const el = document.getElementById('result');
+  el.classList.add('show');
+  const html = d.html_path ? '<a href="/api/download/' + encodeURIComponent(d.html_path.split(/[\\/]/).pop()) + '" target="_blank">打开词汇表 HTML</a>' : '';
+  const pdf = d.pdf_path ? '<a class="secondary" href="/api/download/' + encodeURIComponent(d.pdf_path.split(/[\\/]/).pop()) + '" download>下载 PDF</a>' : '';
+  const accHtml = d.accessories ? Object.entries(d.accessories).map(([k, v]) => {
+    const fname = v.split(/[\\/]/).pop();
+    return `<a class="secondary" href="/api/download/${encodeURIComponent(fname)}" download>${k}</a>`;
+  }).join('') : '';
+  el.innerHTML = `
+    <div>
+      <span class="stat"><b>${d.entries_count || 0}</b><span>词条</span></span>
+      <span class="stat"><b>${d.candidates_count || 0}</b><span>候选词</span></span>
+      <span class="stat"><b>${(d.cefr_max || '—')}</b><span>水平档位</span></span>
+    </div>
+    <div class="dl">${html}${pdf}${accHtml}</div>
+    <div class="hint">词汇表包含：双口音音标 · 中英释义 · 词源词根 · 原著例句 · 固定搭配 · 熟词生义 · CEFR 分级</div>`;
+}
+</script>
+</body>
+</html>

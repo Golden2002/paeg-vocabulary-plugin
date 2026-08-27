@@ -15,18 +15,14 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, send_file
 
-# 词汇表插件（14.3_paeg-vocabulary-plugin 平级）
-_VOCAB_SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                          "14.3_paeg-vocabulary-plugin", "src")
-if not os.path.isdir(_VOCAB_SRC):
-    # 兜底：主项目内副本
-    _VOCAB_SRC = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                              "14_教育者Agent项目", "paeg-vocabulary-plugin", "src")
+# 词汇表插件 src（web/ 的上一级 = 插件根目录）
+_PLUGIN_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_VOCAB_SRC = os.path.join(_PLUGIN_ROOT, "src")
 if os.path.isdir(_VOCAB_SRC) and _VOCAB_SRC not in sys.path:
     sys.path.insert(0, _VOCAB_SRC)
 
-_WEB_DIR = Path(__file__).resolve().parent / "web"
-_UPLOAD_DIR = Path(__file__).resolve().parent / "uploads"
+_WEB_DIR = Path(__file__).resolve().parent  # web 目录
+_UPLOAD_DIR = _WEB_DIR / "uploads"
 _UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -81,9 +77,7 @@ def create_app(config: dict | None = None) -> Flask:
     @app.route("/api/download/<path:name>")
     def download(name):
         # 词汇表产物在插件 output/ 目录
-        out = Path(__file__).resolve().parent.parent / "14.3_paeg-vocabulary-plugin" / "output"
-        if not out.is_dir():
-            out = Path(__file__).resolve().parent.parent / "14_教育者Agent项目" / "paeg-vocabulary-plugin" / "output"
+        out = Path(_PLUGIN_ROOT) / "output"
         safe = os.path.basename(name)
         p = out / safe
         if p.exists():
