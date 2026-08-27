@@ -168,3 +168,37 @@ def build_term_context(tokens: List[Dict], idx: int) -> Dict:
         "italic": t.get("italic", False),
         "capitalized": t.get("capitalized", False),
     }
+
+
+# ═══════════════════════════════════════════════════════════
+# P2 ⭐ 归一化 × 分位联动（用户原则 4：哪些标准化、哪些保留原形）
+# ═══════════════════════════════════════════════════════════
+def decision_to_entry_key(decision: FormDecision) -> str:
+    """归一化决策 → 词条 key（参与分位/筛选的规范形）。
+
+    - 屈折归一化（is_lexically_independent=False）→ lemma（折叠）
+    - 派生保留/学术术语（True）→ surface（保留原形）
+    """
+    if decision.is_lexically_independent:
+        return decision.surface.strip().lower()
+    return decision.lemma.strip().lower() or decision.surface.strip().lower()
+
+
+def is_important_decision(decision: FormDecision) -> bool:
+    """归一化决策 → 是否"本书重要"（第二标准信号）。
+
+    is_book_term（学术术语：定义句/标题/高TF-IDF/高频/斜体/专名）
+    ⊂ is_important。P4 筛选时：Q ≥ U OR is_important。
+    """
+    return decision.is_book_term
+
+
+def decision_quantile(decision: FormDecision) -> float:
+    """归一化决策词的统一分位 Q（P1 分位引擎联动）。
+
+    独立词条（surface）按 surface 算；折叠词条按 lemma 算。
+    Returns: 0-1 分位（越高越难）。
+    """
+    from .quantile_engine import compute_q
+    key = decision_to_entry_key(decision)
+    return compute_q(key)

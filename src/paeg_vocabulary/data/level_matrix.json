@@ -1,116 +1,472 @@
 {
   "version": "1.0",
   "note": "词汇难度分级矩阵（§3.116 ⭐）。CEFR 为单一真相源；各考试→CEFR 上限映射为参考性约定（非官方）。",
-  "cefr_order": ["A1", "A2", "B1", "B2", "C1", "C2"],
+  "cefr_order": [
+    "A1",
+    "A2",
+    "B1",
+    "B2",
+    "C1",
+    "C2"
+  ],
   "cefr_meta": {
-    "A1": { "label_zh": "入门",   "label_en": "Beginner",     "words_target": 500,   "color": "#10b981" },
-    "A2": { "label_zh": "基础",   "label_en": "Elementary",   "words_target": 1000,  "color": "#22c55e" },
-    "B1": { "label_zh": "中级",   "label_en": "Intermediate", "words_target": 2000,  "color": "#eab308" },
-    "B2": { "label_zh": "中高级", "label_en": "Upper-Int.",   "words_target": 4000,  "color": "#f97316" },
-    "C1": { "label_zh": "高级",   "label_en": "Advanced",     "words_target": 8000,  "color": "#ef4444" },
-    "C2": { "label_zh": "精通",   "label_en": "Proficiency",  "words_target": 16000, "color": "#7c3aed" }
+    "A1": {
+      "label_zh": "入门",
+      "label_en": "Beginner",
+      "words_target": 500,
+      "color": "#10b981"
+    },
+    "A2": {
+      "label_zh": "基础",
+      "label_en": "Elementary",
+      "words_target": 1000,
+      "color": "#22c55e"
+    },
+    "B1": {
+      "label_zh": "中级",
+      "label_en": "Intermediate",
+      "words_target": 2000,
+      "color": "#eab308"
+    },
+    "B2": {
+      "label_zh": "中高级",
+      "label_en": "Upper-Int.",
+      "words_target": 4000,
+      "color": "#f97316"
+    },
+    "C1": {
+      "label_zh": "高级",
+      "label_en": "Advanced",
+      "words_target": 8000,
+      "color": "#ef4444"
+    },
+    "C2": {
+      "label_zh": "精通",
+      "label_en": "Proficiency",
+      "words_target": 16000,
+      "color": "#7c3aed"
+    }
   },
   "exam_systems": {
     "ielts": {
       "name_zh": "雅思 IELTS",
-      "scale": { "min": 0, "max": 9, "step": 0.5 },
+      "scale": {
+        "min": 0,
+        "max": 9,
+        "step": 0.5
+      },
       "bands": [
-        { "min": 0,  "max": 3.0, "cefr_max": "A1", "note": "几乎无法交流" },
-        { "min": 3.5,"max": 4.0, "cefr_max": "A2", "note": "基础日常" },
-        { "min": 4.5,"max": 5.0, "cefr_max": "B1", "note": "留学基本" },
-        { "min": 5.5,"max": 6.0, "cefr_max": "B2", "note": "本科入学线" },
-        { "min": 6.5,"max": 7.0, "cefr_max": "C1", "note": "研究生入学线" },
-        { "min": 7.5,"max": 9.0, "cefr_max": "C2", "note": "母语水平" }
+        {
+          "min": 0,
+          "max": 3.0,
+          "cefr_max": "A1",
+          "note": "几乎无法交流"
+        },
+        {
+          "min": 3.5,
+          "max": 4.0,
+          "cefr_max": "A2",
+          "note": "基础日常"
+        },
+        {
+          "min": 4.5,
+          "max": 5.0,
+          "cefr_max": "B1",
+          "note": "留学基本"
+        },
+        {
+          "min": 5.5,
+          "max": 6.0,
+          "cefr_max": "B2",
+          "note": "本科入学线"
+        },
+        {
+          "min": 6.5,
+          "max": 7.0,
+          "cefr_max": "C1",
+          "note": "研究生入学线"
+        },
+        {
+          "min": 7.5,
+          "max": 9.0,
+          "cefr_max": "C2",
+          "note": "母语水平"
+        }
       ]
     },
     "toefl": {
       "name_zh": "托福 TOEFL iBT",
-      "scale": { "min": 0, "max": 120 },
+      "scale": {
+        "min": 0,
+        "max": 120
+      },
       "bands": [
-        { "min": 0,   "max": 31,  "cefr_max": "A2" },
-        { "min": 32,  "max": 45,  "cefr_max": "B1" },
-        { "min": 46,  "max": 79,  "cefr_max": "B2" },
-        { "min": 80,  "max": 100, "cefr_max": "C1" },
-        { "min": 101, "max": 120, "cefr_max": "C2" }
+        {
+          "min": 0,
+          "max": 31,
+          "cefr_max": "A2"
+        },
+        {
+          "min": 32,
+          "max": 45,
+          "cefr_max": "B1"
+        },
+        {
+          "min": 46,
+          "max": 79,
+          "cefr_max": "B2"
+        },
+        {
+          "min": 80,
+          "max": 100,
+          "cefr_max": "C1"
+        },
+        {
+          "min": 101,
+          "max": 120,
+          "cefr_max": "C2"
+        }
       ]
     },
     "cet4": {
       "name_zh": "大学英语四级 CET-4",
-      "scale": { "min": 0, "max": 710 },
+      "scale": {
+        "min": 0,
+        "max": 710
+      },
       "bands": [
-        { "min": 0,   "max": 249, "cefr_max": "A1" },
-        { "min": 250, "max": 349, "cefr_max": "A2" },
-        { "min": 350, "max": 424, "cefr_max": "B1" },
-        { "min": 425, "max": 549, "cefr_max": "B1" },
-        { "min": 550, "max": 710, "cefr_max": "B2" }
+        {
+          "min": 0,
+          "max": 249,
+          "cefr_max": "A1"
+        },
+        {
+          "min": 250,
+          "max": 349,
+          "cefr_max": "A2"
+        },
+        {
+          "min": 350,
+          "max": 424,
+          "cefr_max": "B1"
+        },
+        {
+          "min": 425,
+          "max": 549,
+          "cefr_max": "B1"
+        },
+        {
+          "min": 550,
+          "max": 710,
+          "cefr_max": "B2"
+        }
       ]
     },
     "cet6": {
       "name_zh": "大学英语六级 CET-6",
-      "scale": { "min": 0, "max": 710 },
+      "scale": {
+        "min": 0,
+        "max": 710
+      },
       "bands": [
-        { "min": 0,   "max": 349, "cefr_max": "A2" },
-        { "min": 350, "max": 424, "cefr_max": "B1" },
-        { "min": 425, "max": 519, "cefr_max": "B1" },
-        { "min": 520, "max": 599, "cefr_max": "B2" },
-        { "min": 600, "max": 710, "cefr_max": "C1" }
+        {
+          "min": 0,
+          "max": 349,
+          "cefr_max": "A2"
+        },
+        {
+          "min": 350,
+          "max": 424,
+          "cefr_max": "B1"
+        },
+        {
+          "min": 425,
+          "max": 519,
+          "cefr_max": "B1"
+        },
+        {
+          "min": 520,
+          "max": 599,
+          "cefr_max": "B2"
+        },
+        {
+          "min": 600,
+          "max": 710,
+          "cefr_max": "C1"
+        }
       ]
     },
     "kaoyan": {
       "name_zh": "考研英语",
-      "scale": { "min": 0, "max": 100 },
+      "scale": {
+        "min": 0,
+        "max": 100
+      },
       "bands": [
-        { "min": 0,  "max": 39,  "cefr_max": "A2" },
-        { "min": 40, "max": 54,  "cefr_max": "B1" },
-        { "min": 55, "max": 69,  "cefr_max": "B2" },
-        { "min": 70, "max": 84,  "cefr_max": "C1" },
-        { "min": 85, "max": 100, "cefr_max": "C2" }
+        {
+          "min": 0,
+          "max": 39,
+          "cefr_max": "A2"
+        },
+        {
+          "min": 40,
+          "max": 54,
+          "cefr_max": "B1"
+        },
+        {
+          "min": 55,
+          "max": 69,
+          "cefr_max": "B2"
+        },
+        {
+          "min": 70,
+          "max": 84,
+          "cefr_max": "C1"
+        },
+        {
+          "min": 85,
+          "max": 100,
+          "cefr_max": "C2"
+        }
       ]
     },
     "tem4": {
       "name_zh": "专四 TEM-4",
-      "scale": { "min": 0, "max": 100 },
+      "scale": {
+        "min": 0,
+        "max": 100
+      },
       "bands": [
-        { "min": 0,  "max": 59, "cefr_max": "B1" },
-        { "min": 60, "max": 100, "cefr_max": "B2" }
+        {
+          "min": 0,
+          "max": 59,
+          "cefr_max": "B1"
+        },
+        {
+          "min": 60,
+          "max": 100,
+          "cefr_max": "B2"
+        }
       ]
     },
     "tem8": {
       "name_zh": "专八 TEM-8",
-      "scale": { "min": 0, "max": 100 },
+      "scale": {
+        "min": 0,
+        "max": 100
+      },
       "bands": [
-        { "min": 0,  "max": 59, "cefr_max": "B2" },
-        { "min": 60, "max": 100, "cefr_max": "C1" }
+        {
+          "min": 0,
+          "max": 59,
+          "cefr_max": "B2"
+        },
+        {
+          "min": 60,
+          "max": 100,
+          "cefr_max": "C1"
+        }
       ]
     },
     "gaokao": {
       "name_zh": "高考英语",
-      "scale": { "min": 0, "max": 150 },
+      "scale": {
+        "min": 0,
+        "max": 150
+      },
       "bands": [
-        { "min": 0,   "max": 59,  "cefr_max": "A1" },
-        { "min": 60,  "max": 89,  "cefr_max": "A2" },
-        { "min": 90,  "max": 119, "cefr_max": "B1" },
-        { "min": 120, "max": 134, "cefr_max": "B2" },
-        { "min": 135, "max": 150, "cefr_max": "C1" }
+        {
+          "min": 0,
+          "max": 59,
+          "cefr_max": "A1"
+        },
+        {
+          "min": 60,
+          "max": 89,
+          "cefr_max": "A2"
+        },
+        {
+          "min": 90,
+          "max": 119,
+          "cefr_max": "B1"
+        },
+        {
+          "min": 120,
+          "max": 134,
+          "cefr_max": "B2"
+        },
+        {
+          "min": 135,
+          "max": 150,
+          "cefr_max": "C1"
+        }
       ]
     }
   },
   "zipf_bridge": [
-    { "min": 6.5, "cefr": "C2" },
-    { "min": 5.5, "cefr": "C1" },
-    { "min": 4.5, "cefr": "B2" },
-    { "min": 3.5, "cefr": "B1" },
-    { "min": 2.5, "cefr": "A2" },
-    { "min": 0.0, "cefr": "A1" }
+    {
+      "min": 6.5,
+      "cefr": "A1"
+    },
+    {
+      "min": 5.5,
+      "cefr": "A2"
+    },
+    {
+      "min": 4.5,
+      "cefr": "B1"
+    },
+    {
+      "min": 3.5,
+      "cefr": "B2"
+    },
+    {
+      "min": 2.5,
+      "cefr": "C1"
+    },
+    {
+      "min": 0.0,
+      "cefr": "C2"
+    }
   ],
   "user_presets": [
-    { "id": "gaokao-130", "label": "高考 130+",      "exam": "gaokao", "score": 130 },
-    { "id": "cet4-425",   "label": "四级 425 过线",  "exam": "cet4",   "score": 425 },
-    { "id": "cet6-520",   "label": "六级 520+",      "exam": "cet6",   "score": 520 },
-    { "id": "kaoyan-70",  "label": "考研 70+",       "exam": "kaoyan", "score": 70 },
-    { "id": "tem4-pass",  "label": "专四合格",       "exam": "tem4",   "score": 60 },
-    { "id": "tem8-pass",  "label": "专八合格",       "exam": "tem8",   "score": 60 },
-    { "id": "ielts-6.5",  "label": "雅思 6.5+",      "exam": "ielts",  "score": 6.5 },
-    { "id": "toefl-80",   "label": "托福 80+",       "exam": "toefl",  "score": 80 }
+    {
+      "id": "cet4-425",
+      "label": "四级 425 过线",
+      "exam": "cet4",
+      "score": 425
+    },
+    {
+      "id": "cet4-550",
+      "label": "四级 550+",
+      "exam": "cet4",
+      "score": 550
+    },
+    {
+      "id": "cet6-425",
+      "label": "六级 425 过线",
+      "exam": "cet6",
+      "score": 425
+    },
+    {
+      "id": "cet6-520",
+      "label": "六级 520+",
+      "exam": "cet6",
+      "score": 520
+    },
+    {
+      "id": "cet6-600",
+      "label": "六级 600+",
+      "exam": "cet6",
+      "score": 600
+    },
+    {
+      "id": "gaokao-120",
+      "label": "高考 120+",
+      "exam": "gaokao",
+      "score": 120
+    },
+    {
+      "id": "gaokao-130",
+      "label": "高考 130+",
+      "exam": "gaokao",
+      "score": 130
+    },
+    {
+      "id": "gaokao-135",
+      "label": "高考 135+",
+      "exam": "gaokao",
+      "score": 135
+    },
+    {
+      "id": "ielts-5.5",
+      "label": "雅思 5.5",
+      "exam": "ielts",
+      "score": 5.5
+    },
+    {
+      "id": "ielts-6.0",
+      "label": "雅思 6.0",
+      "exam": "ielts",
+      "score": 6.0
+    },
+    {
+      "id": "ielts-6.5",
+      "label": "雅思 6.5+",
+      "exam": "ielts",
+      "score": 6.5
+    },
+    {
+      "id": "ielts-7.0",
+      "label": "雅思 7.0",
+      "exam": "ielts",
+      "score": 7.0
+    },
+    {
+      "id": "ielts-7.5",
+      "label": "雅思 7.5",
+      "exam": "ielts",
+      "score": 7.5
+    },
+    {
+      "id": "ielts-8.0",
+      "label": "雅思 8.0+",
+      "exam": "ielts",
+      "score": 8.0
+    },
+    {
+      "id": "kaoyan-55",
+      "label": "考研 55",
+      "exam": "kaoyan",
+      "score": 55
+    },
+    {
+      "id": "kaoyan-70",
+      "label": "考研 70+",
+      "exam": "kaoyan",
+      "score": 70
+    },
+    {
+      "id": "kaoyan-85",
+      "label": "考研 85+",
+      "exam": "kaoyan",
+      "score": 85
+    },
+    {
+      "id": "tem4-pass",
+      "label": "专四合格",
+      "exam": "tem4",
+      "score": 60
+    },
+    {
+      "id": "tem8-pass",
+      "label": "专八合格",
+      "exam": "tem8",
+      "score": 60
+    },
+    {
+      "id": "toefl-100",
+      "label": "托福 100+",
+      "exam": "toefl",
+      "score": 100
+    },
+    {
+      "id": "toefl-110",
+      "label": "托福 110+",
+      "exam": "toefl",
+      "score": 110
+    },
+    {
+      "id": "toefl-80",
+      "label": "托福 80+",
+      "exam": "toefl",
+      "score": 80
+    },
+    {
+      "id": "toefl-90",
+      "label": "托福 90+",
+      "exam": "toefl",
+      "score": 90
+    }
   ]
 }

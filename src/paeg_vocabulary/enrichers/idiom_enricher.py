@@ -28,6 +28,9 @@ _POLYSEMY_HINTS: Dict[str, List[str]] = {
     "round": ["回合", "圆的", "round"],
     "book": ["预定", "书", "book"],
     "plant": ["工厂", "植物", "plant"],
+    # §3.116 ⭐ 用户指出：moonlight 是一词多义（熟词生义）
+    # 名词"月光" → 动词"兼职"（下班后打第二份工，隐喻"月光下工作"）
+    "moonlight": ["月光（名词）", "兼职（动词——隐喻月光下工作）", "moonlight"],
 }
 
 # 常见固定搭配

@@ -141,17 +141,31 @@ def render_html(ctx: VocabularyContext,
 
     # 读取模板，替换词条部分
     tpl_text = tpl.read_text(encoding="utf-8")
-    entries_html = "\n".join(_build_entry_html(e) for e in ctx.entries)
+    # §3.116 P6 ⭐ 切换 FIELD_RENDERERS 驱动 + L1 完整性门（过滤不完整词条）
+    from ..render.entry_html import entries_to_html
+    entries_html = entries_to_html(ctx.entries)
 
-    # 模板含词条占位符（常见的 <div class="entries"> 或 {{ENTRIES}}）
+    # 模板含词条占位符（{{ENTRIES}} / div.entries / main.entries——Bell Jar 模板用 main）
     if "{{ENTRIES}}" in tpl_text:
         html = tpl_text.replace("{{ENTRIES}}", entries_html)
-    elif '<div class="entries"' in tpl_text:
-        html = re.sub(r'(<div class="entries"[^>]*>)',
-                      lambda m: m.group(0) + entries_html, tpl_text, count=1)
     else:
-        # 模板无词条区——在 </body> 前插入
-        html = tpl_text.replace("</body>", f'<div class="entries">{entries_html}</div></body>')
+        # Bell Jar 模板：<main class="entries"><h2 class="alpha-header">A</h2><article class="entry">...</article>...</main>
+        # 替换策略：找到 entries 容器开标签 → 清空容器内示例词条 → 注入新词条
+        m = re.search(r'(<(?:main|div)\s+class="entries"[^>]*>)', tpl_text)
+        if m:
+            open_tag = m.group(1)
+            # 清空容器内全部内容（示例词条）——从开标签后到容器结束
+            container_end = re.search(r"</(?:main|div)>\s*</body>", tpl_text)
+            if container_end:
+                tail = tpl_text[container_end.start():]
+                html = tpl_text[:m.end()] + "\n" + entries_html + "\n" + tail
+            else:
+                html = re.sub(r'(<(?:main|div)\s+class="entries"[^>]*>)[\s\S]*?(</(?:main|div)>)',
+                              lambda mm: mm.group(1) + entries_html + mm.group(2),
+                              tpl_text, count=1)
+        else:
+            # 模板无词条区——在 </body> 前插入
+            html = tpl_text.replace("</body>", f'<div class="entries">{entries_html}</div></body>')
 
     # 标题替换（§3.116 ⭐ 内容一致性：优先 book_title，防文件名错位）
     title = book_title or "词汇表"

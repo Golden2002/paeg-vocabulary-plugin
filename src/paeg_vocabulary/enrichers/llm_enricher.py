@@ -62,14 +62,25 @@ def enrich_entry_with_llm(entry: VocabularyEntry,
                 f"已知释义: {entry.gloss_bilingual or '无'}\n"
                 f"来源书籍: {book_title or '未知'}（作者: {book_author or '未知'}）\n"
                 f"请补全完整词汇信息。")
-        raw = chat_fn(ENRICHER_SYSTEM_PROMPT
-                      .replace("{book_title}", book_title or "本书")
-                      .replace("{book_author}", book_author or "作者"),
-                      user, max_tokens=1500)
-        if not raw:
+        _sys = (ENRICHER_SYSTEM_PROMPT
+                .replace("{book_title}", book_title or "本书")
+                .replace("{book_author}", book_author or "作者"))
+        # §3.116 ⭐ 安全调用：宿主 chat_fn 签名可能是 (sys_p, usr_p) 两参——
+        # 传 max_tokens 关键字会 TypeError 被吞导致补全失败。逐级降级调用。
+        _raw = None
+        try:
+            _raw = chat_fn(_sys, user, max_tokens=100000)
+        except TypeError:
+            try:
+                _raw = chat_fn(_sys, user)
+            except Exception:
+                _raw = None
+        except Exception:
+            _raw = None
+        if not _raw:
             return entry
         # 提取 JSON
-        m = re.search(r"\{.*\}", raw, re.S)
+        m = re.search(r"\{.*\}", _raw, re.S)
         if not m:
             return entry
         data = json.loads(m.group(0))

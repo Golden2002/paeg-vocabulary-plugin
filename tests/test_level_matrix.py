@@ -49,16 +49,18 @@ class TestSelectCefr:
 # ─────────────────────────────────────
 class TestZipfBridge:
     def test_high_freq(self):
-        assert guess_cefr_from_zipf(7.7) == "C2"  # the
+        """§3.116 ⭐ 修正方向：zipf 高（常见）→ CEFR 低（A1）。"""
+        assert guess_cefr_from_zipf(7.7) == "A1"  # the
 
     def test_low_freq(self):
-        assert guess_cefr_from_zipf(2.0) == "A1"  # 低 zipf → 低难度
+        """zipf 低（稀有）→ CEFR 高（C2）。"""
+        assert guess_cefr_from_zipf(2.0) == "C2"
 
     def test_mid(self):
-        assert guess_cefr_from_zipf(4.0) == "B1"  # 校准后 zipf 3.5-4.5 → B1
+        assert guess_cefr_from_zipf(4.0) == "B2"  # zipf 3.5-4.5 → B2
 
     def test_calibrated(self):
-        """校准后桥接：zipf 4.23（雅思 7.5 阈值）→ 应判为需学习（B1+）。"""
+        """校准后桥接：zipf 4.23（雅思 7.5 阈值）→ B2（需学习——高于 B1 用户水平）。"""
         assert guess_cefr_from_zipf(4.23) in ("B1", "B2", "C1")
 
 
@@ -83,10 +85,10 @@ class TestFilterByLevel:
         assert len(filter_by_level(words, "C2")) == 2
 
     def test_zipf_fallback(self):
-        """无 cefr 标签 → zipf 兜底。"""
-        words = [{"lemma": "the", "zipf": 7.7}]  # C2
+        """无 cefr 标签 → zipf 兜底（§3.116 修正：zipf 高=常见=A1）。"""
+        words = [{"lemma": "the", "zipf": 7.7}]  # A1（常见词）
         kept = filter_by_level(words, "B2")
-        assert kept == []  # C2 > B2
+        assert len(kept) == 1  # A1 ≤ B2 保留
 
     def test_unknown_cefr_kept(self):
         words = [{"lemma": "x", "cefr": ""}]

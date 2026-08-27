@@ -112,10 +112,24 @@ def clean_corpus(ctx: VocabularyContext, repair: bool = True) -> VocabularyConte
     # 4. 去停用词 + 词形归一化决策
     clean = []
     preserved_surfaces = set()  # 已保留的独立派生词条
+    # §3.116 P7 ⭐ 专名统计：{lemma_lower: {"upper": n, "total": n}}
+    # 非句首大写比例高 → 专名（人名/地名——不构成学习词条）
+    cap_stats: dict = {}
+    prev_tok = ""  # 判断句首（前一 token 以句末标点结尾）
     for tok, info in zip(tokens, lemmas_info):
         low = info["lemma"].lower()
         if low in _EN_STOPWORDS or len(low) < 2:
+            prev_tok = tok
             continue
+        # 大写统计：非句首位置的大写（句子开头大写不算专名信号）
+        is_sentence_start = (not prev_tok or prev_tok.endswith((".", "!", "?", "…")))
+        if not is_sentence_start and tok[:1].isupper():
+            s = cap_stats.setdefault(low, {"upper": 0, "total": 0})
+            s["upper"] += 1
+            s["total"] += 1
+        elif tok[:1].islower():
+            s = cap_stats.setdefault(low, {"upper": 0, "total": 0})
+            s["total"] += 1
         # §3.116 ⭐ 词形归一化决策
         try:
             from ..normalization import should_preserve_form
@@ -133,17 +147,23 @@ def clean_corpus(ctx: VocabularyContext, repair: bool = True) -> VocabularyConte
                         page_no=(len(clean) // 500) + 1,
                         context=decision.reason,
                     ))
+                prev_tok = tok
                 continue
             low = decision.lemma
         except Exception:
             pass
         if low in _EN_STOPWORDS or len(low) < 2:
+            prev_tok = tok
             continue
         clean.append(TokenSpan(
             token=tok, lemma=low,
             page_no=(len(clean) // 500) + 1,
             context="",
         ))
+        prev_tok = tok
     ctx.clean_corpus = clean
+    # P7 ⭐ 专名统计存入 ctx（filter 阶段用大写比例过滤专名）
+    ctx.capitalized_stats = {k: v for k, v in cap_stats.items()
+                             if v["total"] >= 2}
     ctx.mark_completed("clean_dedup")
     return ctx

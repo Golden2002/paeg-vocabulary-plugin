@@ -63,5 +63,51 @@ def execute(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
             return json.dumps({"ok": False, "error": str(e)[:300]},
                               ensure_ascii=False)
 
+    # §3.116 ⭐ 标准化接口新工具（MCP 风格 schema）
+    if name == "lookup_word":
+        try:
+            from .wordbank import WordBank
+            wb = WordBank(domains=args.get("domains"))
+            r = wb.lookup(args.get("word", ""))
+            return json.dumps({"ok": True, **r}, ensure_ascii=False, default=str)
+        except Exception as e:
+            return json.dumps({"ok": False, "error": str(e)[:200]},
+                              ensure_ascii=False)
+
+    if name == "extract_collocations":
+        try:
+            from .collocations import extract_collocations
+            colls = extract_collocations(args.get("corpus") or [],
+                                         n=int(args.get("n") or 2),
+                                         min_count=int(args.get("min_count") or 2),
+                                         top_n=int(args.get("top_n") or 30))
+            return json.dumps({"ok": True, "collocations": colls},
+                              ensure_ascii=False, default=str)
+        except Exception as e:
+            return json.dumps({"ok": False, "error": str(e)[:200]},
+                              ensure_ascii=False)
+
+    if name == "quantile_of":
+        try:
+            from .quantile_engine import compute_q
+            q, meta = compute_q(args.get("word", ""),
+                                cefr_hint=args.get("cefr_hint"),
+                                with_meta=True)
+            return json.dumps({"ok": True, "q": q, "meta": meta},
+                              ensure_ascii=False)
+        except Exception as e:
+            return json.dumps({"ok": False, "error": str(e)[:200]},
+                              ensure_ascii=False)
+
+    if name == "bank_coverage":
+        try:
+            from .wordbank import WordBank
+            wb = WordBank(domains=args.get("domains"))
+            return json.dumps({"ok": True, "coverage": wb.coverage_stats()},
+                              ensure_ascii=False)
+        except Exception as e:
+            return json.dumps({"ok": False, "error": str(e)[:200]},
+                              ensure_ascii=False)
+
     return json.dumps({"ok": False, "error": f"未知工具: {name}（支持 generate_vocabulary/list_languages/list_generators）"},
                       ensure_ascii=False)

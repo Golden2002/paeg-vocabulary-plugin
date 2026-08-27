@@ -84,7 +84,7 @@ class VocabularyRegistry:
           {"exam": "kaoyan", "score": 70} 或 {"preset": "kaoyan-70"} → CEFR 阈值过滤
         """
         from .core.context import VocabularyContext
-        from .pipeline import ingest_pdf, clean_corpus, filter_candidates, enrich_entries, render_html
+        from .pipeline import ingest_pdf, clean_corpus, enrich_entries, render_html
         from .accessories import generate_all_accessories
 
         uf = user_filter or {}
@@ -94,35 +94,47 @@ class VocabularyRegistry:
             user_filter=uf,
         )
 
-        # §3.116 ⭐ 解析水平档位 → 筛选阈值（CEFR + zipf 双轨）
-        cefr_max = None
-        zipf_thr = None
+        # P3/P4 ⭐ 解析用户水平 → 统一分位 U（考试/自述 → U 分位）
+        u_level = None
         try:
-            from .level_matrix import select_cefr_max, resolve_preset
-            from .pipeline.filter import zipf_threshold_for
-            if uf.get("preset"):
-                p = resolve_preset(uf["preset"])
-                cefr_max = p.get("cefr_max")
-                zipf_thr = zipf_threshold_for(p.get("exam", ""), float(p.get("score", 0)))
-            elif uf.get("exam"):
-                score = float(uf.get("score", 0))
-                cefr_max = select_cefr_max(uf["exam"], score)
-                zipf_thr = zipf_threshold_for(uf["exam"], score)
+            from .quantile_engine import user_level_to_u
+            u_level = user_level_to_u(
+                vocab_size=float(uf.get("vocab_size") or 0),
+                exam=uf.get("exam", ""), score=float(uf.get("score") or 0),
+                preset=uf.get("preset", ""))
         except Exception:
             pass
 
-        # 阶段1-5
+        # 学科术语辞典（按书学科——用户可指定 domains）
+        domains = uf.get("domains") or _guess_domains(pdf_path)
+
+        # 阶段1-5（P4 分位筛选）
         ctx = ingest_pdf(ctx, pdf_path)
         ctx = clean_corpus(ctx)
-        # §3.116 ⭐ filter：zipf 阈值筛选需学习生词（量化标准——雅思 7.5 ≈ 2200 词）
-        ctx = filter_candidates(ctx, cefr_max=cefr_max, zipf_threshold=zipf_thr,
-                                filter_mode=uf.get("filter_mode", "learn"))
+        # P4 ⭐ 统一分位筛选：Q ≥ U OR is_important（替代旧 zipf/CEFR 双轨）
+        try:
+            from .quantile_filter import quantile_filter_candidates
+            ctx = quantile_filter_candidates(
+                ctx, u_level=u_level,
+                max_entries=int(uf.get("max_entries") or 2500))
+        except Exception:
+            # 兜底：旧筛选（保证可用）
+            from .pipeline.filter import filter_candidates
+            ctx = filter_candidates(ctx, filter_mode=uf.get("filter_mode", "learn"))
 
-        # §3.116 ⭐ 提取书元数据（书名/作者）——用于"本书含义"义项标注
-        book_title, book_author = _extract_book_meta(pdf_path, uf)
+        # §3.116 ⭐ 提取书元数据（书名/作者）——用 LLM 读前几页判定（用户方案，
+        # 不依赖文件名——文件名格式随上传作品而异无法泛化）
+        _chat_for_meta = chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None)
+        from .metadata import extract_book_meta_llm
+        book_title, book_author = extract_book_meta_llm(
+            pdf_path, chat_fn=_chat_for_meta, user_filter=uf)
 
-        ctx = enrich_entries(ctx, chat_fn=chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None),
-                             book_title=book_title, book_author=book_author)
+        # P5 ⭐ enrich：wordbank 离线优先 + batch_llm 批量补全 + collocations
+        ctx = enrich_entries(ctx,
+                             chat_fn=chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None),
+                             book_title=book_title, book_author=book_author,
+                             domains=domains)
+        # P6 ⭐ 渲染（FIELD_RENDERERS + L1 门）
         ctx = render_html(ctx, book_title=book_title, book_author=book_author)
 
         # 附件
@@ -141,8 +153,26 @@ class VocabularyRegistry:
             "entries_count": len(ctx.entries),
             "candidates_count": len(ctx.candidates),
             "completed_stages": sorted(ctx.completed_stages),
-            "cefr_max": cefr_max or "C2",
+            "cefr_max": "C2",
+            "u_level": u_level,
         }
+
+
+def _guess_domains(pdf_path: str) -> list:
+    """按书名/文件名猜测学科领域（用于学科辞典加载）。"""
+    import re
+    name = os.path.basename(str(pdf_path)).lower()
+    rules = [
+        (r"phenomen|husserl|heidegger|merleau|jonas|existential|conscious", ["philosophy", "phenomenology"]),
+        (r"bell jar|plath|novel|fiction|poetry|literature", ["philosophy"]),
+        (r"biolog|life|cell|gene|organism|molecular", ["biology", "biochemistry", "genetics"]),
+        (r"physic|quantum|mechanics|thermo|relativit", ["physics"]),
+        (r"chem|molecule|acid|reaction", ["chemistry"]),
+    ]
+    for pattern, domains in rules:
+        if re.search(pattern, name):
+            return domains
+    return ["philosophy", "biology", "physics", "chemistry"]
 
 
 # 便捷别名（统一入口在 executor.execute——MCP 契约）
@@ -153,19 +183,53 @@ def _extract_book_meta(pdf_path: str, user_filter: Dict[str, Any]) -> tuple:
     """从 PDF 文件名/用户输入提取书名与作者（§3.116 ⭐ 本书含义义项）。
 
     优先级：用户提供（book_title/book_author）> 文件名解析。
+    支持安娜档案（Anna's Archive）命名："[系列] 作者, 作者 - 书名 -- 作者 -- 年份 -- ... -- Anna's Archive.pdf"
+    以及常见 "作者 - 书名.pdf" / "书名 -- 作者.pdf"。
     """
     # 1. 用户显式提供
     if user_filter.get("book_title"):
         return (str(user_filter["book_title"]),
                 str(user_filter.get("book_author", "")))
-    # 2. 文件名解析（"作者名_书名.pdf" 或 "书名 -- 作者" 模式）
+    # 2. 文件名解析
     import re
     name = os.path.basename(pdf_path)
     name = re.sub(r"\.pdf$", "", name, flags=re.I)
-    # 模式: "Author - Title" / "Title -- Author" / "Author_Title"
-    m = re.match(r"^([^_\-]+)[_\-]+([^_\-]+)$", name)
+
+    # 2.1 安娜档案格式：... -- Title -- Author -- ... -- Anna's Archive
+    #     生命现象："The phenomenon of life- toward a philosophical biology -- Jonas..." 书名在首个 " -- " 前
+    #     钟形罩："Plath, Sylvia McCann, Janet - The bell jar, by Sylvia Plath (2012, Salem Press) - libgen.li"
+    #             书名是单横线后的 "The bell jar"（年份括号前的部分）
+    # 策略 A：首个 " -- " 前若含 "- " 形如 "xxx- title" 则取 title 部分
+    parts = re.split(r"\s*--\s*", name)
+    if len(parts) >= 2:
+        _head = parts[0]
+        # 生命现象式："The phenomenon of life- toward a philosophical biology"
+        m = re.search(r"-\s*([A-Z][A-Za-z0-9'& ]{2,60})$", _head)
+        if m:
+            return (m.group(1).strip(), "")
+        # 若首段是纯作者/系列（无 "- "），取第二个 " -- " 段（跳过作者/年份）
+        if len(parts) >= 3 and not re.search(r"\d{4}", parts[1]):
+            return (parts[1].strip(), "")
+    # 策略 B：钟形罩式 "[系列] 作者, 作者 - 书名, 副题 (年份, 出版社) - 来源"
+    #     年份括号 "(2012," 是书名结束锚点——取它之前最后一个 "- " 之后的部分
+    clean2 = re.sub(r"^\[[^\]]*\]\s*", "", name)
+    _yr = re.search(r"\((\d{4})[,)]", clean2)
+    if _yr:
+        _pre = clean2[:_yr.start()]
+        m = re.search(r"[-_]\s*([A-Z][A-Za-z0-9'&, ]{2,80})$", _pre)
+        if m:
+            _t = m.group(1).strip()
+            if len(_t) < 60:
+                return (_t, "")
+    # 策略 C：剥离方括号系列前缀后通用解析
+    clean = clean2
+    m = re.search(r"-\s*([A-Z][A-Za-z0-9' ]{2,60})$", clean)
+    if m:
+        _t = m.group(1).strip()
+        if _t.lower() not in ("archive", "anna s archive"):
+            return (_t, "")
+    m = re.match(r"^([^_\-]+)[_\-]+([^_\-]+)$", clean)
     if m:
         a, t = m.group(1).strip(), m.group(2).strip()
-        # 启发式：含大写词组更像书名
         return (t, a)
-    return (name, "")
+    return (clean, "")

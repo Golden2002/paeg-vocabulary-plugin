@@ -78,6 +78,45 @@ def build_server() -> "FastMCP":
         cleaned = sanitize_examples(examples)
         return json.dumps({"ok": True, "cleaned": cleaned}, ensure_ascii=False)
 
+    # §3.116 ⭐ 标准化接口新工具（MCP 风格 schema 驱动）
+    @mcp.tool()
+    def lookup_word(word: str, domains_json: str = "[]") -> str:
+        """离线词库查询：音标（CMU）/释义/CEFR/学科术语——多源整合消歧。
+        domains_json: 学科范围 JSON 数组（如 ["philosophy","biology"]）。"""
+        try:
+            domains = json.loads(domains_json) if domains_json else None
+        except Exception:
+            domains = None
+        return execute("lookup_word", {"word": word, "domains": domains})
+
+    @mcp.tool()
+    def extract_collocations(corpus_json: str, n: int = 2,
+                             min_count: int = 2, top_n: int = 30) -> str:
+        """从文本提取固定搭配/短语（N-gram + PMI 显著性）。"""
+        try:
+            corpus = json.loads(corpus_json) if corpus_json else []
+        except Exception:
+            corpus = []
+        return execute("extract_collocations", {
+            "corpus": corpus, "n": n, "min_count": min_count, "top_n": top_n})
+
+    @mcp.tool()
+    def quantile_of(word: str, cefr_hint: str = "") -> str:
+        """查询词的难度分位 Q（0-1 统一分位空间）。"""
+        return execute("quantile_of", {"word": word, "cefr_hint": cefr_hint})
+
+    @mcp.tool()
+    def bank_coverage() -> str:
+        """本地词库覆盖统计（CMU 音标/CEFR/学科辞典）。"""
+        return execute("bank_coverage", {})
+
+    @mcp.tool()
+    def list_tools() -> str:
+        """工具 schema 清单（MCP tools/list 等价——开发者自动发现）。"""
+        from .tools.schema import list_tool_schemas
+        return json.dumps({"ok": True, "tools": list_tool_schemas()},
+                          ensure_ascii=False)
+
     return mcp
 
 

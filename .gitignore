@@ -10,8 +10,18 @@ venv/
 
 # 运行时数据（git 铁律：运行数据不入库）
 output/
-data/*.json
 data/*.log
+
+# 大型离线词库（333MB——不入库，由 scripts/download_wordbank.py 自动下载）
+# 词库位于 src/paeg_vocabulary/data/（非仓库根 data/）
+src/paeg_vocabulary/data/cmudict.dict
+src/paeg_vocabulary/data/ecdict.csv
+src/paeg_vocabulary/data/lemma.en.txt
+src/paeg_vocabulary/data/cefrj.csv
+src/paeg_vocabulary/data/octanove.csv
+src/paeg_vocabulary/data/kaikki_topic_*.jsonl
+src/paeg_vocabulary/data/headwords*1000.txt
+# 注意：level_matrix.json 是配置数据（入库）；cefr_words.csv/oxford3000.tsv 是小型词表（入库）
 
 # IDE
 .idea/

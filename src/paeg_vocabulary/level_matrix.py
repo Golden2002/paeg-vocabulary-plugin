@@ -73,12 +73,27 @@ def select_cefr_max(exam: str, score: float) -> str:
 
 
 def guess_cefr_from_zipf(zipf: float) -> str:
-    """Zipf → CEFR 桥接（wordfreq 兜底）。"""
+    """Zipf → CEFR 桥接（wordfreq 兜底）。
+
+    §3.116 ⭐ 修正方向：zipf 越高 = 越常见 = CEFR 越低（A1/A2）；
+    zipf 越低 = 越稀有 = CEFR 越高（C1/C2）。
+    原实现 `zipf >= min → cefr` 方向颠倒（7.73→C2 错误）。
+    """
     bridge = _load_matrix().get("zipf_bridge", [])
-    for b in bridge:
-        if zipf >= b.get("min", 0):
-            return b["cefr"]
-    return "A1"
+    # zipf_bridge 数据形如 [{"min": 6.5, "cefr": "C2"}]——min 是"达到该 CEFR 所需的最高 zipf 下限"？
+    # 修正语义：zipf ≥ 6.5 是超高频率（常见词）→ 应为 A1/A2 而非 C2。
+    # 采用映射表：高 zipf → 低 CEFR。
+    if zipf >= 6.5:
+        return "A1"
+    if zipf >= 5.5:
+        return "A2"
+    if zipf >= 4.5:
+        return "B1"
+    if zipf >= 3.5:
+        return "B2"
+    if zipf >= 2.5:
+        return "C1"
+    return "C2"
 
 
 def filter_by_level(words: List[Dict[str, Any]], cefr_max: str) -> List[Dict[str, Any]]:
@@ -95,7 +110,14 @@ def filter_by_level(words: List[Dict[str, Any]], cefr_max: str) -> List[Dict[str
     cap = order.index(cefr_max) if cefr_max in order else len(order) - 1
     out = []
     for w in words:
-        cefr = w.get("cefr") or guess_cefr_from_zipf(w.get("zipf", 0))
+        cefr = w.get("cefr")
+        if not cefr:
+            # zipf 无数据（0.0）→ 未知 → 保留（不误判为极稀有 C2）
+            zipf = w.get("zipf", 0.0)
+            if zipf is None or zipf <= 0.0:
+                out.append(w)
+                continue
+            cefr = guess_cefr_from_zipf(zipf)
         if cefr in order and order.index(cefr) <= cap:
             out.append(w)
     return out

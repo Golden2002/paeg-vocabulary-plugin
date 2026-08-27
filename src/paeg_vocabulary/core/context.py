@@ -48,6 +48,8 @@ class VocabularyContext:
     # 阶段 2: 清洗去重
     clean_corpus: List[TokenSpan] = field(default_factory=list)
     clean_corpus_path: Optional[Path] = None
+    # P7 ⭐ 专名统计：{lemma_lower: {"upper": n, "total": n}}——大写比例过滤专名
+    capitalized_stats: Dict[str, Dict[str, int]] = field(default_factory=dict)
 
     # 阶段 3: 筛选
     candidates: List[CandidateWord] = field(default_factory=list)
