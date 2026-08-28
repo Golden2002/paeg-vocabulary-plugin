@@ -117,6 +117,50 @@ def build_server() -> "FastMCP":
         return json.dumps({"ok": True, "tools": list_tool_schemas()},
                           ensure_ascii=False)
 
+    # ═══════════════════════════════════════════════════════════
+    # §3.116 ⭐ R3 MCP 三原语补全：resources + prompts
+    # ═══════════════════════════════════════════════════════════
+
+    @mcp.resource("vocab-languages://list")
+    def vocab_languages_resource() -> str:
+        """支持语种列表（read-only 资源）。"""
+        from .registry import VocabularyRegistry
+        return json.dumps({"languages": VocabularyRegistry.languages()},
+                          ensure_ascii=False)
+
+    @mcp.resource("vocab-dictionaries://list")
+    def vocab_dictionaries_resource() -> str:
+        """词库数据源状态（read-only 资源）。"""
+        try:
+            from .wordbank import WordBank
+            wb = WordBank()
+            stats = wb.coverage_stats() if hasattr(wb, "coverage_stats") else {}
+            return json.dumps({"wordbank": stats}, ensure_ascii=False, default=str)
+        except Exception:
+            return json.dumps({"wordbank": {"note": "词库统计不可用"}}, ensure_ascii=False)
+
+    @mcp.prompt()
+    def vocab_build_workflow(book_title: str, lang: str = "en") -> str:
+        """词汇表构建工作流模板（导入→清洗→筛选→富化→渲染→导出）。"""
+        return (
+            f"请按词汇表构建流程处理《{book_title}》（语种：{lang}）：\n"
+            "1. 输入：PDF 解析 + OCR 断裂修复\n"
+            "2. 清洗：去重/停用词过滤/词形还原（-s/-ed/-ing 归并）\n"
+            "3. 筛选：按词频/词性/CEFR 难度自定义\n"
+            "4. 富化：IPA 音标/中英释义/词源/原著例句/搭配\n"
+            "5. 渲染导出：Bell Jar CSS 模板（HTML/PDF/Word/Markdown）\n"
+        )
+
+    @mcp.prompt()
+    def vocab_render(entries_count: int) -> str:
+        """词汇表渲染模板（多格式导出说明）。"""
+        return (
+            f"请为 {entries_count} 个词条生成精美词汇表渲染：\n"
+            "1. 复用生命现象学/The Bell Jar 标准 CSS 模板（禁止简化版）\n"
+            "2. 字段完整：音标/中英释义/词源/原著例句/搭配/CEFR\n"
+            "3. 导出：可打印 PDF / 可编辑 Word / 结构化 Markdown（三格式一致）\n"
+        )
+
     return mcp
 
 
