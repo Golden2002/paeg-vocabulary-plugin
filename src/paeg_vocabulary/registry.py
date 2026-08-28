@@ -145,7 +145,8 @@ class VocabularyRegistry:
             ctx.errors.append(f"附件生成失败: {str(e)[:100]}")
 
         return {
-            "ok": len(ctx.errors) == 0,
+            # §3.116 ⭐ 缺陷3修复：零词条不报 ok:True（弱模式空表假阳性）
+            "ok": len(ctx.errors) == 0 and len(ctx.entries) > 0,
             "errors": ctx.errors,
             "html_path": str(ctx.html_path) if ctx.html_path else "",
             "pdf_path": str(ctx.pdf_path) if ctx.pdf_path else "",

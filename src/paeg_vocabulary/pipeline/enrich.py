@@ -28,6 +28,36 @@ from ..enrichers.batch_llm import batch_enrich
 from ..collocations import extract_collocations, collocations_for_word
 
 
+# §3.116 ⭐ ecdict 接线：离线中文释义兜底（修复弱模式空词汇表根因）
+_ECDICT_CACHE = None
+
+
+def _ecdict_zh(word: str) -> str:
+    """查 ecdict.csv 中文释义（懒加载 word→translation 字典 + 模块级缓存）。
+
+    62MB CSV（约 77 万词），首次调用加载 ~几秒，之后内存查询。
+    加载失败 → 空缓存（不阻塞管线，回退到无 zh 释义）。
+    """
+    global _ECDICT_CACHE
+    if _ECDICT_CACHE is None:
+        import csv
+        import os
+        _ECDICT_CACHE = {}
+        # __file__ = .../src/paeg_vocabulary/pipeline/enrich.py
+        # dirname×2 = .../src/paeg_vocabulary → join data/ecdict.csv
+        _path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "data", "ecdict.csv")
+        try:
+            with open(_path, encoding="utf-8", errors="ignore") as _f:
+                for _row in csv.reader(_f):
+                    if len(_row) >= 4 and _row[0] and _row[3]:
+                        _ECDICT_CACHE[_row[0].strip().lower()] = _row[3].strip()
+        except Exception:
+            _ECDICT_CACHE = {}
+    return _ECDICT_CACHE.get(word.strip().lower(), "")
+
+
 def enrich_entries(ctx: VocabularyContext,
                    chat_fn: Optional[object] = None,
                    book_title: str = "",
@@ -80,6 +110,12 @@ def enrich_entries(ctx: VocabularyContext,
         # 释义：CEFR 词库离线优先（en），zh 由 LLM 补
         if wb_r.get("gloss_en"):
             entry.gloss_bilingual = {"en": wb_r["gloss_en"], "zh": ""}
+        elif chat_fn is None:
+            # §3.116 ⭐ ecdict 接线：无 LLM 时用 ecdict 中文释义兜底
+            # （修复弱模式空词汇表根因——离线 77 万词 zh 释义）
+            _zh = _ecdict_zh(cand.headword)
+            if _zh:
+                entry.gloss_bilingual = {"en": "", "zh": _zh}
         # 学科术语：domain 命中 → 标记术语（筛选豁免信号）
         if wb_r.get("domain_term"):
             entry.phenomena.setdefault("domain_term", [wb_r["domain_term"].get("gloss_zh", "")])

@@ -93,7 +93,8 @@ def ingest_pdf(ctx: VocabularyContext, pdf_path: str) -> VocabularyContext:
 
     # 1. PyMuPDF（含坐标，首选）
     pm = _try_pymupdf(pdf_path)
-    if pm:
+    # §3.116 ⭐ 缺陷2修复：判文本非空（空文本 dict 也 truthy，此前不降级致 raw_corpus 空）
+    if pm and str(pm.get("text", "")).strip():
         ctx.raw_corpus = pm["text"]
         ctx.pages_meta = pm["pages_meta"]
         ctx.mark_completed("pdf_ingest")
@@ -101,14 +102,14 @@ def ingest_pdf(ctx: VocabularyContext, pdf_path: str) -> VocabularyContext:
 
     # 2. PAEG readers
     paeg = _try_paeg_reader(pdf_path)
-    if paeg:
+    if paeg and str(paeg).strip():
         ctx.raw_corpus = paeg
         ctx.mark_completed("pdf_ingest")
         return ctx
 
     # 3. pypdf
     pypdf_text = _try_pypdf(pdf_path)
-    if pypdf_text:
+    if pypdf_text and str(pypdf_text).strip():
         ctx.raw_corpus = pypdf_text
         ctx.mark_completed("pdf_ingest")
         return ctx
