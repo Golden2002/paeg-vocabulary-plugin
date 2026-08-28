@@ -112,6 +112,41 @@ def style_analysis(candidates, entries: List[VocabularyEntry]) -> str:
 """
 
 
+def phrase_statistics(ctx) -> str:
+    """§3.116 ⭐ V-R5 附件：短语句式统计——高频短语（2/3 词）+ 句式特征。
+
+    范本附件产物之一（对标"短语句式统计/作者语言风格分析"）——用 N-gram + PMI
+    提取原著高频固定搭配，附句式特征（平均句长/从句密度粗估）。
+    """
+    from ..collocations import extract_collocations
+    corpus = getattr(ctx, "clean_sentences", None)
+    if not corpus and getattr(ctx, "clean_corpus", None):
+        corpus = [" ".join(t.text for t in ctx.clean_corpus[:500])]
+    bigrams = extract_collocations(corpus or [], n=2, min_count=3, top_n=30)
+    trigrams = extract_collocations(corpus or [], n=3, min_count=2, top_n=20)
+    lines = ["# 短语句式统计", ""]
+    lines.append("## 高频短语（二元 · PMI 排序）")
+    lines.append("| 短语 | 频次 | PMI |")
+    lines.append("|---|---|---|")
+    for c in bigrams[:20]:
+        lines.append(f"| {c['phrase']} | {c['count']} | {c['pmi']} |")
+    lines.append("")
+    lines.append("## 高频短语（三元）")
+    lines.append("| 短语 | 频次 | PMI |")
+    lines.append("|---|---|---|")
+    for c in trigrams[:10]:
+        lines.append(f"| {c['phrase']} | {c['count']} | {c['pmi']} |")
+    # 句式特征（平均句长）
+    if corpus:
+        _lens = [len(s) for s in corpus if s]
+        _avg = sum(_lens) / len(_lens) if _lens else 0
+        lines.append("")
+        lines.append("## 句式特征")
+        lines.append(f"- 平均句长：约 {_avg:.0f} 字符（{'偏长，句式复杂' if _avg > 80 else '中等'}）")
+        lines.append("- 短语密度：高频短语反映作者惯用表达与主题重心")
+    return "\n".join(lines)
+
+
 def make_high_freq_html(candidates, entries: List[VocabularyEntry]) -> str:
     """生成高明词统计独立 HTML 小页面（§3.116 ⭐ 非主文档，趣味统计）。
 
@@ -170,6 +205,7 @@ def generate_all_accessories(ctx, out_dir=None) -> Dict[str, str]:
             book, len(ctx.entries), [c.headword for c in ctx.candidates[:10]]),
         "词频统计报告.md": freq_report(ctx.candidates, ctx.entries),
         "作者语言风格分析.md": style_analysis(ctx.candidates, ctx.entries),
+        "短语句式统计.md": phrase_statistics(ctx),  # §3.116 ⭐ V-R5
     }
     # §3.116 ⭐ 高明词统计独立 HTML 小页面（非主文档）
     try:
