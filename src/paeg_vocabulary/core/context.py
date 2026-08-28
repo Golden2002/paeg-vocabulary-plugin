@@ -62,6 +62,7 @@ class VocabularyContext:
     # 阶段 5: 渲染
     html_path: Optional[Path] = None
     pdf_path: Optional[Path] = None
+    docx_path: Optional[Path] = None  # §3.116 ⭐ V-R3 Word 导出
     accessories: Dict[str, Path] = field(default_factory=dict)
 
     # 元数据

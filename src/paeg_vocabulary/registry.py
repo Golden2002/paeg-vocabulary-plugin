@@ -150,6 +150,7 @@ class VocabularyRegistry:
             "errors": ctx.errors,
             "html_path": str(ctx.html_path) if ctx.html_path else "",
             "pdf_path": str(ctx.pdf_path) if ctx.pdf_path else "",
+            "docx_path": str(ctx.docx_path) if getattr(ctx, "docx_path", None) else "",
             "accessories": {k: str(v) for k, v in ctx.accessories.items()},
             "entries_count": len(ctx.entries),
             "candidates_count": len(ctx.candidates),

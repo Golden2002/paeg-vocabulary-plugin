@@ -179,6 +179,8 @@ def render_html(ctx: VocabularyContext,
 
     # PDF 渲染（Chrome）
     ctx.pdf_path = _render_pdf(ctx.html_path, out_dir, ctx)
+    # §3.116 ⭐ V-R3 Word 导出（三格式一致：HTML/PDF/docx）
+    ctx.docx_path = _render_docx(ctx.entries, out_dir, ctx, book_title)
     ctx.mark_completed("render")
     return ctx
 
@@ -214,6 +216,61 @@ def _render_pdf(html_path: Path, out_dir: Optional[str], ctx: VocabularyContext)
                "file:///" + str(html_path).replace("\\", "/")]
         subprocess.run(cmd, capture_output=True, timeout=120)
         return pdf_path if pdf_path.exists() else None
+    except Exception:
+        return None
+
+
+def _render_docx(entries: List[VocabularyEntry], out_dir: Optional[str],
+                 ctx: VocabularyContext, book_title: str = "") -> Optional[Path]:
+    """§3.116 ⭐ V-R3 Word(.docx) 导出——范本对标要求（范本有 xlsx，工具补 Word）。
+
+    词条字段：headword + pos + ipa + 中英释义 + 词源 + 词素 + 例句 + 搭配 + CEFR。
+    python-docx 缺失时静默降级（不阻塞 HTML/PDF 主输出）。
+    """
+    try:
+        from docx import Document
+    except ImportError:
+        ctx.errors.append("python-docx 未安装——Word 导出跳过")
+        return None
+    doc = Document()
+    doc.add_heading(book_title or "词汇表", 0)
+    for e in entries:
+        _pos = f"（{e.pos}）" if e.pos else ""
+        doc.add_heading(f"{e.headword}{_pos}", level=2)
+        _ipa = e.ipa.get("en_us") or e.ipa.get("uk") or ""
+        if _ipa:
+            doc.add_paragraph(f"音标：/{_ipa}/")
+        _gloss = e.gloss_bilingual or {}
+        if _gloss.get("en"):
+            doc.add_paragraph(f"英文释义：{_gloss['en']}")
+        if _gloss.get("zh"):
+            doc.add_paragraph(f"中文释义：{_gloss['zh']}")
+        if getattr(e, "etymology", None):
+            doc.add_paragraph(f"词源：{e.etymology}")
+        if getattr(e, "morpheme", None):
+            doc.add_paragraph(f"词素：{e.morpheme}")
+        for ex in (e.examples or [])[:2]:
+            if isinstance(ex, dict) and ex.get("en"):
+                _zh = f"（{ex['zh']}）" if ex.get("zh") else ""
+                doc.add_paragraph(f"例句：{ex['en']}{_zh}")
+        if getattr(e, "collocations", None):
+            doc.add_paragraph(f"搭配：{' · '.join(e.collocations[:4])}")
+        if getattr(e, "cefr_level", None):
+            doc.add_paragraph(f"CEFR：{e.cefr_level}")
+    # 命名与 HTML/PDF 一致（stem + 档位后缀）
+    out = Path(out_dir or _default_out_dir())
+    out.mkdir(parents=True, exist_ok=True)
+    stem = book_title or "vocabulary"
+    if not stem or stem == "词汇表":
+        stem = "vocabulary"
+    level = ""
+    uf = getattr(ctx, "user_filter", None) or {}
+    if uf.get("exam") and uf.get("score"):
+        level = f"_{uf['exam']}{uf['score']}"
+    docx_path = out / (stem + level + "_词汇表.docx")
+    try:
+        doc.save(str(docx_path))
+        return docx_path if docx_path.exists() else None
     except Exception:
         return None
 
