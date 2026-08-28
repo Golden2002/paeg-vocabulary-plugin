@@ -144,6 +144,18 @@ class VocabularyRegistry:
         except Exception as e:
             ctx.errors.append(f"附件生成失败: {str(e)[:100]}")
 
+        # §3.116 ⭐ V-R7 词条预览（前端在线浏览 + 筛选，最多 300 条防爆）
+        _preview = []
+        for _e in ctx.entries[:300]:
+            _gloss = _e.gloss_bilingual or {}
+            _preview.append({
+                "headword": _e.headword, "pos": _e.pos or "",
+                "ipa": (_e.ipa or {}).get("en_us", ""),
+                "gloss_zh": _gloss.get("zh", "")[:80],
+                "cefr": _e.cefr_level or "",
+                "freq": getattr(_e, "freq_rank", 0) or 0,
+            })
+
         return {
             # §3.116 ⭐ 缺陷3修复：零词条不报 ok:True（弱模式空表假阳性）
             "ok": len(ctx.errors) == 0 and len(ctx.entries) > 0,
@@ -154,6 +166,7 @@ class VocabularyRegistry:
             "accessories": {k: str(v) for k, v in ctx.accessories.items()},
             "entries_count": len(ctx.entries),
             "candidates_count": len(ctx.candidates),
+            "entries_preview": _preview,
             "completed_stages": sorted(ctx.completed_stages),
             "cefr_max": "C2",
             "u_level": u_level,
