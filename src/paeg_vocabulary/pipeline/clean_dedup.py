@@ -51,7 +51,8 @@ def _lemmatize_with_pos(tokens: List[str], lang: str = "en") -> List[dict]:
         return [{"lemma": t.lemma_.lower(), "pos": t.pos_,
                  "lemma_pos": _pos_to_map(t.tag_)} for t in doc]
     except Exception:
-        return [{"lemma": t.lower(), "pos": "NOUN", "lemma_pos": "NOUN"}
+        # §3.116 ⭐ V-R8：spaCy 缺失降级——规则级词形还原（不再 lemma=表面形）
+        return [{"lemma": _rule_lemmatize(t), "pos": "NOUN", "lemma_pos": "NOUN"}
                 for t in tokens]
 
 
@@ -66,6 +67,50 @@ def _pos_to_map(tag: str) -> str:
     if tag.startswith("RB"):
         return "ADV"
     return "X"
+
+
+# §3.116 ⭐ V-R8 范本超越：规则级英文词形还原（spaCy 缺失时的兜底）
+# 范本核心方法论"词形还原聚合"（-s/-ed/-ing/-es 归并到词元）——spaCy 未安装时
+# 降级路径 lemma=表面形导致 housewife/housewives 都成独立词条，本表兜底还原。
+_IRREGULAR_LEMMAS = {
+    # 不规则复数（-f/-fe → -ves）
+    "housewives": "housewife", "wives": "wife", "lives": "life",
+    "knives": "knife", "leaves": "leaf", "thieves": "thief",
+    "selves": "self", "halves": "half", "shelves": "shelf",
+    # 不规则复数（-y → -ies / 其他）
+    "studies": "study", "bodies": "body", "parties": "party",
+    "men": "man", "women": "woman", "children": "child",
+    "feet": "foot", "teeth": "tooth", "mice": "mouse",
+    # 不规则过去式
+    "went": "go", "meant": "mean", "said": "say", "made": "make",
+    "took": "take", "came": "come", "became": "become", "gave": "give",
+    "found": "find", "thought": "think", "brought": "bring",
+}
+
+# §3.116 ⭐ -s 结尾但非复数的词（不可数/单复同形）——不还原，防 news→new 误伤
+_S_SUFFIX_SAFE = {
+    "news", "maths", "means", "series", "species", "politics",
+    "physics", "economics", "ethics", "logistics", "aesthetics",
+    "scissors", "trousers", "glasses", "headquarters",
+}
+
+
+def _rule_lemmatize(word: str) -> str:
+    """规则级英文词形还原（无 spaCy 时兜底）：不规则表 + 安全规则还原。"""
+    low = word.strip().lower()
+    if not low:
+        return low
+    if low in _IRREGULAR_LEMMAS:
+        return _IRREGULAR_LEMMAS[low]
+    if low in _S_SUFFIX_SAFE:
+        return low  # -s 结尾但非复数，不还原
+    # 规则屈折：-ies→-y / -es / -ed / -ing / -s（还原后长度 ≥3，避免误伤）
+    for suf, strip in (("ies", "y"), ("es", ""), ("ed", ""), ("ing", ""), ("s", "")):
+        if low.endswith(suf) and len(low) > len(suf) + 2:
+            base = low[:-len(suf)] + strip
+            if base != low and len(base) >= 3:
+                return base
+    return low
 
 
 # 英文停用词（基础集；spaCy 可用时用 spaCy）
