@@ -20,6 +20,7 @@ _FUNC = {
     "such", "more", "most", "much", "many", "some", "any", "each", "every",
     "one", "two", "upon", "within", "without", "through", "between",
     "then", "than", "as", "with", "from", "by",
+    "a", "an",  # §3.116 短拼接检测：as+a / to+be 类 OCR 去空格噪声
 }
 
 # 常见实词（拼接检测第二段）
@@ -54,6 +55,8 @@ _NOISE_KNOWN = {
     # 高频粘连（wordfreq 收录但属 OCR 噪声——硬编码拦截）
     "ofthe", "inthe", "bemore", "inher", "themiddle", "thesedays",
     "notthe", "ofhim", "herto", "halfan", "isno", "goback", "awoman",
+    # §3.116 实测残留（wordfreq 误收录为合法词的 OCR 去空格噪声——硬编码拦截）
+    "tobe", "asa", "lan-guage", "lan-guages",
 }
 
 

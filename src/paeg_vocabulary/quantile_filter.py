@@ -227,7 +227,8 @@ def _is_clean_word(word: str) -> bool:
     if w.endswith("'s") and len(w) > 10:
         return False
     # 常见词拼接（wouldhave/theword/sothat/tothis——OCR 去空格噪声）
-    if len(w) >= 5:
+    # §3.116 ⭐ 门槛 5→3：短拼接词（tobe/asa）也进 is_likely_noise 检测
+    if len(w) >= 3:
         from ._noise import is_likely_noise
         if is_likely_noise(w):
             return False

@@ -47,14 +47,17 @@ class ExampleSanitizer:
         # 规则 5: 目录条目
         if _TOC_PATTERN.match(e):
             return ""
-        # 规则 1: 参考文献编号
-        e = _REF_PATTERN.sub("", e)
+        # 规则 1: 参考文献编号（§3.116 ⭐ 修复：替换为单空格而非空串，
+        # 避免 "Good [1] sentence" 的 \s* 吃掉空格导致 Goodsentence 粘连）
+        e = _REF_PATTERN.sub(" ", e)
         # 规则 2: 上标脚注
         e = _SUPERSCRIPT_PATTERN.sub("", e)
         # 规则 4: 注释括号
-        e = _NOTE_PATTERN.sub("", e)
+        e = _NOTE_PATTERN.sub(" ", e)
         # 规则 3: 跨页断词（已在 OCR 层处理，此处兜底）
         e = e.replace("-\n", "")
+        # 压缩连续空格（sub(" ") 可能引入双空格）
+        e = re.sub(r"\s{2,}", " ", e)
         return e.strip()
 
     def clean_many(self, examples: List[str]) -> List[str]:
