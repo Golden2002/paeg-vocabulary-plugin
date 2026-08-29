@@ -111,6 +111,22 @@ def build_server() -> "FastMCP":
         return execute("bank_coverage", {})
 
     @mcp.tool()
+    def srs_plan(words_json: str, days: int = 14) -> str:
+        """SRS 间隔重复复习计划：给定词表 → N 天复习安排（SM-2 遗忘曲线）。"""
+        try:
+            words = json.loads(words_json)
+        except Exception:
+            words = []
+        return execute("srs_plan", {"words": words, "days": days})
+
+    @mcp.tool()
+    def srs_review(ef: float = 2.5, interval: int = 0, reps: int = 0,
+                   quality: int = 3) -> str:
+        """SRS 单次复习评分（0-5）→ 更新难度因子 EF/间隔/重复次数。"""
+        return execute("srs_review", {"ef": ef, "interval": interval,
+                                      "reps": reps, "quality": quality})
+
+    @mcp.tool()
     def list_tools() -> str:
         """工具 schema 清单（MCP tools/list 等价——开发者自动发现）。"""
         from .tools.schema import list_tool_schemas

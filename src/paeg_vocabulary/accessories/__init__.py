@@ -147,6 +147,29 @@ def phrase_statistics(ctx) -> str:
     return "\n".join(lines)
 
 
+def srs_plan_note(ctx) -> str:
+    """附件：SRS 间隔重复复习计划（SM-2 遗忘曲线，14 天复习安排）。
+
+    对标 LingQ：词汇不是一次性产出，而是按遗忘曲线复习。
+    """
+    from ..srs import plan_schedule
+    words = [e.headword for e in ctx.entries]
+    if not words:
+        return "# SRS 复习计划\n\n（无词条）"
+    r = plan_schedule(words, days=14)
+    lines = ["# SRS 间隔重复复习计划（SM-2 遗忘曲线）", "",
+             f"- 词条总数：**{r['words']}**",
+             f"- 14 天总复习次数：**{r['total_reviews']}**（日均约 {r['daily_avg']}）",
+             "", "## 每日复习安排",
+             "| 天数 | 复习词数 | 词条（前 10） |", "|---|---|---|"]
+    for day, ws in r["plan"].items():
+        head = ", ".join(ws[:10]) + ("…" if len(ws) > 10 else "")
+        lines.append(f"| {day} | {len(ws)} | {head} |")
+    lines.append("")
+    lines.append("> 说明：SM-2 算法——评分 ≥3 正确回忆，间隔按难度因子 EF 递增（1→6→…）；评分 <3 失败重置为 1 天。复习时可用 `srs_review` 工具评分推进。")
+    return "\n".join(lines)
+
+
 def make_high_freq_html(candidates, entries: List[VocabularyEntry]) -> str:
     """生成高明词统计独立 HTML 小页面（§3.116 ⭐ 非主文档，趣味统计）。
 
@@ -206,6 +229,7 @@ def generate_all_accessories(ctx, out_dir=None) -> Dict[str, str]:
         "词频统计报告.md": freq_report(ctx.candidates, ctx.entries),
         "作者语言风格分析.md": style_analysis(ctx.candidates, ctx.entries),
         "短语句式统计.md": phrase_statistics(ctx),  # §3.116 ⭐ V-R5
+        "SRS复习计划.md": srs_plan_note(ctx),       # ⭐ 间隔重复复习计划
     }
     # §3.116 ⭐ 高明词统计独立 HTML 小页面（非主文档）
     try:
