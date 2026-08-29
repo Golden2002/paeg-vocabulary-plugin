@@ -109,5 +109,28 @@ def execute(name: str, arguments: Optional[Dict[str, Any]] = None) -> str:
             return json.dumps({"ok": False, "error": str(e)[:200]},
                               ensure_ascii=False)
 
+    if name == "srs_plan":
+        from .srs import plan_schedule
+        try:
+            words = args.get("words", [])
+            days = int(args.get("days", 7))
+            r = plan_schedule(words, days)
+            return json.dumps({"ok": True, **r}, ensure_ascii=False, default=str)
+        except Exception as e:
+            return json.dumps({"ok": False, "error": str(e)[:200]},
+                              ensure_ascii=False)
+
+    if name == "srs_review":
+        from .srs import sm2_review
+        try:
+            r = sm2_review(float(args.get("ef", 2.5)),
+                           int(args.get("interval", 0)),
+                           int(args.get("reps", 0)),
+                           int(args.get("quality", 3)))
+            return json.dumps({"ok": True, **r}, ensure_ascii=False)
+        except Exception as e:
+            return json.dumps({"ok": False, "error": str(e)[:200]},
+                              ensure_ascii=False)
+
     return json.dumps({"ok": False, "error": f"未知工具: {name}（支持 generate_vocabulary/list_languages/list_generators）"},
                       ensure_ascii=False)

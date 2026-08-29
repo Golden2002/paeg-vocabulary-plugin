@@ -1,5 +1,18 @@
 # CHANGELOG — paeg-vocabulary-plugin（PAEG 工具生态 14.3 词汇表）
 
+## v0.1.2 (2026-08-29) — SRS 间隔重复 + 词汇三态（对标 LingQ）
+
+**更新路径**：src/paeg_vocabulary/srs.py（新增）+ executor.py + tests/test_srs.py
+
+- 新增 srs.py：SM-2 遗忘曲线算法（EF 难度因子 + 间隔递增 + 失败重置 + EF 下限 1.3）
+- `sm2_review(ef, interval, reps, quality)`：单次复习评分 → 更新 EF/间隔/次数
+- `plan_schedule(words, days)`：产出 N 天复习计划（每天到期词 + 总量统计）
+- `due_words(state, day)` / `make_srs_state(words)`：到期判断 + 状态初始化
+- **词汇三态** `status_from_reps(reps)`：new（生词/蓝）→ learning（学习中/黄）→ mastered（已掌握/白），对标 LingQ 蓝黄白
+- executor +2 工具（srs_plan / srs_review）
+- 测试 +5（test_srs.py：间隔递增/失败重置/EF 下限/到期判断/复习计划）
+- 调研依据：LingQ（分级阅读+蓝黄白+SRS）、Babbel（错题复习对抗遗忘）、Readlang（点击查词）
+
 ## v0.1.1 (2026-08-29) — 词条截断修复（词形还原 -es 误切 + 停用词绕过）
 
 **更新路径**：src/paeg_vocabulary/pipeline/clean_dedup.py + tests/test_lemmatize_fix.py
