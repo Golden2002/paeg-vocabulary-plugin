@@ -3,205 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>外语词汇表制作</title>
+<title>外语词汇表工作台</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #FAF8F4; color: #1F1B16; }
-  .container { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
-  h1 { font-size: 24px; margin-bottom: 6px; color: #3D55E8; }
-  .sub { color: #5C534A; margin-bottom: 24px; font-size: 14px; line-height: 1.7; }
-  .card { background: #fff; border: 1px solid #e2dccf; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-  .card h2 { font-size: 16px; margin-bottom: 12px; color: #1F1B16; }
-  .steps { display: flex; gap: 8px; margin-bottom: 20px; font-size: 13px; color: #5C534A; flex-wrap: wrap; }
-  .steps .s { background: #fff; border: 1px solid #e2dccf; padding: 6px 14px; border-radius: 16px; }
-  .steps .s.active { background: #4F6BFF; color: #fff; border-color: #4F6BFF; }
-  label { display: block; font-size: 13px; color: #5C534A; margin: 10px 0 6px; }
-  select, input[type=file] { width: 100%; border: 1px solid #d8d2c6; border-radius: 8px; padding: 10px 12px; font-size: 14px; background: #fff; }
-  .drop-zone { border: 2px dashed #d8d2c6; border-radius: 12px; padding: 30px; text-align: center; cursor: pointer; color: #5C534A; font-size: 14px; transition: all .2s; }
-  .drop-zone:hover, .drop-zone.drag { border-color: #4F6BFF; color: #4F6BFF; background: #F5F2EC; }
-  .drop-zone .icon { font-size: 32px; margin-bottom: 8px; }
-  button { background: #4F6BFF; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 15px; cursor: pointer; margin-top: 12px; }
-  button:hover { background: #3D55E8; }
-  button:disabled { background: #b8c2e8; cursor: not-allowed; }
-  .result { margin-top: 12px; background: #F5F2EC; border-radius: 8px; padding: 14px; font-size: 14px; line-height: 1.7; display: none; }
-  .result.show { display: block; }
-  .result .stat { display: inline-block; background: #fff; border: 1px solid #e2dccf; border-radius: 8px; padding: 8px 14px; margin: 4px; }
-  .result .stat b { display: block; font-size: 18px; color: #3D55E8; }
-  .result .stat span { font-size: 11px; color: #5C534A; }
-  .dl { margin-top: 10px; }
-  .dl a { display: inline-block; margin: 4px 8px 4px 0; padding: 8px 16px; background: #4F6BFF; color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; }
-  .dl a.secondary { background: #fff; color: #4F6BFF; border: 1px solid #4F6BFF; }
-  .error { color: #c0392b; font-size: 13px; margin-top: 8px; }
-  .hint { font-size: 12px; color: #8a8378; margin-top: 4px; }
+  :root{
+    --bg:#f5f6f8; --card:#fff; --ink:#1a1a1a; --muted:#6b7280;
+    --brand:#2563eb; --brand-soft:#eff6ff; --line:#e5e7eb;
+    --new:#3b82f6; --learning:#f59e0b; --mastered:#10b981;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 20px 70px}
+  header{text-align:center;margin-bottom:22px}
+  header h1{font-size:26px;font-weight:700}
+  header p{color:var(--muted);margin-top:6px;font-size:14px}
+  .status{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);
+    background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 12px;margin-top:10px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#d1d5db}
+  .dot.on{background:#10b981}
+  .maker{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:18px}
+  .maker .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .maker .row>*{flex:1 1 160px}
+  .maker input[type=file]{display:none}
+  .file-btn{display:inline-block;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;
+    cursor:pointer;font-size:13px;color:var(--muted);text-align:center;background:#fafbfc}
+  .file-btn.on{border-color:var(--brand);color:var(--brand);background:var(--brand-soft)}
+  select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px;background:#fff}
+  .btn{padding:10px 20px;border:none;border-radius:10px;background:var(--brand);color:#fff;
+    font-size:14px;font-weight:600;cursor:pointer;transition:.15s}
+  .btn:hover{opacity:.92}.btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:#374151}
+  .note{font-size:12px;color:var(--muted);margin-top:8px}
+  .progress{margin-top:12px;display:none}
+  .progress-bar-wrap{height:18px;background:#eef0f3;border-radius:999px;overflow:hidden}
+  .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--brand),#60a5fa);transition:width .4s ease;border-radius:999px}
+  .progress-label{font-size:12px;color:var(--muted);margin-top:6px;text-align:center}
+  .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .toolbar h2{font-size:16px;margin-right:auto}
+  .search{flex:0 0 220px;padding:8px 12px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+  .tabs{display:flex;gap:6px}
+  .tab{padding:6px 14px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;cursor:pointer;
+    background:#fff;color:var(--muted);transition:.15s}
+  .tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .entry{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;
+    cursor:pointer;transition:.15s;border-left:4px solid var(--new)}
+  .entry:hover{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .entry.learning{border-left-color:var(--learning)}
+  .entry.mastered{border-left-color:var(--mastered)}
+  .entry .top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .entry .word{font-size:17px;font-weight:700}
+  .entry .pos{font-size:12px;color:var(--brand);font-weight:600}
+  .entry .ipa{font-family:Consolas,monospace;font-size:13px;color:var(--muted)}
+  .entry .gloss{font-size:13px;color:#374151;margin-top:4px}
+  .entry .gloss-en{font-size:12px;color:var(--muted);margin-top:2px}
+  .meta{display:flex;gap:8px;align-items:center;margin-left:auto;flex-wrap:wrap}
+  .cefr{font-size:11px;font-weight:700;color:#fff;padding:1px 7px;border-radius:4px}
+  .freq{font-size:11px;color:var(--muted);border:1px solid var(--line);padding:1px 7px;border-radius:4px}
+  .srs-dot{width:10px;height:10px;border-radius:50%;background:var(--new)}
+  .srs-dot.learning{background:var(--learning)}.srs-dot.mastered{background:var(--mastered)}
+  .detail{display:none;border-top:1px solid var(--line);margin-top:10px;padding-top:10px;font-size:13px}
+  .entry.open .detail{display:block}
+  .detail .row{margin:6px 0}
+  .detail .lab{font-weight:600;color:var(--brand);font-size:12px}
+  .detail .ex{font-style:italic;color:#374151;margin:4px 0 4px 8px;border-left:2px solid var(--line);padding-left:8px}
+  .detail .ex .zh{font-style:normal;color:var(--muted)}
+  .srs-btns{display:flex;gap:8px;margin-top:8px}
+  .srs-btn{font-size:12px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer;background:#fff}
+  .srs-btn.new.active{background:var(--new);color:#fff;border-color:var(--new)}
+  .srs-btn.learning.active{background:var(--learning);color:#fff;border-color:var(--learning)}
+  .srs-btn.mastered.active{background:var(--mastered);color:#fff;border-color:var(--mastered)}
+  .pager{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:18px}
+  .pager .pg{padding:6px 14px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:#fff;font-size:13px}
+  .pager .pg:disabled{opacity:.4;cursor:not-allowed}
+  .pager .info{font-size:13px;color:var(--muted)}
+  .empty{color:#c0c5cd;text-align:center;padding:60px 20px;font-size:14px}
+  .spinner{margin:40px auto;width:36px;height:36px;border:3px solid var(--line);border-top-color:var(--brand);
+    border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>外语词汇表制作</h1>
-  <p class="sub">上传一本外文原著 PDF，为你生成结构化学习词汇表——音标、中英释义、词源、原著例句、固定搭配、CEFR 难度分级、熟词生义，附词频统计与语言风格分析。</p>
+<div class="wrap">
+  <header>
+    <h1>外语词汇表工作台</h1>
+    <p>上传英文书籍 PDF → 生成词汇表 → 交互式浏览（翻页 · 点击查词 · SRS 三态标记）</p>
+    <div class="status"><span class="dot" id="llmDot"></span><span id="llmStatus">检测 LLM…</span></div>
+  </header>
 
-  <div class="steps">
-    <span class="s active">① 上传 PDF</span>
-    <span class="s">② 选择水平</span>
-    <span class="s">③ 生成词汇表</span>
-    <span class="s">④ 下载使用</span>
-  </div>
-
-  <div class="card">
-    <h2>① 上传书籍 PDF</h2>
-    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
-      <div class="icon">📕</div>
-      <div>点击选择 或 拖拽 PDF 到此处</div>
-      <div class="hint">支持英语/德语/法语/西班牙语原著（如《The Bell Jar》《The Phenomenon of Life》）</div>
+  <div class="maker">
+    <div class="row">
+      <label class="file-btn" id="fileBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> 选择 PDF 文件<span id="fileName" style="display:block;font-size:11px;margin-top:2px"></span></label>
+      <input type="file" id="file" accept=".pdf">
+      <select id="preset">
+        <option value="">水平档位：自动</option>
+      </select>
+      <button class="btn" id="genBtn" onclick="generate()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg> 制作词汇表</button>
     </div>
-    <input type="file" id="file-input" accept=".pdf" style="display:none">
-    <div id="file-name" style="margin-top:8px;font-size:13px;color:#3D55E8"></div>
-    <div class="error" id="err1"></div>
+    <div class="note" id="genNote">上传 PDF 后点击「制作词汇表」（长任务约 1-3 分钟，后台生成 + 轮询进度，刷新页面不丢任务）。</div>
+    <div class="progress" id="progressWrap">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-label" id="progressLabel">排队中…</div>
+    </div>
   </div>
 
-  <div class="card" id="level-card" style="display:none">
-    <h2>② 选择语言与水平</h2>
-    <label>原书语种（决定词形还原与音标规则）</label>
-    <select id="lang-select">
-      <option value="en" selected>英语</option>
-      <option value="de">德语</option>
-      <option value="fr">法语</option>
-      <option value="es">西班牙语</option>
-    </select>
-    <label>水平档位（决定词汇表难度范围——覆盖你水平之上的学习词汇）</label>
-    <select id="preset-select">
-      <option value="">加载档位中…</option>
-    </select>
-    <div class="hint">例：雅思 6.5 → 覆盖约 3000 词；雅思 7.5 → 约 2200 词；雅思 8.0 → 约 1600 词（水平越高生词越少）</div>
+  <div class="toolbar">
+    <h2 id="bookTitle">词条列表</h2>
+    <input class="search" id="search" placeholder="搜索单词 / 释义…" oninput="debounceLoad()">
+    <div class="tabs" id="tabs">
+      <span class="tab active" data-s="">全部</span>
+      <span class="tab" data-s="new"><svg viewBox="0 0 12 12" width="10" height="10" style="vertical-align:-1px"><circle cx="6" cy="6" r="5" fill="#3b82f6"/></svg> 生词</span>
+      <span class="tab" data-s="learning"><svg viewBox="0 0 12 12" width="10" height="10" style="vertical-align:-1px"><circle cx="6" cy="6" r="5" fill="#f59e0b"/></svg> 学习中</span>
+      <span class="tab" data-s="mastered"><svg viewBox="0 0 12 12" width="10" height="10" style="vertical-align:-1px"><circle cx="6" cy="6" r="4.5" fill="none" stroke="#9ca3af" stroke-width="1.6"/></svg> 已掌握</span>
+    </div>
+    <button class="btn ghost" id="dlBtn" style="display:none" onclick="downloadFiles()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 下载产物</button>
   </div>
 
-  <div class="card" id="gen-card" style="display:none">
-    <h2>③ 生成词汇表</h2>
-    <button id="gen-btn" onclick="generateVocab()">开始制作词汇表</button>
-    <div class="hint">制作需要数分钟（全书提取→清洗→难度筛选→信息补全→渲染）——请耐心等待</div>
-    <div class="error" id="err2"></div>
-    <div class="result" id="result"></div>
+  <div id="list" class="list"><div class="empty">上传并生成词汇表后，这里会显示可翻页、可点击的词条</div></div>
+
+  <div class="pager" id="pager" style="display:none">
+    <button class="pg" onclick="goPage(page-1)" id="prev">← 上一页</button>
+    <span class="info" id="pageInfo"></span>
+    <button class="pg" onclick="goPage(page+1)" id="next">下一页 →</button>
   </div>
 </div>
 
 <script>
-let currentPdfPath = '';
-let presets = [];
+const ICONS={
+  file:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+  zap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+  download:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  'dot-new':'<svg viewBox="0 0 12 12" width="11" height="11"><circle cx="6" cy="6" r="5" fill="#3b82f6"/></svg>',
+  'dot-learning':'<svg viewBox="0 0 12 12" width="11" height="11"><circle cx="6" cy="6" r="5" fill="#f59e0b"/></svg>',
+  'dot-mastered':'<svg viewBox="0 0 12 12" width="11" height="11"><circle cx="6" cy="6" r="4.5" fill="none" stroke="#9ca3af" stroke-width="1.6"/></svg>',
+};
+function ic(n,s){return (ICONS[n]||'').replace('viewBox','width="'+(s||14)+'" height="'+(s||14)+'" viewBox')}
 
-// 拖拽上传
-const dz = document.getElementById('drop-zone');
-['dragover', 'dragenter'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('drag'); }));
-['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('drag'); }));
-dz.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) uploadFile(f); });
-document.getElementById('file-input').addEventListener('change', e => { const f = e.target.files[0]; if (f) uploadFile(f); });
+let page=1,pageSize=20,totalPages=1,curStatus='',curQ='';
+let lastHtml='',lastPdf='',lastAccessories=[];
+let timer=null;
 
-async function uploadFile(file) {
-  document.getElementById('err1').textContent = '';
-  if (!file.name.toLowerCase().endsWith('.pdf')) { document.getElementById('err1').textContent = '仅支持 PDF 文件'; return; }
-  document.getElementById('file-name').textContent = '已选择：' + file.name;
-  const fd = new FormData();
-  fd.append('file', file);
-  const r = await fetch('/api/upload', { method: 'POST', body: fd });
-  const d = await r.json();
-  if (!d.ok) { document.getElementById('err1').textContent = d.error || '上传失败'; return; }
-  currentPdfPath = d.pdf_path;
-  document.getElementById('level-card').style.display = 'block';
-  document.getElementById('gen-card').style.display = 'block';
-  loadPresets();
-}
+fetch('/api/health').then(r=>r.json()).then(d=>{
+  document.getElementById('llmDot').className='dot'+(d.llm_available?' on':'');
+  document.getElementById('llmStatus').textContent=d.llm_available?'LLM 已连接（DeepSeek）':'LLM 未连接（离线词库模式）';
+}).catch(()=>document.getElementById('llmStatus').textContent='后端未启动');
 
-async function loadPresets() {
-  const r = await fetch('/api/presets');
-  const d = await r.json();
-  if (d.ok && d.presets) {
-    presets = d.presets;
-    const sel = document.getElementById('preset-select');
-    sel.innerHTML = d.presets.map(p => `<option value="${p.id}">${p.label}</option>`).join('');
-    // 默认雅思 7.5
-    const ielts = d.presets.findIndex(p => p.id === 'ielts-7.5');
-    if (ielts >= 0) sel.selectedIndex = ielts;
-  } else {
-    document.getElementById('preset-select').innerHTML = '<option value="">全部词汇</option>';
+fetch('/api/presets').then(r=>r.json()).then(d=>{
+  if(d.ok){
+    const sel=document.getElementById('preset');
+    const ps=d.presets;
+    const arr=Array.isArray(ps)?ps:Object.keys(ps||{});
+    arr.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+  }
+}).catch(()=>{});
+
+document.getElementById('fileBtn').onclick=()=>document.getElementById('file').click();
+document.getElementById('file').onchange=e=>{
+  const f=e.target.files[0];
+  if(f){document.getElementById('fileName').textContent=f.name;
+    document.getElementById('fileBtn').classList.add('on');}
+};
+
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');curStatus=t.dataset.s;page=1;loadEntries();
+});
+
+async function generate(){
+  const f=document.getElementById('file').files[0];
+  if(!f){alert('请先选择 PDF 文件');return;}
+  const btn=document.getElementById('genBtn');
+  const note=document.getElementById('genNote');
+  const pwrap=document.getElementById('progressWrap');
+  const pbar=document.getElementById('progressBar');
+  const plabel=document.getElementById('progressLabel');
+  btn.disabled=true;btn.textContent='制作中…';
+  note.textContent='正在上传 PDF…';
+  document.getElementById('list').innerHTML='<div class="spinner"></div>';
+  pwrap.style.display='block';pbar.style.width='0%';plabel.textContent='排队中…';
+  try{
+    const fd=new FormData();fd.append('file',f);
+    const up=await (await fetch('/api/upload',{method:'POST',body:fd})).json();
+    if(!up.ok){note.textContent='上传失败：'+(up.error||'');return;}
+    const gen=await (await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pdf_path:up.pdf_path,preset:document.getElementById('preset').value})})).json();
+    if(!gen.ok){note.textContent='生成失败：'+(gen.error||'');return;}
+    // §2.6-4 ⭐ 长任务轮询：后台线程跑生成，前端轮询 /api/jobs/<job_id>，
+    // 浏览器断连/刷新也不丢任务（服务端后台线程继续跑完）。
+    const jobId=gen.job_id;
+    note.textContent='任务已提交（job '+(jobId||'').slice(0,8)+'）——后台生成中，可安全刷新页面。';
+    while(true){
+      await new Promise(r=>setTimeout(r,1500));
+      const st=await (await fetch('/api/jobs/'+encodeURIComponent(jobId))).json();
+      if(!st.ok){note.textContent='查询任务失败：'+(st.error||'');break;}
+      const pct=Math.max(0,Math.min(100,st.progress||0));
+      pbar.style.width=pct+'%';
+      plabel.textContent=(st.stage||'处理中')+' · '+pct+'%';
+      if(st.status==='done'){
+        pbar.style.width='100%';plabel.textContent='完成 · 100%';
+        const r=st.result||{};
+        lastHtml=r.html_path||'';lastPdf=r.pdf_path||'';lastAccessories=r.accessories||{};
+        const t=(r.html_path||'').split(/[\\/]/).pop()||'词条列表';
+        document.getElementById('bookTitle').textContent=t.replace('_词汇表.html','');
+        const n=r.entries_count!=null?r.entries_count:0;
+        note.textContent=`生成完成：${n} 词条 | 阶段 ${(r.completed_stages||[]).join(' · ')}`;
+        if(r.html_path)document.getElementById('dlBtn').style.display='inline-block';
+        page=1;loadEntries();
+        break;
+      }else if(st.status==='error'){
+        note.textContent='生成失败：'+(st.error||'未知错误');
+        break;
+      }
+    }
+  }catch(e){
+    note.textContent='请求失败：'+e;
+  }finally{
+    btn.disabled=false;btn.innerHTML=ic('zap',14)+' 制作词汇表';
   }
 }
 
-async function generateVocab() {
-  const btn = document.getElementById('gen-btn');
-  btn.disabled = true;
-  btn.textContent = '制作中（约 5-20 分钟）…';
-  document.getElementById('err2').textContent = '';
-  const preset = document.getElementById('preset-select').value;
-  const lang = document.getElementById('lang-select').value;
-  const r = await fetch('/api/generate', {
-    method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ pdf_path: currentPdfPath, preset: preset, lang: lang })
-  });
-  btn.disabled = false;
-  btn.textContent = '开始制作词汇表';
-  const d = await r.json();
-  if (!d.ok) { document.getElementById('err2').textContent = d.error || '制作失败'; return; }
-  showResult(d);
+function debounceLoad(){clearTimeout(timer);timer=setTimeout(()=>{curQ=document.getElementById('search').value.trim();page=1;loadEntries();},300);}
+
+async function loadEntries(){
+  const q=new URLSearchParams({page:String(page),page_size:String(pageSize),status:curStatus});
+  if(curQ)q.set('q',curQ);
+  const r=await (await fetch('/api/entries?'+q)).json();
+  if(!r.ok){return;}
+  totalPages=r.pages||1;
+  render(r.entries||[],r.total||0);
+  document.getElementById('pageInfo').textContent=`第 ${r.page} / ${totalPages} 页 · 共 ${r.total} 词`;
+  document.getElementById('prev').disabled=page<=1;
+  document.getElementById('next').disabled=page>=totalPages;
+  document.getElementById('pager').style.display='flex';
 }
 
-function showResult(d) {
-  const el = document.getElementById('result');
-  el.classList.add('show');
-  const html = d.html_path ? '<a href="/api/download/' + encodeURIComponent(d.html_path.split(/[\\/]/).pop()) + '" target="_blank">打开词汇表 HTML</a>' : '';
-  const pdf = d.pdf_path ? '<a class="secondary" href="/api/download/' + encodeURIComponent(d.pdf_path.split(/[\\/]/).pop()) + '" download>下载 PDF</a>' : '';
-  const docx = d.docx_path ? '<a class="secondary" href="/api/download/' + encodeURIComponent(d.docx_path.split(/[\\/]/).pop()) + '" download>下载 Word</a>' : '';
-  const accHtml = d.accessories ? Object.entries(d.accessories).map(([k, v]) => {
-    const fname = v.split(/[\\/]/).pop();
-    return `<a class="secondary" href="/api/download/${encodeURIComponent(fname)}" download>${k}</a>`;
-  }).join('') : '';
-  // §3.116 ⭐ V-R7 词条在线浏览 + 多维度筛选
-  let browse = '';
-  if (d.entries_preview && d.entries_preview.length) {
-    browse = `
-    <div style="margin-top:16px">
-      <b>词条预览（${Math.min(d.entries_count, 300)} / ${d.entries_count}）</b>
-      <div style="margin:8px 0">
-        <input type="text" id="filter-word" placeholder="按单词筛选" style="width:48%;display:inline-block"
-               oninput="filterEntries()">
-        <select id="filter-cefr" style="width:48%;display:inline-block" onchange="filterEntries()">
-          <option value="">全部难度</option>
-          <option>A1</option><option>A2</option><option>B1</option><option>B2</option>
-          <option>C1</option><option>C2</option>
-        </select>
+const CEFR_COLORS={A1:'#10b981',A2:'#22c55e',B1:'#eab308',B2:'#f97316',C1:'#ef4444',C2:'#7c3aed'};
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function render(entries,total){
+  const list=document.getElementById('list');
+  if(!entries.length){list.innerHTML='<div class="empty">没有匹配的词条</div>';return;}
+  list.innerHTML=entries.map(e=>{
+    const srs=e.srs||'new';
+    const cefr=(e.cefr||'').toUpperCase();
+    const cefrHtml=cefr?`<span class="cefr" style="background:${CEFR_COLORS[cefr]||'#888'}">${cefr}</span>`:'';
+    const freqHtml=e.freq>0?`<span class="freq">频 ${e.freq}</span>`:'';
+    const exs=(e.examples||[]).map(x=>`<div class="ex">${esc(x.en||'')}<div class="zh">${esc(x.zh||'')}</div></div>`).join('');
+    const cols=(e.collocations||[]).map(esc).join(' · ');
+    return `<div class="entry ${srs}" onclick="toggleDetail(this)" data-word="${esc(e.headword)}">
+      <div class="top">
+        <span class="word">${esc(e.headword)}</span>
+        ${e.pos?`<span class="pos">${esc(e.pos)}</span>`:''}
+        ${e.ipa?`<span class="ipa">/${esc(e.ipa)}/</span>`:''}
+        <span class="meta">${cefrHtml}${freqHtml}<span class="srs-dot ${srs}" title="${srs}"></span></span>
       </div>
-      <div id="entries-list" style="max-height:320px;overflow-y:auto;border:1px solid #e2dccf;border-radius:8px;padding:8px"></div>
+      <div class="gloss">${esc(e.gloss_zh||'')}</div>
+      ${e.gloss_en?`<div class="gloss-en">${esc(e.gloss_en)}</div>`:''}
+      <div class="detail">
+        ${e.etymology?`<div class="row"><span class="lab">词源</span> ${esc(e.etymology)}</div>`:''}
+        ${exs?`<div class="row"><span class="lab">例句</span>${exs}</div>`:''}
+        ${cols?`<div class="row"><span class="lab">搭配</span> ${cols}</div>`:''}
+        <div class="srs-btns" onclick="event.stopPropagation()">
+          <button class="srs-btn new ${srs==='new'?'active':''}" onclick="setSrs('${esc(e.headword)}','new')">${ic('dot-new')} 生词</button>
+          <button class="srs-btn learning ${srs==='learning'?'active':''}" onclick="setSrs('${esc(e.headword)}','learning')">${ic('dot-learning')} 学习中</button>
+          <button class="srs-btn mastered ${srs==='mastered'?'active':''}" onclick="setSrs('${esc(e.headword)}','mastered')">${ic('dot-mastered')} 已掌握</button>
+        </div>
+      </div>
     </div>`;
-  }
-  el.innerHTML = `
-    <div>
-      <span class="stat"><b>${d.entries_count || 0}</b><span>词条</span></span>
-      <span class="stat"><b>${d.candidates_count || 0}</b><span>候选词</span></span>
-      <span class="stat"><b>${(d.cefr_max || '—')}</b><span>水平档位</span></span>
-    </div>
-    <div class="dl">${html}${pdf}${docx}${accHtml}</div>
-    ${browse}
-    <div class="hint">词汇表包含：双口音音标 · 中英释义 · 词源词根 · 原著例句 · 固定搭配 · 熟词生义 · CEFR 分级</div>`;
-  window._entries = d.entries_preview || [];
-  renderEntries(window._entries);
+  }).join('');
 }
 
-function filterEntries() {
-  const w = (document.getElementById('filter-word').value || '').toLowerCase();
-  const c = document.getElementById('filter-cefr').value;
-  const filtered = (window._entries || []).filter(e =>
-    (!w || (e.headword || '').toLowerCase().includes(w)) && (!c || e.cefr === c));
-  renderEntries(filtered);
+function toggleDetail(el){el.classList.toggle('open');}
+
+async function setSrs(word,status){
+  await fetch('/api/srs',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({word,status})});
+  loadEntries();
 }
 
-function renderEntries(list) {
-  const el = document.getElementById('entries-list');
-  if (!el) return;
-  el.innerHTML = list.map(e =>
-    `<div style="padding:4px 0;border-bottom:1px solid #f0ede6">
-       <b>${e.headword}</b> ${e.pos ? '(' + e.pos + ')' : ''}
-       ${e.ipa ? ' /' + e.ipa + '/' : ''}
-       ${e.cefr ? '<span style="color:#3D55E8">[' + e.cefr + ']</span>' : ''}
-       ${e.gloss_zh ? '<div style="color:#5C534A;font-size:12px">' + e.gloss_zh + '</div>' : ''}
-     </div>`).join('');
+function goPage(p){if(p<1||p>totalPages)return;page=p;loadEntries();window.scrollTo({top:0,behavior:'smooth'});}
+
+function downloadFiles(){
+  if(lastHtml)window.open('/api/download/'+encodeURIComponent(lastHtml.split(/[\\/]/).pop()));
+  if(lastPdf)setTimeout(()=>window.open('/api/download/'+encodeURIComponent(lastPdf.split(/[\\/]/).pop())),500);
+  Object.values(lastAccessories||{}).forEach((p,i)=>setTimeout(()=>window.open('/api/download/'+encodeURIComponent(String(p).split(/[\\/]/).pop())),1000+i*400));
 }
 </script>
 </body>

@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>The Bell Jar 词汇表</title>
+<style>
+@page { size: B5; margin: 18mm 16mm 22mm 16mm; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: "Cambria", "Georgia", "Times New Roman", "SimSun", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  color: #2b2b2b; background: #ffffff;
+  orphans: 2; widows: 2;
+}
+/* 封面固定为 B5 内容高度（250mm − 18mm − 22mm = 210mm），避免打印时 100vh 溢出产生空白页 */
+.cover {
+  min-height: 210mm; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; text-align: center;
+  page-break-after: always;
+}
+.cover h1 { font-size: 28pt; font-weight: 400; font-style: italic; color: #1a1a1a; letter-spacing: 0.01em; }
+.cover .rule { width: 60mm; border-top: 0.6pt solid #3b5b6e; margin: 14pt auto; }
+.cover .sub { font-size: 14pt; color: #3b5b6e; }
+.cover .vol { font-size: 11pt; color: #5a5a5a; font-style: italic; margin-top: 10pt; }
+.cover .note { font-size: 10pt; color: #5a5a5a; margin-top: 30pt; }
+.how-to-use {
+  page-break-after: always; padding-top: 40pt;
+}
+.how-to-use h2 { font-size: 16pt; font-weight: 400; color: #3b5b6e; font-style: italic; margin-bottom: 16pt; }
+.how-to-use ul { list-style: none; }
+.how-to-use li { font-size: 10.5pt; line-height: 1.9; margin-bottom: 6pt; }
+.how-to-use li::before { content: "·"; color: #3b5b6e; margin-right: 8pt; }
+.alpha-header {
+  font-size: 16pt; font-weight: 400; font-style: italic; color: #3b5b6e;
+  border-bottom: 0.6pt solid #e8e8e8; padding-bottom: 3pt;
+  margin: 18pt 0 8pt 0; break-after: avoid; page-break-after: avoid;
+}
+.entry {
+  padding: 5pt 0 6pt 0;
+  break-inside: avoid; page-break-inside: avoid;
+}
+.headword { display: flex; align-items: baseline; gap: 6pt; font-size: 13pt; font-weight: 700; color: #1a1a1a; letter-spacing: 0.01em; }
+.word { font-size: 13pt; font-weight: 700; color: #1a1a1a; letter-spacing: 0.01em; }
+.pos {
+  font-size: 8.5pt; font-weight: 600; color: #3b5b6e;
+  font-variant: small-caps; letter-spacing: 0.04em;
+}
+.zh-def { font-family: "SimSun", "宋体", 'Noto Serif CJK SC', 'Source Han Serif SC', serif; font-size: 10.5pt; line-height: 1.5; color: #2b2b2b; margin-top: 2pt; }
+.en-def { font-size: 10pt; line-height: 1.35; color: #4a4a4a; margin-top: 1.5pt; }
+.etymology { font-size: 9pt; line-height: 1.3; color: #5a5a5a; font-style: italic; margin-top: 1.5pt; }
+.etymology::before { content: "◦ "; }
+.example { font-size: 10pt; line-height: 1.4; color: #3a3a3a; font-style: italic; margin-top: 2pt; }
+.example::before { content: "“"; color: #3b5b6e; }
+.example::after { content: "”"; color: #3b5b6e; }
+.example-en { display: inline; }
+.example-zh { display: inline; font-family: "SimSun", "宋体", 'Noto Serif CJK SC', 'Source Han Serif SC', serif; font-size: 10.5pt; line-height: 1.7; color: #2b2b2b; font-style: normal; white-space: pre-line; }
+.example-zh:not(:empty)::before { content: "\A"; }
+
+/* §3.116 语言现象标注（熟词生义/俚语/固定搭配——学习价值信号） */
+.phenomena { margin-top: 2pt; display: flex; gap: 4pt; flex-wrap: wrap; }
+.phen-tag { font-size: 7.5pt; padding: 1pt 5pt; border-radius: 6pt; border: 0.6pt solid #3b5b6e; color: #3b5b6e; letter-spacing: 0.4pt; }
+.phen-tag::before { content: "\2605 "; }
+
+/* §3.116 P6 ⭐ 渲染器输出类契约（entry_html.py / field_renderers.py）——两模板保持一致 */
+.ipa, .ipa-row, .ipa-val { font-family: "Consolas", "DejaVu Sans Mono", "Menlo", "Lucida Console", monospace; font-size: 10.5pt; font-weight: 400; color: #4a4a4a; }
+.ipa-row { line-height: 1.5; margin-top: 2pt; }
+.ipa-accent { font-size: 8.5pt; font-weight: 600; color: #3b5b6e; font-variant: small-caps; letter-spacing: 0.04em; }
+.gloss { margin-top: 2pt; }
+.gloss-zh { display: block; font-family: "SimSun", "宋体", 'Noto Serif CJK SC', 'Source Han Serif SC', serif; font-size: 10.5pt; line-height: 1.7; color: #2b2b2b; }
+.gloss-en { display: block; font-size: 10pt; line-height: 1.35; color: #4a4a4a; margin-top: 1pt; }
+.senses { margin-top: 2pt; }
+.sense { margin-top: 2pt; }
+.sense-zh { display: block; font-family: "SimSun", "宋体", 'Noto Serif CJK SC', 'Source Han Serif SC', serif; font-size: 10.5pt; line-height: 1.7; color: #2b2b2b; }
+.sense-zh:not(:empty)::before { content: "◦ "; color: #3b5b6e; }
+.sense-en { display: block; font-size: 10pt; line-height: 1.35; color: #4a4a4a; margin-top: 1pt; }
+.book-context { font-size: 9pt; line-height: 1.4; color: #5a5a5a; font-style: italic; margin-left: 6pt; }
+.morpheme { font-size: 9.5pt; line-height: 1.4; color: #5a5a5a; margin-top: 1.5pt; }
+.morpheme::before { content: "◦ "; color: #3b5b6e; }
+.collocations { font-size: 9.5pt; line-height: 1.4; color: #5a5a5a; margin-top: 1.5pt; }
+
+/* §3.116 ⭐ 词条元信息徽章（CEFR 难度 + 本书频次） */
+.badge-cefr { font-size: 7.5pt; font-weight: 600; color: #fff; padding: 0.5pt 4pt; border-radius: 3pt; letter-spacing: 0.03em; vertical-align: middle; }
+.badge-freq { font-size: 7.5pt; font-weight: 600; color: #6a6a6a; border: 0.6pt solid #d5d5d5; padding: 0.5pt 4pt; border-radius: 3pt; letter-spacing: 0.03em; vertical-align: middle; }
+</style></head><body>
+
+<section class="cover">
+  <h1>Being Alive（Tim Ingold）</h1>
+  <div class="rule"></div>
+  <div class="sub">词汇学习表 · 2964 词</div>
+  <div class="vol">Critical Insights · Sylvia Plath</div>
+  <div class="note">阅读前预习 · 词源助记 · 语境释义</div>
+</section>
+
+<section class="how-to-use">
+  <h2>如何使用本词表</h2>
+  <ul>
+    <li>阅读顺序：先看<strong>单词</strong>与<strong>中文释义</strong>，再看<strong>原书例句</strong>。</li>
+    <li><strong>词源</strong>提示词根核心义，帮助理解多义项之间的关联。</li>
+    <li>释义若含「另义」，第一个义项是原书语境中的准确含义。</li>
+    <li>建议每日 30–50 词，三周覆盖全书。</li>
+    <li>不必死背拼写，重点是识别与在语境中理解。</li>
+    <li>若无法在句中认出某词，第二天再查一遍。</li>
+  </ul>
+</section>
+<main class="entries">
+<div class="entry">
+  <div class="headword"><span class="word">tim</span><span class="pos">n.</span><span class="badge-cefr" style="background:#eab308">B1</span><span class="badge-freq" title="本书出现 9 次">×9</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/tɪm/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/tɪm/</span></div>
+  <div class="gloss"><span class="gloss-zh">（人名）蒂姆</span><span class="gloss-en">a male given name, short for Timothy</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">蒂姆（男子名）</span><span class="sense-en">a male given name, diminutive of Timothy</span></div><div class="sense"><span class="sense-zh">在本书中，指作者Tim Ingold本人</span><span class="sense-en">refers to the author Tim Ingold</span><span class="book-context">作为作者署名或文中自指</span></div></div>
+  <div class="etymology">From the Greek name Timotheos, meaning 'honoring God', composed of timē (honor) and theos (God). Short form used as a given name.</div>
+  <div class="morpheme">构词：timē(Greek「honor」) + theos(Greek「God」)</div>
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+  <div class="example"><span class="example-en">Tim Ingold is a British anthropologist.</span><span class="example-zh">蒂姆·英戈尔德是英国人类学家。</span></div>
+  <div class="collocations">Tim Ingold · Tim's work</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">alive</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#eab308">B1</span><span class="badge-freq" title="本书出现 6 次">×6</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/əˈlaɪv/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/əˈlaɪv/</span></div>
+  <div class="gloss"><span class="gloss-zh">活着的；存在的；充满活力的</span><span class="gloss-en">living; having life; active and lively</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">活着的，有生命的</span><span class="sense-en">living, not dead</span></div><div class="sense"><span class="sense-zh">充满活力的，活跃的</span><span class="sense-en">full of energy or activity</span></div><div class="sense"><span class="sense-zh">存在的，在世的</span><span class="sense-en">existing, in existence</span></div><div class="sense"><span class="sense-zh">在本书中，指生命的存在状态，强调动态的、有感知的活着</span><span class="sense-en">being in a state of life, emphasizing dynamic and sentient existence</span><span class="book-context">英戈尔德讨论生命和存在时使用，指生物体的活态</span></div></div>
+  <div class="etymology">From Old English on līfe, meaning 'in life', from on + līf (life). The prefix a- evolved from the preposition 'on'.</div>
+  <div class="morpheme">构词：a-「in, on」 + līf(Old English「life」)</div>
+  <div class="example"><span class="example-en">Every living thing is alive and responsive.</span><span class="example-zh">每个生物都是活着的、有反应的。</span></div>
+  <div class="collocations">alive and well · come alive · stay alive</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">isbn</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 5 次">×5</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌaɪ es biː ˈen/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌaɪ es biː ˈen/</span></div>
+  <div class="gloss"><span class="gloss-zh">国际标准书号</span><span class="gloss-en">International Standard Book Number, a unique identifier for books</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">国际标准书号</span><span class="sense-en">a unique numeric identifier for books</span></div><div class="sense"><span class="sense-zh">在本书中，指书封或版权页上的ISBN编号</span><span class="sense-en">the ISBN number printed on the book</span><span class="book-context">作为书籍出版信息的一部分</span></div></div>
+  <div class="etymology">Acronym formed from International Standard Book Number, standardized in 1970 by ISO.</div>
+  <div class="example"><span class="example-en">The ISBN of this book is 978-0-415-68780-1.</span><span class="example-zh">这本书的ISBN是978-0-415-68780-1。</span></div>
+  <div class="collocations">ISBN number · ISBN code</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">anthropology</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 4 次">×4</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌænθrəˈpɑːlədʒi/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌænθrəˈpɒlədʒi/</span></div>
+  <div class="gloss"><span class="gloss-zh">人类学</span><span class="gloss-en">the study of human societies, cultures, and their development</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">人类学（研究人类文化、社会、生物等的学科）</span><span class="sense-en">the study of human beings, their societies, cultures, and biology</span></div><div class="sense"><span class="sense-zh">人类学著作或研究</span><span class="sense-en">the academic discipline or body of knowledge</span></div><div class="sense"><span class="sense-zh">在本书中，指作为学科的人类学，尤其关注人与环境的关系</span><span class="sense-en">the discipline of anthropology, especially focusing on human-environment relations</span><span class="book-context">英戈尔德作为人类学家，探讨人类学的核心概念和理论</span></div></div>
+  <div class="etymology">From Greek anthrōpos (human) + -logia (study of). Coined in the 16th century, popularized in the 19th century as a scientific discipline.</div>
+  <div class="morpheme">构词：anthrōpos(Greek「human」) + logos(Greek「study, word」) + -logy「study of」</div>
+  <div class="example"><span class="example-en">Anthropology seeks to understand what it means to be human.</span><span class="example-zh">人类学试图理解作为人类意味着什么。</span></div>
+  <div class="collocations">social anthropology · cultural anthropology · anthropology of life</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">philosophy</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 4 次">×4</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/fəˈlɑːsəfi/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/fəˈlɒsəfi/</span></div>
+  <div class="gloss"><span class="gloss-zh">哲学；哲理</span><span class="gloss-en">the study of fundamental nature of knowledge, reality, and existence</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">哲学（学科）</span><span class="sense-en">the academic discipline that investigates fundamental questions</span></div><div class="sense"><span class="sense-zh">人生哲学，理念</span><span class="sense-en">a set of beliefs or principles that guide behavior</span></div><div class="sense"><span class="sense-zh">哲理，深刻见解</span><span class="sense-en">a deep reflection or insight</span></div><div class="sense"><span class="sense-zh">在本书中，指一种思考方式，融合人类学与哲学，探讨存在和生命</span><span class="sense-en">a mode of thinking that integrates anthropology and philosophy, exploring existence and life</span><span class="book-context">英戈尔德提倡哲学与人类学结合，反思现代性</span></div></div>
+  <div class="etymology">From Greek philosophia, literally 'love of wisdom', from philo- (loving) + sophia (wisdom). Entered English via Old French and Latin.</div>
+  <div class="morpheme">构词：philos(Greek「loving」) + sophia(Greek「wisdom」) + -y「state, condition」</div>
+  <div class="example"><span class="example-en">His philosophy of life emphasizes openness to the world.</span><span class="example-zh">他的人生哲学强调对世界的开放。</span></div>
+  <div class="collocations">philosophy of life · natural philosophy · moral philosophy</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">movement</span><span class="pos">n.</span><span class="badge-cefr" style="background:#eab308">B1</span><span class="badge-freq" title="本书出现 4 次">×4</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈmuːvmənt/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈmuːvmənt/</span></div>
+  <div class="gloss"><span class="gloss-zh">运动；活动；移动</span><span class="gloss-en">the act or process of moving; a group of people with a common aim</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">移动，运动</span><span class="sense-en">the act of moving or changing position</span></div><div class="sense"><span class="sense-zh">（政治、社会）运动</span><span class="sense-en">a group of people with a shared purpose</span></div><div class="sense"><span class="sense-zh">（音乐）乐章</span><span class="sense-en">a major division of a musical work</span></div><div class="sense"><span class="sense-zh">在本书中，指生命和存在的基本状态，强调动态的过程而非静止</span><span class="sense-en">the fundamental state of life and being, emphasizing dynamic process over staticity</span><span class="book-context">英戈尔德认为生命是流动的，movement 是核心概念，指生物在环境中的活动</span></div></div>
+  <div class="etymology">From Old French movement, from Latin movimentum, from movere (to move). The suffix -ment indicates result or action.</div>
+  <div class="morpheme">构词：mov(Latin「move」) + -ment「result of action」</div>
+  <div class="example"><span class="example-en">Life is not a state but a movement of becoming.</span><span class="example-zh">生命不是一种状态，而是一种生成的运动。</span></div>
+  <div class="collocations">movement of life · social movement · bodily movement</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">perception</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 3 次">×3</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/pərˈsepʃən/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/pəˈsepʃən/</span></div>
+  <div class="gloss"><span class="gloss-zh">感知；知觉；认知</span><span class="gloss-en">the process or result of becoming aware of something through the senses or the mind</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">感知；知觉</span><span class="sense-en">the ability to see, hear, or become aware of something through the senses</span></div><div class="sense"><span class="sense-zh">认知；理解</span><span class="sense-en">the way in which something is regarded, understood, or interpreted</span></div><div class="sense"><span class="sense-zh">感知（作为人与环境互动的过程）</span><span class="sense-en">perception as an active, embodied process of engaging with the environment</span><span class="book-context">在人类学/生态学语境中，强调感知不是被动接收，而是通过实践和身体参与环境的主动过程。</span></div></div>
+  <div class="etymology">源自拉丁语 perceptio, -onis，来自 percipere（完全抓住），由 per-（完全） + capere（抓住）构成。经由古法语 percepcion 进入中古英语。</div>
+  <div class="morpheme">构词：per-「完全，彻底」 + cap/cept(拉丁语「抓住，拿取」) + -ion「名词后缀，表示行为或结果」</div>
+  <div class="example"><span class="example-en">Perception is not merely a passive reception of stimuli but an active engagement with the world.</span><span class="example-zh">感知不仅仅是被动接收刺激，而是与世界主动的互动。</span></div><div class="example"><span class="example-en">Our perception of the environment shapes how we live and act within it.</span><span class="example-zh">我们对环境的感知塑造了我们在其中的生活方式和行为。</span></div>
+  <div class="collocations">visual perception · perception of reality · sensory perception · perception process</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">environment</span><span class="pos">n.</span><span class="badge-cefr" style="background:#eab308">B1</span><span class="badge-freq" title="本书出现 3 次">×3</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ɪnˈvaɪrənmənt/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ɪnˈvaɪrənmənt/</span></div>
+  <div class="gloss"><span class="gloss-zh">环境；周围状况</span><span class="gloss-en">the surroundings or conditions in which a person, animal, or plant lives or operates</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">环境；自然环境</span><span class="sense-en">the natural world, especially as affected by human activity</span></div><div class="sense"><span class="sense-zh">周围状况；条件</span><span class="sense-en">the circumstances, objects, or conditions by which one is surrounded</span></div><div class="sense"><span class="sense-zh">环境（作为生活世界，而非外部背景）</span><span class="sense-en">environment as the lived, relational world that organisms inhabit and co-construct</span><span class="book-context">在生态人类学中，环境不是与有机体分离的外部容器，而是通过有机体的活动不断形成和变化的。</span></div></div>
+  <div class="etymology">源自法语 environ（周围），由 en-（在…中） + viron（圈子，来自 virer 转）构成，最初指“周围的事物”，17世纪起用于指“环境”。</div>
+  <div class="morpheme">构词：en-「在…中，使」 + viron(法语「转，圈子」) + -ment「名词后缀，表示结果或状态」</div>
+  <div class="example"><span class="example-en">The environment is not a backdrop but a dynamic field of relations.</span><span class="example-zh">环境不是背景，而是一个动态的关系场域。</span></div><div class="example"><span class="example-en">Organisms and their environments are mutually constitutive.</span><span class="example-zh">有机体与其环境相互构成。</span></div>
+  <div class="collocations">natural environment · built environment · environmental change · living environment</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">knowledge</span><span class="pos">n.</span><span class="badge-cefr" style="background:#eab308">B1</span><span class="badge-freq" title="本书出现 3 次">×3</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈnɑːlɪdʒ/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈnɒlɪdʒ/</span></div>
+  <div class="gloss"><span class="gloss-zh">知识；学问；认识</span><span class="gloss-en">facts, information, and skills acquired through experience or education; the theoretical or practical understanding of a subject</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">知识；学问</span><span class="sense-en">information, understanding, or skill that you get from experience or education</span></div><div class="sense"><span class="sense-zh">认识；了解</span><span class="sense-en">awareness or familiarity gained by experience of a fact or situation</span></div><div class="sense"><span class="sense-zh">知识（作为实践技能，而非抽象信息）</span><span class="sense-en">knowledge as practical, embodied skill embedded in ways of doing, not as detached information</span><span class="book-context">在实践理论中，知识被视为通过参与和模仿获得的技能，而不是静态的命题集合。</span></div></div>
+  <div class="etymology">源自古英语 cnāwlece，由 cnāwan（知道） + -lece（表示状态或行为）构成。与 know 同源，词根来自原始日耳曼语 *knē-，最终来自印欧语 *ǵneh₃-（知道）。</div>
+  <div class="morpheme">构词：know(古英语「知道」) + -ledge「名词后缀，表示状态或结果」</div>
+  <div class="example"><span class="example-en">Knowledge is not a possession but a way of being in the world.</span><span class="example-zh">知识不是一种所有物，而是一种存在于世界的方式。</span></div><div class="example"><span class="example-en">The knowledge of how to make a canoe is passed down through generations.</span><span class="example-zh">制作独木舟的知识代代相传。</span></div>
+  <div class="collocations">practical knowledge · knowledge production · indigenous knowledge · knowledge system</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">description</span><span class="pos">n.</span><span class="badge-cefr" style="background:#eab308">B1</span><span class="badge-freq" title="本书出现 3 次">×3</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/dɪˈskrɪpʃən/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/dɪˈskrɪpʃən/</span></div>
+  <div class="gloss"><span class="gloss-zh">描述；描写；说明</span><span class="gloss-en">a spoken or written representation or account of a person, object, or event</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">描述；描写</span><span class="sense-en">the act of describing something in words</span></div><div class="sense"><span class="sense-zh">说明；类型</span><span class="sense-en">a statement or account that describes; a kind or sort</span></div><div class="sense"><span class="sense-zh">描述（作为转写实践，而非客观记录）</span><span class="sense-en">description as a generative, interpretive act that shapes what is being described</span><span class="book-context">在人类学方法论中，描述不是中立的复制，而是参与构建研究对象的过程。</span></div></div>
+  <div class="etymology">源自拉丁语 descriptio, -onis，来自 describere（写下来，描绘），由 de-（向下，完全） + scribere（写）构成。经由古法语 description 进入英语。</div>
+  <div class="morpheme">构词：de-「向下，完全」 + scrib/script(拉丁语「写」) + -ion「名词后缀，表示行为或结果」</div>
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+  <div class="example"><span class="example-en">A good description does not merely mirror reality but brings it into being.</span><span class="example-zh">好的描述不只是反映现实，而是使其成为现实。</span></div><div class="example"><span class="example-en">The ethnographer's description is always partial and situated.</span><span class="example-zh">民族志学者的描述总是片面的、情境化的。</span></div>
+  <div class="collocations">detailed description · description of events · provide a description · descriptive account</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">routledge</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 3 次">×3</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈraʊtlɪdʒ/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈraʊtlɪdʒ/</span></div>
+  <div class="gloss"><span class="gloss-zh">劳特利奇（出版社名）</span><span class="gloss-en">a British publishing house specializing in academic books, journals, and online resources</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">劳特利奇（出版社）</span><span class="sense-en">a major academic publisher, part of Taylor &amp; Francis group</span></div><div class="sense"><span class="sense-zh">劳特利奇（出版方）</span><span class="sense-en">Routledge, the publisher of the book</span><span class="book-context">作为书籍出版方名称出现，通常用于引用或版权信息。</span></div></div>
+  <div class="etymology">源自人名 Routledge，可能来自古英语地名，与“红色”和“小径”相关。作为出版社名，源于1836年成立的 George Routledge &amp; Co.。</div>
+  <div class="morpheme">构词：Rout-(古英语「红色（或与道路相关）」) + -ledge(古英语「小径，堤道」)</div>
+  <div class="example"><span class="example-en">The book was published by Routledge in 2011.</span><span class="example-zh">这本书由劳特利奇出版社于2011年出版。</span></div><div class="example"><span class="example-en">Routledge is known for its extensive catalog in the humanities and social sciences.</span><span class="example-zh">劳特利奇以其在人文和社会科学领域的广泛书目而闻名。</span></div>
+  <div class="collocations">Routledge Classics · Routledge &amp; Kegan Paul · published by Routledge · Routledge handbook</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">franci</span><span class="pos">n.</span><span class="badge-cefr" style="background:#7c3aed">C2</span><span class="badge-freq" title="本书出现 3 次">×3</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈfræntʃi/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈfræntʃi/</span></div>
+  <div class="gloss"><span class="gloss-zh">弗朗西（姓氏）</span><span class="gloss-en">a surname (e.g., Giovanna Franci, an Italian scholar)</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">弗朗西（人名）</span><span class="sense-en">a surname, likely referring to a specific author or contributor</span></div><div class="sense"><span class="sense-zh">弗朗西（人名，可能是引用的作者）</span><span class="sense-en">Franci, possibly a cited author or editor in the book</span><span class="book-context">在书籍中可能作为参考文献或致谢中的人名出现。</span></div></div>
+  <div class="etymology">源自意大利语姓氏 Franci，是 Francesco（弗朗切斯科）的复数形式或变体，最终来自拉丁语 Franciscus，意为“法兰克人”。</div>
+  <div class="morpheme">构词：Franc-(拉丁语「法兰克人」) + -i「意大利语复数或姓氏后缀」</div>
+  <div class="example"><span class="example-en">According to Franci, the concept of environment is historically contingent.</span><span class="example-zh">根据弗朗西的观点，环境概念是历史偶然的。</span></div><div class="example"><span class="example-en">Franci's work on perception has influenced modern anthropology.</span><span class="example-zh">弗朗西关于感知的研究影响了现代人类学。</span></div>
+  <div class="collocations">Giovanna Franci · Franci's argument · cited in Franci · Franci (2004)</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">trademark</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 3 次">×3</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈtreɪdmɑːrk/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈtreɪdmɑːk/</span></div>
+  <div class="gloss"><span class="gloss-zh">商标；标志性特征</span><span class="gloss-en">a symbol, word, or words legally registered as representing a company or product; a distinctive characteristic</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">商标</span><span class="sense-en">a legally registered symbol or name identifying a product or company</span></div><div class="sense"><span class="sense-zh">标志性特征</span><span class="sense-en">a distinctive characteristic or quality</span></div><div class="sense"><span class="sense-zh">标志性特征</span><span class="sense-en">distinctive characteristic</span><span class="book-context">在本书中可能指某个文化或实践活动的独特标志或特征</span></div></div>
+  <div class="etymology">From trade (from Middle English, from Middle Low German trade, meaning 'track, course') + mark (from Old English mearc, 'boundary, sign'). Originally a mark used in trade to identify goods.</div>
+  <div class="morpheme">构词：trade(Middle Low German「track, course」) + mark(Old English「boundary, sign」)</div>
+  <div class="example"><span class="example-en">The golden arches are a trademark of McDonald's.</span><span class="example-zh">金色拱门是麦当劳的商标。</span></div><div class="example"><span class="example-en">His sense of humor is his trademark.</span><span class="example-zh">他的幽默感是他的标志性特征。</span></div>
+  <div class="collocations">registered trademark · trademark infringement · trademark symbol</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">art</span><span class="pos">n.</span><span class="badge-cefr" style="background:#eab308">B1</span><span class="badge-freq" title="本书出现 2 次">×2</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ɑːrt/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ɑːt/</span></div>
+  <div class="gloss"><span class="gloss-zh">艺术；技艺</span><span class="gloss-en">the expression of creative skill and imagination, often in visual forms; a skill or craft</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">艺术</span><span class="sense-en">creative expression through painting, sculpture, music, etc.</span></div><div class="sense"><span class="sense-zh">技艺</span><span class="sense-en">a skill or craft, often in practical work</span></div><div class="sense"><span class="sense-zh">技艺</span><span class="sense-en">skill or craft</span><span class="book-context">在本书中可能指人类实践中的技能和创造性活动，强调制作和生成的过程</span></div></div>
+  <div class="etymology">From Old French art, from Latin ars (artem), meaning 'skill, craft, trade, work of art'. Related to Greek arti, 'to fit, join'.</div>
+  <div class="morpheme">构词：art(Latin「skill, craft」)</div>
+  <div class="example"><span class="example-en">She studied art at university.</span><span class="example-zh">她在大学学习艺术。</span></div><div class="example"><span class="example-en">The art of cooking requires patience.</span><span class="example-zh">烹饪技艺需要耐心。</span></div>
+  <div class="collocations">fine art · art form · work of art · the art of</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">ecology</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 2 次">×2</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ɪˈkɑːlədʒi/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ɪˈkɒlədʒi/</span></div>
+  <div class="gloss"><span class="gloss-zh">生态学；生态</span><span class="gloss-en">the branch of biology dealing with relations of organisms to their environment; the environment itself as a system</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">生态学</span><span class="sense-en">the scientific study of interactions among organisms and their environment</span></div><div class="sense"><span class="sense-zh">生态</span><span class="sense-en">the system of such interactions in a particular area</span></div><div class="sense"><span class="sense-zh">生态学</span><span class="sense-en">ecology as a discipline</span><span class="book-context">在本书中可能指研究生物与环境关系的科学，以及更广泛的人类生态学视角</span></div></div>
+  <div class="etymology">From German Ökologie, coined by Ernst Haeckel in 1866, from Greek oikos ('house, dwelling') + -logia ('study of'). Literally 'study of the household' (nature).</div>
+  <div class="morpheme">构词：oikos(Greek「house, dwelling」) + logos(Greek「study, word」) + -logy「study of」</div>
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+  <div class="example"><span class="example-en">Ecology is a key discipline in environmental science.</span><span class="example-zh">生态学是环境科学中的关键学科。</span></div><div class="example"><span class="example-en">The ecology of the region is fragile.</span><span class="example-zh">该地区的生态很脆弱。</span></div>
+  <div class="collocations">human ecology · ecology movement · deep ecology · ecology of mind</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">simultaneously</span><span class="pos">adv.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 2 次">×2</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌsaɪməlˈteɪniəsli/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌsɪməlˈteɪniəsli/</span></div>
+  <div class="gloss"><span class="gloss-zh">同时地</span><span class="gloss-en">at the same time</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">同时地</span><span class="sense-en">occurring at the same moment</span></div><div class="sense"><span class="sense-zh">同时地</span><span class="sense-en">at the same time</span><span class="book-context">在本书中可能强调多个过程或事件同时发生，体现同步性</span></div></div>
+  <div class="etymology">From Latin simul ('at the same time') + -aneous (adjective suffix) + -ly (adverb suffix). First used in English in the 17th century.</div>
+  <div class="morpheme">构词：simul(Latin「at the same time」) + -ly「adverb suffix」</div>
+  <div class="example"><span class="example-en">The two events happened simultaneously.</span><span class="example-zh">这两个事件同时发生。</span></div><div class="example"><span class="example-en">She can talk and walk simultaneously.</span><span class="example-zh">她能同时说话和走路。</span></div>
+  <div class="collocations">simultaneously with · occur simultaneously · run simultaneously</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">science</span><span class="pos">n.</span><span class="badge-cefr" style="background:#eab308">B1</span><span class="badge-freq" title="本书出现 2 次">×2</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈsaɪəns/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈsaɪəns/</span></div>
+  <div class="gloss"><span class="gloss-zh">科学；学科</span><span class="gloss-en">the systematic study of the structure and behavior of the physical and natural world through observation and experiment; a branch of knowledge</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">科学</span><span class="sense-en">the systematic study of the natural world through observation and experiment</span></div><div class="sense"><span class="sense-zh">学科</span><span class="sense-en">a particular branch of knowledge or study</span></div><div class="sense"><span class="sense-zh">科学</span><span class="sense-en">science as a way of knowing</span><span class="book-context">在本书中可能指现代科学知识体系，并与艺术、手艺等其他知识形式对比</span></div></div>
+  <div class="etymology">From Old French science, from Latin scientia ('knowledge'), from sciens (present participle of scire, 'to know'). Originally meant 'knowledge' in general, later narrowed to natural science.</div>
+  <div class="morpheme">构词：scire(Latin「to know」) + -ence「state or quality」</div>
+  <div class="example"><span class="example-en">Science has advanced rapidly in the last century.</span><span class="example-zh">科学在上个世纪发展迅速。</span></div><div class="example"><span class="example-en">She has a degree in computer science.</span><span class="example-zh">她拥有计算机科学学位。</span></div>
+  <div class="collocations">natural science · social science · science fiction · science and technology</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">publication</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 2 次">×2</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌpʌblɪˈkeɪʃən/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌpʌblɪˈkeɪʃən/</span></div>
+  <div class="gloss"><span class="gloss-zh">出版；出版物</span><span class="gloss-en">the act of making information or a book available to the public; a printed or digital work issued for sale or distribution</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">出版</span><span class="sense-en">the act of printing and issuing a book, article, etc. to the public</span></div><div class="sense"><span class="sense-zh">出版物</span><span class="sense-en">a published work, such as a book or journal</span></div><div class="sense"><span class="sense-zh">出版物</span><span class="sense-en">published work</span><span class="book-context">在本书中可能指学术或文化作品的正式发布，或指书籍本身</span></div></div>
+  <div class="etymology">From Latin publicatio (from publicare, 'to make public'), via Old French publication. Root from populus ('people'). Meaning shifted from 'making public' to 'issuing printed works' in the 17th century.</div>
+  <div class="morpheme">构词：public(Latin「people, public」) + -ation「action or result」</div>
+  <div class="example"><span class="example-en">The publication of her novel was a major event.</span><span class="example-zh">她小说出版是一件大事。</span></div><div class="example"><span class="example-en">This journal is a leading scientific publication.</span><span class="example-zh">这本期刊是领先的科学出版物。</span></div>
+  <div class="collocations">academic publication · publication date · publication process · peer-reviewed publication</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">consistently</span><span class="pos">adv.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/kənˈsɪstəntli/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/kənˈsɪstəntli/</span></div>
+  <div class="gloss"><span class="gloss-zh">一贯地；始终如一地</span><span class="gloss-en">in a way that is always the same or does not change; in a consistent manner</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">一贯地，始终如一地</span><span class="sense-en">in a consistent manner; without contradiction or change</span></div><div class="sense"><span class="sense-zh">稳定地，持续地</span><span class="sense-en">in a steady, continuous way</span></div><div class="sense"><span class="sense-zh">在本书中指持续、稳定地（做某事），强调行为或状态的一致性。</span><span class="sense-en">In this book, it means doing something in a steady, unchanging way, emphasizing consistency.</span><span class="book-context">用于描述某种行为或过程在时间上的连贯性和不变性。</span></div></div>
+  <div class="etymology">From Latin 'consistere' (to stand together, from con- 'together' + sistere 'to stand'), via Middle French and English to form 'consistent', plus the adverbial suffix -ly.</div>
+  <div class="morpheme">构词：con-「共同，一起」 + sist(拉丁语「站立」) + -ly「以…方式（副词后缀）」</div>
+  <div class="example"><span class="example-en">She consistently arrives early for meetings.</span><span class="example-zh">她一贯提前到达会议。</span></div><div class="example"><span class="example-en">The results were consistently accurate across all trials.</span><span class="example-zh">所有试验的结果都始终准确。</span></div>
+  <div class="collocations">consistently good · consistently high · consistently reliable</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">exploratory</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ɪkˈsplɔːrətɔːri/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ɪkˈsplɒrətri/</span></div>
+  <div class="gloss"><span class="gloss-zh">探索性的；勘探的；探查性的</span><span class="gloss-en">relating to the act of exploring; done in order to discover something new</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">探索性的，初步的</span><span class="sense-en">serving to explore or investigate; preliminary</span></div><div class="sense"><span class="sense-zh">勘探的（如地质勘探）</span><span class="sense-en">relating to exploration, especially in a scientific or technical context</span></div><div class="sense"><span class="sense-zh">在本书中多指探索性（的研究、方法或态度），即为了发现和理解而进行的试探性活动。</span><span class="sense-en">In this book, it refers to exploratory (research, methods, or attitudes), i.e., tentative activities aimed at discovery and understanding.</span><span class="book-context">用于描述对未知领域或问题的初步探询。</span></div></div>
+  <div class="etymology">From Latin 'explorare' (to explore, from ex- 'out' + plorare 'to cry out', originally referring to hunters making sounds to drive out game), via French -atoire and English -atory to form the adjective.</div>
+  <div class="morpheme">构词：ex-「向外，出」 + plor(拉丁语「呼喊，哭喊」) + -atory「与…有关的（形容词后缀）」</div>
+  <div class="example"><span class="example-en">The team conducted an exploratory survey of the area.</span><span class="example-zh">团队对该地区进行了探索性调查。</span></div><div class="example"><span class="example-en">Exploratory surgery was needed to determine the cause.</span><span class="example-zh">需要进行探查性手术以确定病因。</span></div>
+  <div class="collocations">exploratory research · exploratory study · exploratory mission</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">provocative</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/prəˈvɑːkətɪv/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/prəˈvɒkətɪv/</span></div>
+  <div class="gloss"><span class="gloss-zh">挑衅的；引起思考或争议的；煽情的</span><span class="gloss-en">causing anger, interest, or thought; intended to provoke a reaction</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">挑衅的，激怒人的</span><span class="sense-en">intended to make someone angry or upset</span></div><div class="sense"><span class="sense-zh">引发思考或讨论的</span><span class="sense-en">causing interest or thought, especially by being unusual or challenging</span></div><div class="sense"><span class="sense-zh">煽情的，挑逗的（尤指衣着或行为）</span><span class="sense-en">intended to arouse sexual desire or interest</span></div><div class="sense"><span class="sense-zh">在本书中多指（观点、问题等）具有挑衅性或启发性的，能引发读者思考或辩论。</span><span class="sense-en">In this book, it refers to (ideas, questions, etc.) being provocative or thought-provoking, stimulating reflection or debate.</span><span class="book-context">用于描述作者提出的具有挑战性或新颖性的论点。</span></div></div>
+  <div class="etymology">源自拉丁语 'provocare'（召唤，激起，由 pro- 'forth' + vocare 'to call' 组成），经由法语 -atif 形成英语形容词。</div>
+  <div class="morpheme">构词：pro-「向前，出」 + voc(拉丁语「呼唤，叫喊」) + -ative「倾向于…的（形容词后缀）」</div>
+  <div class="example"><span class="example-en">The article made a provocative claim about human nature.</span><span class="example-zh">这篇文章对人类本性提出了一个挑衅性的论断。</span></div><div class="example"><span class="example-en">She wore a provocative dress to the party.</span><span class="example-zh">她穿着一件挑逗的连衣裙去参加聚会。</span></div>
+  <div class="collocations">provocative question · provocative statement · provocative idea</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">exactingly</span><span class="pos">adv.</span><span class="badge-cefr" style="background:#7c3aed">C2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ɪɡˈzæktɪŋli/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ɪɡˈzæktɪŋli/</span></div>
+  <div class="gloss"><span class="gloss-zh">苛求地；严格地；费心地</span><span class="gloss-en">in a way that demands great care, accuracy, or effort</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">苛求地，严格地</span><span class="sense-en">in a demanding or strict manner</span></div><div class="sense"><span class="sense-zh">需要精确或费力地</span><span class="sense-en">in a way that requires precision or painstaking effort</span></div><div class="sense"><span class="sense-zh">在本书中可能指以严格、精确的方式（描述或执行），强调对细节和准确性的高度要求。</span><span class="sense-en">In this book, it may mean in a strict, precise manner, emphasizing high demands for detail and accuracy.</span><span class="book-context">用于描述某种方法、标准或行为对精确性的严格要求。</span></div></div>
+  <div class="etymology">源自拉丁语 'exigere'（要求，驱出，由 ex- 'out' + agere 'to drive' 组成），经由英语 'exacting'（苛刻的）加副词后缀 -ly 形成。</div>
+  <div class="morpheme">构词：ex-「向外，出」 + ag(拉丁语「驱动，做」) + -ly「以…方式（副词后缀）」</div>
+  <div class="example"><span class="example-en">The instructions were exactingly detailed.</span><span class="example-zh">这些说明详尽得近乎苛求。</span></div><div class="example"><span class="example-en">He exactingly checked every measurement.</span><span class="example-zh">他严格地检查了每一个测量数据。</span></div>
+  <div class="collocations">exactingly precise · exactingly thorough · exactingly careful</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">lucid</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈluːsɪd/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈluːsɪd/</span></div>
+  <div class="gloss"><span class="gloss-zh">清晰的；明白易懂的；神志清醒的</span><span class="gloss-en">clear and easy to understand; able to think clearly</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">清晰易懂的，明白的</span><span class="sense-en">clear in style and easy to understand</span></div><div class="sense"><span class="sense-zh">神志清醒的，头脑清晰的</span><span class="sense-en">able to think clearly and rationally</span></div><div class="sense"><span class="sense-zh">明亮的，清澈的（文学用语）</span><span class="sense-en">bright or shining (literary)</span></div><div class="sense"><span class="sense-zh">在本书中多指（文字、解释或思维）清晰明了，易于理解。</span><span class="sense-en">In this book, it refers to (writing, explanations, or thinking) being clear and easy to understand.</span><span class="book-context">用于评价作者的表述或论证具有清晰性。</span></div></div>
+  <div class="etymology">源自拉丁语 'lucidus'（明亮的，清澈的），来自 'lux'（光）。经由法语 lucide 进入英语。</div>
+  <div class="morpheme">构词：luc(拉丁语「光，明亮」) + -id「具有…性质的（形容词后缀）」</div>
+  <div class="example"><span class="example-en">The professor gave a lucid explanation of the theory.</span><span class="example-zh">教授对这个理论作了清晰的解释。</span></div><div class="example"><span class="example-en">Despite his illness, he remained lucid until the end.</span><span class="example-zh">尽管生病，他直到最后都保持神志清醒。</span></div>
+  <div class="collocations">lucid explanation · lucid writing · lucid moment</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">poetic</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/poʊˈɛtɪk/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/pəʊˈɛtɪk/</span></div>
+  <div class="gloss"><span class="gloss-zh">诗的；富有诗意的；优美的</span><span class="gloss-en">relating to poetry; having a quality of beauty and imagination characteristic of poetry</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">诗的，诗歌的</span><span class="sense-en">relating to poetry or poets</span></div><div class="sense"><span class="sense-zh">富有诗意的，如诗般的</span><span class="sense-en">having the qualities of poetry, such as beauty, imagination, and emotion</span></div><div class="sense"><span class="sense-zh">优美的，感人至深的</span><span class="sense-en">beautiful or deeply expressive</span></div><div class="sense"><span class="sense-zh">在本书中可能指（语言、描述或观点）具有诗意，即富有美感和想象力，超越平实的表达。</span><span class="sense-en">In this book, it may refer to (language, descriptions, or views) being poetic, i.e., possessing beauty and imagination beyond plain expression.</span><span class="book-context">用于形容作者对世界或经验的浪漫、感性描绘。</span></div></div>
+  <div class="etymology">源自希腊语 'poietikos'（创造性的，诗意的），来自 'poiein'（制作，创作）。经由拉丁语 poeticus 和法语 poétique 进入英语。</div>
+  <div class="morpheme">构词：poi(希腊语「制作，创作」) + -etic「与…有关的（形容词后缀）」</div>
+  <div class="example"><span class="example-en">The novel is filled with poetic descriptions of nature.</span><span class="example-zh">这部小说充满了对自然的诗意描写。</span></div><div class="example"><span class="example-en">Her movements were poetic and graceful.</span><span class="example-zh">她的动作优雅而富有诗意。</span></div>
+  <div class="collocations">poetic language · poetic justice · poetic imagery</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">eloquence</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈɛləkwəns/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈɛləkwəns/</span></div>
+  <div class="gloss"><span class="gloss-zh">雄辩；口才</span><span class="gloss-en">fluent, persuasive, and expressive speech or writing</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">雄辩；口才</span><span class="sense-en">the ability to speak or write in a fluent and persuasive manner</span></div><div class="sense"><span class="sense-zh">优美动人的表达</span><span class="sense-en">the art of using language in a skillful and effective way</span></div><div class="sense"><span class="sense-zh">在本书中，eloquence 指语言或表达上的雄辩与感染力，强调生动而富有说服力的叙述。</span><span class="sense-en">In this book, eloquence refers to persuasive and expressive language, highlighting vivid and compelling narration.</span><span class="book-context">Used to describe the power of spoken or written words to move and convince.</span></div></div>
+  <div class="etymology">From Old French eloquence, from Latin eloquentia, from eloquens (present participle of eloqui 'speak out'), from ex- 'out' + loqui 'to speak'. The Latin root loqui is related to 'locution' and 'loquacious'.</div>
+  <div class="morpheme">构词：e-「out」 + loqu(Latin「speak」) + -ence「state or quality」</div>
+  <div class="example"><span class="example-en">Her eloquence moved the entire audience to tears.</span><span class="example-zh">她的雄辩使全场观众感动落泪。</span></div><div class="example"><span class="example-en">The politician's eloquence won him many supporters.</span><span class="example-zh">这位政治家的口才为他赢得了许多支持者。</span></div>
+  <div class="collocations">great eloquence · eloquence of speech · display eloquence · with eloquence</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">amongst</span><span class="pos">prep.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/əˈmʌŋst/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/əˈmʌŋst/</span></div>
+  <div class="gloss"><span class="gloss-zh">在…之中；在…之间</span><span class="gloss-en">in the middle of or surrounded by; among</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">在…之中；在…之间</span><span class="sense-en">in the midst of; surrounded by</span></div><div class="sense"><span class="sense-zh">在…群体中</span><span class="sense-en">in the membership of a group</span></div><div class="sense"><span class="sense-zh">在本书中，amongst 用于表示在众多事物或人群之中，强调空间或关系的包含。</span><span class="sense-en">In this book, amongst is used to indicate being in the midst of many things or people, emphasizing inclusion.</span><span class="book-context">Often used in academic or literary contexts to denote being part of a collective.</span></div></div>
+  <div class="etymology">From Middle English amonges, from Old English ongemang, from on 'in' + gemang 'crowd, throng'. The -st suffix is a genitive/adverbial ending, similar to 'whilst' and 'amidst'. Amongst is a variant of among, more common in British English.</div>
+  <div class="morpheme">构词：a-「in, on」 + mang(Old English「crowd, throng」) + -st「adverbial suffix」</div>
+  <div class="example"><span class="example-en">The village lies amongst the hills.</span><span class="example-zh">村庄坐落在群山之中。</span></div><div class="example"><span class="example-en">She felt at ease amongst her friends.</span><span class="example-zh">她在朋友中间感到自在。</span></div>
+  <div class="collocations">amongst others · amongst themselves · amongst the crowd · amongst which</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">calligraphy</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/kəˈlɪɡrəfi/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/kəˈlɪɡrəfi/</span></div>
+  <div class="gloss"><span class="gloss-zh">书法；笔迹</span><span class="gloss-en">the art of beautiful handwriting; decorative lettering</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">书法；书写艺术</span><span class="sense-en">the visual art of writing, often with a pen or brush</span></div><div class="sense"><span class="sense-zh">精美的笔迹</span><span class="sense-en">decorative or stylized handwriting</span></div><div class="sense"><span class="sense-zh">在本书中，calligraphy 指书法艺术，强调书写过程中的身体动作与审美表达。</span><span class="sense-en">In this book, calligraphy refers to the art of writing, emphasizing bodily movement and aesthetic expression in the act of writing.</span><span class="book-context">Discussed in relation to skill, materiality, and the embodied practice of writing.</span></div></div>
+  <div class="etymology">From Greek kalligraphia, from kallos 'beauty' + graphein 'to write'. The root kallos appears in 'calliope' (beautiful voice) and 'calisthenics' (beautiful strength); graphein appears in 'graph', 'autograph', and 'photograph'.</div>
+  <div class="morpheme">构词：calli(Greek「beauty」) + graph(Greek「write」) + -y「art, practice」</div>
+  <div class="example"><span class="example-en">The ancient manuscripts are renowned for their exquisite calligraphy.</span><span class="example-zh">这些古代手稿以其精美的书法而闻名。</span></div><div class="example"><span class="example-en">She practiced calligraphy every morning to perfect her strokes.</span><span class="example-zh">她每天早晨练习书法以完善笔法。</span></div>
+  <div class="collocations">Chinese calligraphy · calligraphy brush · master calligraphy · calligraphy style</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">carpentry</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈkɑːrpəntri/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈkɑːpəntri/</span></div>
+  <div class="gloss"><span class="gloss-zh">木工；木工手艺</span><span class="gloss-en">the activity or trade of making or repairing wooden objects or structures</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">木工；木工手艺</span><span class="sense-en">the craft of cutting, shaping, and joining wood</span></div><div class="sense"><span class="sense-zh">木工制品</span><span class="sense-en">wooden work or structures made by a carpenter</span></div><div class="sense"><span class="sense-zh">在本书中，carpentry 指木工手艺，强调手工艺中的技能、材料感知与制作过程。</span><span class="sense-en">In this book, carpentry refers to the craft of woodworking, emphasizing skill, material awareness, and the process of making.</span><span class="book-context">Used to illustrate the relationship between knowledge, practice, and material engagement.</span></div></div>
+  <div class="etymology">From Old French carpenterie, from Latin carpentarius 'wagon-maker', from carpentum 'wagon, carriage', of Gaulish origin. The word 'carpenter' derives from the same root. The suffix -ry denotes a trade or practice.</div>
+  <div class="morpheme">构词：carpent(Latin「wagon, carriage」) + -ry「trade, practice」</div>
+  <div class="example"><span class="example-en">He learned carpentry from his grandfather and became a skilled craftsman.</span><span class="example-zh">他向祖父学习木工，成为了一名熟练的工匠。</span></div><div class="example"><span class="example-en">The carpentry of the old house was remarkably precise.</span><span class="example-zh">这座老房子的木工工艺非常精细。</span></div>
+  <div class="collocations">carpentry tools · carpentry work · fine carpentry · carpentry skills</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">kite</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/kaɪt/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/kaɪt/</span></div>
+  <div class="gloss"><span class="gloss-zh">风筝；鸢（猛禽）</span><span class="gloss-en">a toy made of a light frame covered with material, flown in the wind; also a type of bird of prey</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">风筝</span><span class="sense-en">a light frame covered with paper or cloth, flown in the wind using a string</span></div><div class="sense"><span class="sense-zh">鸢（一种猛禽）</span><span class="sense-en">a bird of prey of the hawk family with long wings and a forked tail</span></div><div class="sense"><span class="sense-zh">（比喻）喻指试探性行为</span><span class="sense-en">a person who exploits others; a dishonest person (slang)</span></div><div class="sense"><span class="sense-zh">在本书中，kite 指风筝，作为人类制作与自然环境互动的一个例子，体现材料、风和身体动作的关联。</span><span class="sense-en">In this book, kite refers to a toy flown in the wind, used as an example of human-made objects interacting with the natural environment, highlighting material, wind, and bodily movement.</span><span class="book-context">Discussed in the context of craft, making, and the relationship between humans and materials.</span></div></div>
+  <div class="etymology">From Old English cȳta 'kite (bird)', of unknown origin; possibly imitative of the bird's cry. The sense of 'toy' emerged in the 17th century, perhaps from the bird's soaring flight pattern. The word is related to Middle Dutch kute and Middle Low German kūte.</div>
+  <div class="morpheme">构词：kite(Old English「bird of prey」)</div>
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+  <div class="example"><span class="example-en">The children flew their kites in the open field.</span><span class="example-zh">孩子们在开阔的田野里放风筝。</span></div><div class="example"><span class="example-en">A red kite soared above the valley.</span><span class="example-zh">一只红色鸢在山谷上空翱翔。</span></div>
+  <div class="collocations">fly a kite · kite string · kite festival · kite flying</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">aboriginal</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌæbəˈrɪdʒənl/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌæbəˈrɪdʒənl/</span></div>
+  <div class="gloss"><span class="gloss-zh">土著的；原始的；原住民的</span><span class="gloss-en">relating to the original or earliest known inhabitants of a region; native</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">土著的；原住民的</span><span class="sense-en">relating to the indigenous peoples of a land, especially Australia</span></div><div class="sense"><span class="sense-zh">原始的；最早的</span><span class="sense-en">existing in a land from the earliest times; native</span></div><div class="sense"><span class="sense-zh">在本书中，aboriginal 指原住民或土著，强调与土地、传统和原始生存方式的联系。</span><span class="sense-en">In this book, aboriginal refers to indigenous peoples, emphasizing their connection to land, tradition, and original ways of living.</span><span class="book-context">Used in discussions of culture, environment, and the historical relationship between peoples and their territories.</span></div></div>
+  <div class="etymology">From Latin aborigines, the name given to the original inhabitants of Latium, from ab origine 'from the beginning'. The term was applied to indigenous peoples by European colonizers. The suffix -al forms adjectives.</div>
+  <div class="morpheme">构词：ab-「from」 + origin(Latin「beginning, source」) + -al「relating to」</div>
+  <div class="example"><span class="example-en">The aboriginal peoples of Australia have a deep connection to the land.</span><span class="example-zh">澳大利亚原住民与土地有着深厚的联系。</span></div><div class="example"><span class="example-en">The aboriginal art reflects ancient traditions and stories.</span><span class="example-zh">土著艺术反映了古老的传说和传统。</span></div>
+  <div class="collocations">aboriginal culture · aboriginal people · aboriginal art · aboriginal land</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">alaskan</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ʌlˈæskʌn/</span></div>
+  <div class="gloss"><span class="gloss-zh">阿拉斯加的；阿拉斯加州的</span><span class="gloss-en">a native or resident of Alaska<br>relating to or characteristic of the state or people of Alaska</span></div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">arachnid</span><span class="pos">n.</span><span class="badge-cefr" style="background:#7c3aed">C2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈæknɪd/</span></div>
+  <div class="gloss"><span class="gloss-zh">蛛形纲动物<br>〔医〕 蜘蛛</span><span class="gloss-en">air-breathing arthropods characterized by simple eyes and four pairs of legs</span></div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">meditation</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/mˌɛdʌtˈeɪʃʌn/</span></div>
+  <div class="gloss"><span class="gloss-zh">沉思, 冥想</span><span class="gloss-en">continuous and profound contemplation or musing on a subject or series of subjects of a deep or abstruse nature<br>(religion) contemplation of spiritual matters (usually on religious or philosophical subjects)</span></div>
+  <div class="morpheme">构词：tion「名词化（Latin -tio）」</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">passionate</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/pˈæʃʌnʌt/</span></div>
+  <div class="gloss"><span class="gloss-zh">热情的, 热烈的, 易怒的, 热恋的</span><span class="gloss-en">having or expressing strong emotions</span></div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">rebuttal</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ribˈʌtʌl/</span></div>
+  <div class="gloss"><span class="gloss-zh">辩驳, 驳回, 反驳, 反驳的证据, 反证<br>〔法〕 辩驳, 反驳, 驳回</span><span class="gloss-en">the speech act of refuting by offering a contrary contention or argument</span></div>
+  <div class="morpheme">构词：re「再/重新（Latin re-）」 + al「相关（Latin -alis）」</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">reductionism</span><span class="pos">n.</span><span class="badge-cefr" style="background:#7c3aed">C2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">ri'dʌkʃәnizm</span></div>
+  <div class="gloss"><span class="gloss-zh">简化论，还原论</span><span class="gloss-en">A philosophical position which holds that a complex system is nothing but the sum of its parts, and that an account of it can be reduced to accounts of individual constituents.</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">简化论</span><span class="sense-en">A philosophical position which holds that a complex system is nothing but the sum of its parts, and that an account of it can be reduced to accounts of individual constituents. In a reductionist frame</span></div></div>
+  <div class="etymology">From English reduction + -ism, ultimately from Latin reducere 'to lead back'.</div>
+  <div class="morpheme">构词：re「再/重新（Latin re-）」 + ism「主义/状态（Greek -ismos）」</div>
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">celebration</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌsɛləˈbreɪʃən/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌsɛlɪˈbreɪʃən/</span></div>
+  <div class="gloss"><span class="gloss-zh">庆祝；庆典；颂扬</span><span class="gloss-en">the action of marking one's pleasure or gratitude for an event or occasion; a festive event or occasion</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">庆祝活动，典礼</span><span class="sense-en">a festive event or occasion</span></div><div class="sense"><span class="sense-zh">颂扬，赞美</span><span class="sense-en">the act of praising or honoring something</span></div><div class="sense"><span class="sense-zh">在本书中可能指对生命、自然或存在本身的庆祝与颂扬</span><span class="sense-en">in the book, likely refers to the celebration of life, nature, or existence itself</span><span class="book-context">强调对世界和存在的积极肯定与感恩</span></div></div>
+  <div class="etymology">From Latin celebratio(n-), from celebrare 'to frequent, honor, celebrate', from celeber 'frequented, populous'.</div>
+  <div class="morpheme">构词：celebr(Latin「frequented, honored」) + -tion「act or process」</div>
+  <div class="example"><span class="example-en">The festival was a joyful celebration of community.</span><span class="example-zh">这个节日是社区欢乐的庆祝活动。</span></div>
+  <div class="collocations">hold a celebration · in celebration of · a celebration of life</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">creativity</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌkriːeɪˈtɪvəti/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌkriːeɪˈtɪvɪti/</span></div>
+  <div class="gloss"><span class="gloss-zh">创造力；创造性</span><span class="gloss-en">the use of imagination or original ideas to create something; inventiveness</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">创造力，创造性</span><span class="sense-en">the ability to produce original and valuable ideas</span></div><div class="sense"><span class="sense-zh">独创性</span><span class="sense-en">originality in thought or expression</span></div><div class="sense"><span class="sense-zh">在本书中可能强调人类或生命体在生成世界中的创造性参与</span><span class="sense-en">in the book, likely emphasizes the creative participation of humans or living beings in the becoming of the world</span><span class="book-context">与生成、生长和创造过程相关</span></div></div>
+  <div class="etymology">From Latin creatus (past participle of creare 'to make, bring forth') + -ivity, from create + -ivity. The suffix -ity forms abstract nouns.</div>
+  <div class="morpheme">构词：cre(Latin「to make, grow」) + -ivity「state or quality of being」</div>
+  <div class="example"><span class="example-en">Her creativity was evident in every painting.</span><span class="example-zh">她的创造力在每幅画中都显而易见。</span></div>
+  <div class="collocations">foster creativity · creative thinking · artistic creativity</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">broadest</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈbrɔːdɪst/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈbrɔːdɪst/</span></div>
+  <div class="gloss"><span class="gloss-zh">最广泛的；最宽的</span><span class="gloss-en">superlative form of broad; having the greatest width or extent; most inclusive</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">最宽的</span><span class="sense-en">having the greatest width</span></div><div class="sense"><span class="sense-zh">最广泛的，最全面的</span><span class="sense-en">most comprehensive or inclusive</span></div><div class="sense"><span class="sense-zh">在本书中可能指最广泛的意义、范围或视角</span><span class="sense-en">in the book, likely refers to the broadest meaning, scope, or perspective</span><span class="book-context">强调包容性和整体性</span></div></div>
+  <div class="etymology">From Old English brād 'broad' + -est superlative suffix. Related to Old High German breit and Dutch breed.</div>
+  <div class="morpheme">构词：broad(Old English「wide, extensive」) + -est「superlative degree」</div>
+  <div class="example"><span class="example-en">This is the broadest definition of art I have ever seen.</span><span class="example-zh">这是我见过的最广泛的艺术定义。</span></div>
+  <div class="collocations">the broadest sense · broadest possible · broadest range</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">humane</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/hjuːˈmeɪn/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/hjuːˈmeɪn/</span></div>
+  <div class="gloss"><span class="gloss-zh">人道的；仁慈的；有人情味的</span><span class="gloss-en">having or showing compassion or benevolence; characterized by kindness and sympathy for others</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">人道的，仁慈的</span><span class="sense-en">showing compassion or kindness</span></div><div class="sense"><span class="sense-zh">有人情味的，文明的</span><span class="sense-en">civilized and considerate</span></div><div class="sense"><span class="sense-zh">在本书中可能指对待生命和环境的仁爱态度</span><span class="sense-en">in the book, likely refers to a compassionate attitude towards life and environment</span><span class="book-context">与伦理和关怀相关</span></div></div>
+  <div class="etymology">From Latin humanus 'of man, human', from homo 'human being'. The spelling with -ane was influenced by humane (16th century) to distinguish from human in the sense of 'kind'.</div>
+  <div class="morpheme">构词：human(Latin「human, humane」) + -ane「adjective suffix (variant of -an)」</div>
+  <div class="example"><span class="example-en">The humane treatment of animals is essential.</span><span class="example-zh">人道地对待动物至关重要。</span></div>
+  <div class="collocations">humane society · humane treatment · humane values</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">stuart</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈstuːərt/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈstjuːət/</span></div>
+  <div class="gloss"><span class="gloss-zh">斯图亚特（人名/姓氏）</span><span class="gloss-en">a male given name or surname of Scottish origin</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">斯图亚特（人名）</span><span class="sense-en">a personal name</span></div><div class="sense"><span class="sense-zh">斯图亚特王朝成员</span><span class="sense-en">member of the Stuart royal family</span></div><div class="sense"><span class="sense-zh">在本书中可能指某位学者或人物，具体需看上下文</span><span class="sense-en">in the book, likely refers to a scholar or person mentioned, context-dependent</span><span class="book-context">可能是人名引用，需结合书中具体指涉</span></div></div>
+  <div class="etymology">From Old English stigweard, meaning 'house guardian' or 'steward'; later became a royal surname in Scotland and England.</div>
+  <div class="morpheme">构词：stig(Old English「house, hall」) + weard(Old English「guardian」)</div>
+  <div class="example"><span class="example-en">Stuart's research on perception influenced many.</span><span class="example-zh">斯图亚特关于知觉的研究影响了许多人。</span></div>
+  <div class="collocations">Stuart dynasty · Stuart Hall · Stuart Mill</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">mclean</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/məˈkleɪn/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/məˈkleɪn/</span></div>
+  <div class="gloss"><span class="gloss-zh">麦克莱恩（人名/姓氏）</span><span class="gloss-en">a surname of Scottish origin, from Gaelic Mac Gille Eathain, meaning 'son of the servant of Saint John'</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">麦克莱恩（姓氏）</span><span class="sense-en">a surname</span></div><div class="sense"><span class="sense-zh">麦克莱恩（地名）</span><span class="sense-en">a place name in some regions</span></div><div class="sense"><span class="sense-zh">在本书中可能指某位学者或人物，具体需看上下文</span><span class="sense-en">in the book, likely refers to a scholar or person mentioned, context-dependent</span><span class="book-context">可能是人名引用，需结合书中具体指涉</span></div></div>
+  <div class="etymology">From Scottish Gaelic Mac Gille Eathain, composed of mac 'son' + gille 'servant' + Eathain (John). Anglicized as McLean or MacLean.</div>
+  <div class="morpheme">构词：mac(Gaelic「son」) + gille(Gaelic「servant」) + Eathain(Gaelic「John」)</div>
+  <div class="example"><span class="example-en">McLean's theory was widely debated.</span><span class="example-zh">麦克莱恩的理论引起了广泛讨论。</span></div>
+  <div class="collocations">McLean Hospital · McLean theory · McLean's model</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">minnesota</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌmɪnɪˈsoʊtə/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌmɪnɪˈsəʊtə/</span></div>
+  <div class="gloss"><span class="gloss-zh">明尼苏达（美国州名）</span><span class="gloss-en">a state in the northern United States</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">明尼苏达州</span><span class="sense-en">the state of Minnesota</span></div><div class="sense"><span class="sense-zh">明尼苏达河</span><span class="sense-en">the Minnesota River</span></div><div class="sense"><span class="sense-zh">指美国明尼苏达州，作为地理背景或文化参照</span><span class="sense-en">referring to the U.S. state of Minnesota, likely as a geographical or cultural reference</span><span class="book-context">在本书中可能作为作者背景或案例地点提及</span></div></div>
+  <div class="etymology">源自达科他语（苏语系），由 mni（水）+ sota（浑浊、乳白）组合，意为“浑浊的水”或“乳白色的水”，指明尼苏达河。19世纪中期成为美国领地名称，后为州名。</div>
+  <div class="morpheme">构词：mni(达科他语「水」) + sota(达科他语「浑浊、乳白」)</div>
+  <div class="example"><span class="example-en">He grew up in Minnesota, where the winters are harsh.</span><span class="example-zh">他在明尼苏达长大，那里的冬天很严酷。</span></div>
+  <div class="collocations">University of Minnesota · Minnesota River · northern Minnesota</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">all-encompass</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌɔːl ɪnˈkʌmpəs/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌɔːl ɪnˈkʌmpəs/</span></div>
+  <div class="gloss"><span class="gloss-zh">{"zh": "包罗万象的；全面的", "en": "including everything; comprehensive"}</span><span class="gloss-en">to include or surround everything completely</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">包含一切</span><span class="sense-en">to include everything</span></div><div class="sense"><span class="sense-zh">完全包围</span><span class="sense-en">to surround completely</span></div><div class="sense"><span class="sense-zh">指某种概念或视角涵盖所有方面，不遗漏任何部分</span><span class="sense-en">referring to a concept or perspective that covers all aspects without omission</span><span class="book-context">在本书中可能用于描述一种全面的生态或存在观</span></div></div>
+  <div class="etymology">由 all（全部）+ encompassing（包围的，现在分词形式）构成，encompass 源自古法语 encumpasser，由 en-（使）+ compass（范围、圆周）构成，最终源自拉丁语 compassus。</div>
+  <div class="morpheme">构词：en-「使进入状态」 + all(古英语「全部」) + compass(拉丁语「范围、圆周」)</div>
+  <div class="example"><span class="example-en">The theory aims to all-encompass the complexity of life.</span><span class="example-zh">该理论旨在涵盖生命的所有复杂性。</span></div>
+  <div class="collocations">all-encompassing view · all-encompassing system · all-encompassing approach</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">aliveness</span><span class="pos">n.</span><span class="badge-cefr" style="background:#7c3aed">C2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/əˈlaɪvnəs/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/əˈlaɪvnəs/</span></div>
+  <div class="gloss"><span class="gloss-zh">活力；生命感</span><span class="gloss-en">the state of being alive; vitality</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">生命状态</span><span class="sense-en">the quality of being alive</span></div><div class="sense"><span class="sense-zh">活力、生气</span><span class="sense-en">vitality, liveliness</span></div><div class="sense"><span class="sense-zh">强调生物体或存在物的活跃状态和生命力</span><span class="sense-en">emphasizing the active state and vitality of living beings or existents</span><span class="book-context">在本书中可能作为核心概念，指生命本身的动态特性</span></div></div>
+  <div class="etymology">由 alive（活着的）+ 名词后缀 -ness 构成。alive 源自古英语 on līfe（在生命中），后演变为 alive。</div>
+  <div class="morpheme">构词：lif(古英语「生命」) + -ness「状态、性质」</div>
+  <div class="example"><span class="example-en">The forest was full of aliveness, every leaf trembling with energy.</span><span class="example-zh">森林充满活力，每片叶子都因能量而颤动。</span></div>
+  <div class="collocations">sense of aliveness · vibrant aliveness · aliveness of nature</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">affirmative</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/əˈfɜːrmətɪv/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/əˈfɜːmətɪv/</span></div>
+  <div class="gloss"><span class="gloss-zh">肯定的；积极的</span><span class="gloss-en">expressing agreement or consent; positive</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">肯定的，表示同意的</span><span class="sense-en">expressing agreement or consent</span></div><div class="sense"><span class="sense-zh">积极的，正面的</span><span class="sense-en">positive, constructive</span></div><div class="sense"><span class="sense-zh">指一种肯定的态度或回答，强调对生命或存在的认可</span><span class="sense-en">referring to an affirmative attitude or response, emphasizing affirmation of life or existence</span><span class="book-context">在本书中可能用于讨论对生命的肯定性态度</span></div></div>
+  <div class="etymology">源自拉丁语 affirmativus，由 affirmare（肯定、确认）派生，af-（ad- 的变体，向）+ firmare（使坚固），最终源自 firmus（坚固的）。15世纪进入英语。</div>
+  <div class="morpheme">构词：ad-「向、加强」 + firm(拉丁语「坚固」) + -ative「有……性质的」</div>
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+  <div class="example"><span class="example-en">She gave an affirmative nod to the proposal.</span><span class="example-zh">她对提议肯定地点了点头。</span></div>
+  <div class="collocations">affirmative action · affirmative answer · affirmative response</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">hayden</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈheɪdən/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈheɪdən/</span></div>
+  <div class="gloss"><span class="gloss-zh">海登（人名或地名）</span><span class="gloss-en">a personal name or place name, often referring to Hayden (surname or given name)</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">姓氏（海登）</span><span class="sense-en">surname Hayden</span></div><div class="sense"><span class="sense-zh">地名（如海登镇）</span><span class="sense-en">place name, e.g., Hayden, Colorado</span></div><div class="sense"><span class="sense-zh">可能指人名（如学者或研究者）或特定地点，需结合上下文</span><span class="sense-en">likely referring to a person (e.g., a scholar or researcher) or a specific location, depending on context</span><span class="book-context">在本书中可能提及某位作者或地理参照</span></div></div>
+  <div class="etymology">源自英格兰姓氏，可能来自古英语 hēah（高）+ denu（山谷）或 dūn（山丘），意为“高山谷”或“高丘”。作为地名或人名在英语世界常见。</div>
+  <div class="morpheme">构词：hēah(古英语「高」) + denu/dūn(古英语「山谷/山丘」)</div>
+  <div class="example"><span class="example-en">Hayden's work on ecology influenced the field.</span><span class="example-zh">海登在生态学方面的工作影响了该领域。</span></div>
+  <div class="collocations">Hayden White · Hayden Lake · Tom Hayden</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">lorimer</span><span class="pos">n.</span><span class="badge-cefr" style="background:#7c3aed">C2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈlɔːrɪmər/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈlɒrɪmə/</span></div>
+  <div class="gloss"><span class="gloss-zh">洛里默（姓氏）；马具匠</span><span class="gloss-en">a surname; also a maker of horse harnesses (obsolete occupation)</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">姓氏（洛里默）</span><span class="sense-en">surname Lorimer</span></div><div class="sense"><span class="sense-zh">马具匠（旧职业）</span><span class="sense-en">maker of horse harnesses (obsolete)</span></div><div class="sense"><span class="sense-zh">可能指某位学者或作者（如地理学家或哲学家）</span><span class="sense-en">likely referring to a scholar or author (e.g., a geographer or philosopher)</span><span class="book-context">在本书中可能提及该人物及其观点</span></div></div>
+  <div class="etymology">作为姓氏源自中世纪英语，可能来自古法语 loremier，意为“马具匠”，最终源自拉丁语 lorum（皮带、缰绳）。13世纪后作为职业姓氏出现。</div>
+  <div class="morpheme">构词：lorum(拉丁语「皮带、缰绳」) + -ier「从事……的人」</div>
+  <div class="example"><span class="example-en">Lorimer's theory of place resonates with the author's argument.</span><span class="example-zh">洛里默的地方理论与作者的论点产生共鸣。</span></div>
+  <div class="collocations">John Lorimer · Lorimer Street · Lorimer's philosophy</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">glasgow</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈɡlæzɡoʊ/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈɡlɑːzɡəʊ/</span></div>
+  <div class="gloss"><span class="gloss-zh">格拉斯哥（苏格兰城市）</span><span class="gloss-en">a city in Scotland, a major cultural and industrial center</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">格拉斯哥（苏格兰最大城市）</span><span class="sense-en">the largest city in Scotland, known for its architecture, music, and cultural scene</span></div><div class="sense"><span class="sense-zh">格拉斯哥（地名，如格拉斯哥港）</span><span class="sense-en">a place name, often referring to the city or its port</span></div><div class="sense"><span class="sense-zh">在本书中可能指代格拉斯哥作为研究或文化背景的地点</span><span class="sense-en">In this book, likely refers to Glasgow as a location for research or cultural context</span><span class="book-context">Tim Ingold 可能在书中提到格拉斯哥作为案例或背景。</span></div></div>
+  <div class="etymology">从苏格兰盖尔语 'Glaschu' 演变而来，意为 '亲爱的绿色之地' 或 '绿色山谷'。'Glas' 意为绿色，'chu' 意为亲爱的或山谷。</div>
+  <div class="morpheme">构词：glas(盖尔语「绿色」) + chu(盖尔语「亲爱的/山谷」)</div>
+  <div class="example"><span class="example-en">Glasgow is renowned for its Victorian architecture and vibrant arts scene.</span><span class="example-zh">格拉斯哥以其维多利亚式建筑和充满活力的艺术场景而闻名。</span></div><div class="example"><span class="example-en">The study was conducted in the urban neighborhoods of Glasgow.</span><span class="example-zh">这项研究在格拉斯哥的城市社区进行。</span></div>
+  <div class="collocations">Glasgow city center · Glasgow School of Art · Glasgow, Scotland</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">iconoclastic</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#7c3aed">C2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/aɪˌkɑːnəˈklæstɪk/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/aɪˌkɒnəˈklæstɪk/</span></div>
+  <div class="gloss"><span class="gloss-zh">打破旧习的；反传统的；偶像破坏的</span><span class="gloss-en">characterized by attacking or rejecting traditional beliefs, customs, or institutions</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">打破偶像的；破坏宗教圣像的</span><span class="sense-en">relating to the destruction of religious images or icons</span></div><div class="sense"><span class="sense-zh">反传统的；打破旧习的</span><span class="sense-en">attacking or rejecting traditional beliefs and institutions</span></div><div class="sense"><span class="sense-zh">在本书中可能指挑战主流学术或文化观念的态度</span><span class="sense-en">In this book, likely refers to an attitude that challenges mainstream academic or cultural views</span><span class="book-context">Ingold 可能用此词描述其或他人的非正统研究方法。</span></div></div>
+  <div class="etymology">源自希腊语 'eikonoklastes'，由 'eikon'（偶像）和 'klastes'（打破者）组成。后经教会拉丁语进入英语，最初指破坏宗教偶像的人，后引申为反对传统权威。</div>
+  <div class="morpheme">构词：icon(希腊语「偶像，图像」) + clast(希腊语「打破者」) + ic「形容词后缀，具有…性质的」</div>
+  <div class="example"><span class="example-en">Her iconoclastic approach to anthropology challenged long-held assumptions.</span><span class="example-zh">她打破旧习的人类学方法挑战了长期以来的假设。</span></div><div class="example"><span class="example-en">The artist's iconoclastic works provoked both outrage and admiration.</span><span class="example-zh">这位艺术家反传统的作品引发了愤怒和赞赏。</span></div>
+  <div class="collocations">iconoclastic thinker · iconoclastic ideas · iconoclastic spirit</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">dichotomy</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/daɪˈkɑːtəmi/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/daɪˈkɒtəmi/</span></div>
+  <div class="gloss"><span class="gloss-zh">二分法；两分；对立</span><span class="gloss-en">a division or contrast between two things that are opposed or entirely different</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">二分法；一分为二</span><span class="sense-en">division into two mutually exclusive or contradictory groups</span></div><div class="sense"><span class="sense-zh">对立；截然不同</span><span class="sense-en">a contrast between two opposing things</span></div><div class="sense"><span class="sense-zh">在本书中可能指自然与文化、身体与心灵等二元对立</span><span class="sense-en">In this book, likely refers to binary oppositions such as nature/culture or body/mind</span><span class="book-context">Ingold 常批判西方思想中的二分法，强调连续性。</span></div></div>
+  <div class="etymology">源自希腊语 'dichotomia'，由 'dicha'（分开）和 'temnein'（切）组成。17世纪进入英语，最初用于逻辑学，后扩展为一般意义上的对立分割。</div>
+  <div class="morpheme">构词：dicha(希腊语「分开，二」) + tom(希腊语「切，割」) + y「名词后缀，状态或性质」</div>
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+  <div class="example"><span class="example-en">The dichotomy between nature and culture is a central theme in anthropology.</span><span class="example-zh">自然与文化之间的二分法是人类学的核心主题。</span></div><div class="example"><span class="example-en">He rejected the false dichotomy of mind and body.</span><span class="example-zh">他拒绝了心灵与身体的虚假二分法。</span></div>
+  <div class="collocations">false dichotomy · dichotomy between A and B · binary dichotomy</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">likeness</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈlaɪknəs/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈlaɪknəs/</span></div>
+  <div class="gloss"><span class="gloss-zh">相似；相像；肖像</span><span class="gloss-en">the quality or state of being similar or alike; a representation or portrait of a person</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">相似；相像</span><span class="sense-en">resemblance or similarity in appearance or character</span></div><div class="sense"><span class="sense-zh">肖像；画像</span><span class="sense-en">a portrait or representation of a person, especially in art</span></div><div class="sense"><span class="sense-zh">在本书中可能指事物之间的相似性或模仿关系</span><span class="sense-en">In this book, likely refers to resemblance or mimetic relationships between things</span><span class="book-context">Ingold 可能讨论相似性在感知和知识中的作用。</span></div></div>
+  <div class="etymology">源自古英语 'licnes'，由 'lic'（身体，形式）和名词后缀 '-ness' 组成。原义为'形式或形状'，后演变为'相似性'和'肖像'。</div>
+  <div class="morpheme">构词：lik(古英语「身体，形式，相似」) + ness「名词后缀，表示状态或性质」</div>
+  <div class="example"><span class="example-en">There is a strong likeness between the two sisters.</span><span class="example-zh">这两姐妹之间有很强的相似性。</span></div><div class="example"><span class="example-en">The painting is a remarkable likeness of the poet.</span><span class="example-zh">这幅画是诗人的绝妙肖像。</span></div>
+  <div class="collocations">family likeness · striking likeness · bear a likeness to</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">polarity</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/poʊˈlærəti/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/pəˈlærəti/</span></div>
+  <div class="gloss"><span class="gloss-zh">极性；两极分化；对立</span><span class="gloss-en">the state of having two opposite or contrasting aspects; the property of having poles</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">极性（物理）</span><span class="sense-en">the property of having two opposite poles, as in a magnet</span></div><div class="sense"><span class="sense-zh">两极分化；对立</span><span class="sense-en">the state of having two opposing or contrasting principles or tendencies</span></div><div class="sense"><span class="sense-zh">在本书中可能指对立概念之间的张力或关系</span><span class="sense-en">In this book, likely refers to tension or relationship between opposing concepts</span><span class="book-context">Ingold 可能讨论极性如何构成动态关系而非静态二分。</span></div></div>
+  <div class="etymology">源自拉丁语 'polaris'（极的），由 'polus'（极）和 '-ity' 构成。17世纪进入英语，最初用于物理学，后引申为一般意义上的对立。</div>
+  <div class="morpheme">构词：pol(拉丁语「极，轴」) + arity「名词后缀，表示性质或状态」</div>
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+  <div class="example"><span class="example-en">The polarity of the debate made compromise difficult.</span><span class="example-zh">辩论的两极分化使妥协变得困难。</span></div><div class="example"><span class="example-en">Magnetic polarity determines the direction of the field.</span><span class="example-zh">磁极性决定了磁场的方向。</span></div>
+  <div class="collocations">polarity of views · magnetic polarity · emotional polarity</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">contra</span><span class="pos">prep./n./adv.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈkɑːntrə/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈkɒntrə/</span></div>
+  <div class="gloss"><span class="gloss-zh">反对；相反；对立面</span><span class="gloss-en">against; in opposition to; a person or thing that opposes</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">反对；相反地（介词/副词）</span><span class="sense-en">against; in opposition to</span></div><div class="sense"><span class="sense-zh">对立面；反对者（名词）</span><span class="sense-en">something that is opposite or contrary; an opponent</span></div><div class="sense"><span class="sense-zh">在本书中可能用作前缀或介词，表示对立或反驳</span><span class="sense-en">In this book, likely used as a prefix or preposition indicating opposition or contrast</span><span class="book-context">Ingold 可能用它来对比不同观点或术语。</span></div></div>
+  <div class="etymology">源自拉丁语 'contra'，意为'反对，相对'。作为前缀或介词在英语中广泛使用，如'contradict'、'contrary'，也可独立用作名词或副词。</div>
+  <div class="morpheme">构词：contra(拉丁语「反对，相对」)</div>
+  <div class="example"><span class="example-en">They argued pro and contra the new policy.</span><span class="example-zh">他们围绕新政策进行了赞成和反对的辩论。</span></div><div class="example"><span class="example-en">Contra the common belief, he found no evidence of decline.</span><span class="example-zh">与普遍看法相反，他没有发现衰退的证据。</span></div>
+  <div class="collocations">pro and contra · contra indication · contra dance</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">compose</span><span class="pos">v.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/kəmˈpoʊz/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/kəmˈpəʊz/</span></div>
+  <div class="gloss"><span class="gloss-zh">组成；构成；创作（音乐、诗歌等）；使镇静</span><span class="gloss-en">to make up or form something; to create a piece of music, writing, etc.; to calm oneself</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">组成，构成（整体）</span><span class="sense-en">to make up or form the whole</span></div><div class="sense"><span class="sense-zh">创作（音乐、文学等）</span><span class="sense-en">to write or create (music, literature, etc.)</span></div><div class="sense"><span class="sense-zh">使镇静，使平静</span><span class="sense-en">to calm oneself or someone</span></div><div class="sense"><span class="sense-zh">组成，构成</span><span class="sense-en">make up or form</span><span class="book-context">在本书中用于描述事物如何相互组合形成整体或环境。</span></div></div>
+  <div class="etymology">源自拉丁语 componere（放在一起），由 com-（一起）和 ponere（放置）组成。经由古法语 composer 进入英语，最初指“把各部分放在一起”，后引申为“创作、安排”。</div>
+  <div class="morpheme">构词：com-「一起，共同」 + pon(拉丁语「放置」) + -e「动词后缀（无实义）」</div>
+  <div class="example"><span class="example-en">The committee is composed of experts from various fields.</span><span class="example-zh">委员会由来自不同领域的专家组成。</span></div><div class="example"><span class="example-en">She composed a beautiful sonata.</span><span class="example-zh">她创作了一首优美的奏鸣曲。</span></div>
+  <div class="collocations">be composed of · compose oneself · compose music</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">sentient</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈsɛnʃənt/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈsɛntiənt/</span></div>
+  <div class="gloss"><span class="gloss-zh">有感觉能力的；有知觉的</span><span class="gloss-en">able to perceive or feel things; conscious</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">有感觉能力的，有知觉的</span><span class="sense-en">capable of sensation or feeling</span></div><div class="sense"><span class="sense-zh">有意识的</span><span class="sense-en">conscious or aware</span></div><div class="sense"><span class="sense-zh">有感觉能力的</span><span class="sense-en">having the capacity to feel</span><span class="book-context">在本书中用于描述生物体对环境刺激的感知能力，强调生命体的主动感知。</span></div></div>
+  <div class="etymology">源自拉丁语 sentiens（感觉的），是 sentire（感觉、感知）的现在分词。经由法语 sentient 进入英语，17世纪开始使用，强调感知能力。</div>
+  <div class="morpheme">构词：sent(拉丁语「感觉，感知」) + -ient「形容词后缀，表示“具有…性质的”」</div>
+  <div class="example"><span class="example-en">All sentient beings deserve respect.</span><span class="example-zh">所有有知觉的生物都应受到尊重。</span></div><div class="example"><span class="example-en">The robot is not sentient; it only follows programmed instructions.</span><span class="example-zh">这个机器人没有感知能力，只按程序指令行事。</span></div>
+  <div class="collocations">sentient being · sentient creature · sentient life</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">inhabitant</span><span class="pos">n.</span><span class="badge-cefr" style="background:#ef4444">C1</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ɪnˈhæbɪtənt/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ɪnˈhæbɪtənt/</span></div>
+  <div class="gloss"><span class="gloss-zh">居民；居住者；（某地区的）动物或植物</span><span class="gloss-en">a person or animal that lives in a particular place</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">居民，居住者</span><span class="sense-en">a person who lives in a place</span></div><div class="sense"><span class="sense-zh">（某地区的）动物或植物种群成员</span><span class="sense-en">an animal or plant that lives in a particular environment</span></div><div class="sense"><span class="sense-zh">居民</span><span class="sense-en">resident</span><span class="book-context">在本书中用于指代特定环境中的生物，强调其与环境的互动关系。</span></div></div>
+  <div class="etymology">源自拉丁语 inhabitare（居住），由 in-（在内）和 habitare（居住）组成，habitare 是 habere（拥有）的反复动词。经由古法语 inhabitant 进入英语，15世纪开始使用。</div>
+  <div class="morpheme">构词：in-「在内」 + habit(拉丁语「居住，持有」) + -ant「名词后缀，表示“人”」</div>
+  <div class="example"><span class="example-en">The inhabitants of the island are known for their hospitality.</span><span class="example-zh">岛上的居民以热情好客著称。</span></div><div class="example"><span class="example-en">The forest is home to many wild inhabitants.</span><span class="example-zh">森林是许多野生动物的家园。</span></div>
+  <div class="collocations">local inhabitant · original inhabitant · inhabitant of</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">kenneth</span><span class="pos">n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈkɛnɪθ/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈkɛnɪθ/</span></div>
+  <div class="gloss"><span class="gloss-zh">肯尼斯（男子名）</span><span class="gloss-en">a male given name of Scottish origin</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">肯尼斯（男子名）</span><span class="sense-en">Kenneth (male given name)</span></div><div class="sense"><span class="sense-zh">肯尼斯（人名）</span><span class="sense-en">Kenneth (personal name)</span><span class="book-context">在本书中可能指代某个具体人物，通常为学者或作者引用的人物。</span></div></div>
+  <div class="etymology">源自苏格兰盖尔语 Cináed，可能由 cain（美丽的）和 aod（火）组成，或与盖尔语 caoin（哀悼）有关。在英语中作为人名使用，常见于苏格兰和英语国家。</div>
+  <div class="example"><span class="example-en">Kenneth is a common name in Scotland.</span><span class="example-zh">肯尼斯在苏格兰是一个常见的名字。</span></div><div class="example"><span class="example-en">The author cites Kenneth's work in his argument.</span><span class="example-zh">作者在论证中引用了肯尼斯的著作。</span></div>
+  <div class="collocations">Kenneth Clark · Kenneth White · Kenneth Grahame</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">swedish</span><span class="pos">adj./n.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˈswiːdɪʃ/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˈswiːdɪʃ/</span></div>
+  <div class="gloss"><span class="gloss-zh">瑞典的；瑞典人；瑞典语</span><span class="gloss-en">relating to Sweden, its people, or its language; the language of Sweden</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">瑞典的，瑞典人的</span><span class="sense-en">relating to Sweden or its people</span></div><div class="sense"><span class="sense-zh">瑞典语</span><span class="sense-en">the North Germanic language spoken in Sweden</span></div><div class="sense"><span class="sense-zh">瑞典的</span><span class="sense-en">of Sweden</span><span class="book-context">在本书中用于描述与瑞典相关的文化、地域或学术背景。</span></div></div>
+  <div class="etymology">源自中古英语 Swethische，来自 Sweden（瑞典）加后缀 -ish（属于…的）。Sweden 源自斯堪的纳维亚古名 Svithjod，意为“瑞典民族”。首字母大写形式为 Swedish。</div>
+  <div class="morpheme">构词：Swede(古英语「瑞典人」) + -ish「形容词后缀，表示“属于…的”」</div>
+  <div class="example"><span class="example-en">Swedish design is known for its simplicity and functionality.</span><span class="example-zh">瑞典设计以简洁和功能性著称。</span></div><div class="example"><span class="example-en">She is learning Swedish to study in Stockholm.</span><span class="example-zh">她正在学习瑞典语以便在斯德哥尔摩学习。</span></div>
+  <div class="collocations">Swedish language · Swedish culture · Swedish people</div>
+</div>
+<div class="entry">
+  <div class="headword"><span class="word">agricultural</span><span class="pos">adj.</span><span class="badge-cefr" style="background:#f97316">B2</span><span class="badge-freq" title="本书出现 1 次">×1</span></div>
+  <div class="ipa-row"><span class="ipa-accent">美</span> <span class="ipa-val">/ˌæɡrɪˈkʌltʃərəl/</span>　<span class="ipa-accent">英</span> <span class="ipa-val">/ˌæɡrɪˈkʌltʃərəl/</span></div>
+  <div class="gloss"><span class="gloss-zh">农业的；农用的</span><span class="gloss-en">relating to farming or agriculture</span></div>
+  <div class="senses"><div class="sense"><span class="sense-zh">农业的，农事的</span><span class="sense-en">relating to agriculture or farming</span></div><div class="sense"><span class="sense-zh">用于农业的</span><span class="sense-en">used for farming purposes</span></div><div class="sense"><span class="sense-zh">农业的</span><span class="sense-en">of farming</span><span class="book-context">在本书中描述与农耕、土地利用相关的活动或社会形态。</span></div></div>
+  <div class="etymology">源自拉丁语 agricultura（农业），由 ager（田地）和 cultura（耕作）组成。经由法语 agricole 和英语 agricultural 演变而来，17世纪开始使用。</div>
+  <div class="morpheme">构词：agr(拉丁语「田地」) + cult(拉丁语「耕作，培养」) + -al「形容词后缀，表示“与…有关的”」</div>
+  <div class="example"><span class="example-en">Agricultural practices have evolved over centuries.</span><span class="example-zh">农业实践经过几个世纪的发展。</span></div><div class="example"><span class="example-en">The region's economy is primarily agricultural.</span><span class="example-zh">该地区的经济主要以农业为主。</span></div>
+  <div class="collocations">agricultural land · agricultural production · agricultural society</div>
+</div>
+</main></body></html>

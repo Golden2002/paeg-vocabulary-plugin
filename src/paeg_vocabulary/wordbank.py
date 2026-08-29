@@ -403,6 +403,71 @@ def resolve_level_conflict(levels: Dict[str, Optional[str]],
 
 
 # ═══════════════════════════════════════════════════════════
+# ecdict 释义 / 词性清洗（§3.116 ⭐ 排版修复：去字面 \n、去词性前缀、规整领域标签）
+# ═══════════════════════════════════════════════════════════
+# ecdict 词性代码 → 标准词性（ecdict 用 r./s./a. 等非常规缩写；CEFR 词表用全词）
+_POS_ALIAS = {
+    "n": "n.", "v": "v.", "vt": "v.", "vi": "v.", "aux": "v.",
+    "a": "adj.", "s": "adj.", "adj": "adj.",
+    "r": "adv.", "ad": "adv.", "adv": "adv.",
+    "prep": "prep.", "conj": "conj.", "pron": "pron.",
+    "int": "int.", "interj": "int.", "num": "num.",
+    "art": "art.", "abbr": "abbr.", "det": "det.",
+    "phr": "phr.", "comb": "comb.", "suf": "suf.", "pref": "pref.",
+    # CEFR/Oxford 词表全词词性 → 短代码（统一渲染风格）
+    "noun": "n.", "verb": "v.", "adjective": "adj.", "adverb": "adv.",
+    "preposition": "prep.", "conjunction": "conj.", "pronoun": "pron.",
+    "interjection": "int.", "numeral": "num.", "article": "art.",
+    "auxiliary": "v.", "determiner": "det.", "abbreviation": "abbr.",
+}
+
+# ecdict 释义行首词性前缀（n./vt./vi./adj./adv./a./r./s./prep. …）
+_GLOSS_POS_PREFIX_RE = re.compile(
+    r"^(?:n\.|v\.|vt\.|vi\.|adj\.|adv\.|ad\.|a\.|r\.|s\.|prep\.|conj\.|pron\.|"
+    r"int\.|interj\.|num\.|art\.|abbr\.|aux\.|det\.|phr\.|comb\.|suf\.|pref\.)\s+",
+    re.IGNORECASE)
+
+# ecdict 罕见的无点词性码（如 "r in a systematic manner" 的 r=副词、s=形容词）
+_GLOSS_BARE_POS_RE = re.compile(r"^[rs]\s+", re.IGNORECASE)
+
+
+def normalize_pos(pos: str) -> str:
+    """词性代码标准化（ecdict 的 r./s./a. → 通用 adv./adj. 等）。"""
+    if not pos:
+        return ""
+    key = str(pos).strip().lower().rstrip(".")
+    return _POS_ALIAS.get(key, str(pos).strip())
+
+
+def clean_ecdict_gloss(text: str) -> str:
+    """清理 ecdict 释义：字面 \\n → 换行；去行首词性前缀；领域标签 [x] → 〔x〕。
+
+    ecdict translation/definition 字段用字面 \\n 分隔义项、且每行自带词性前缀
+    （如 "n. 商标\\n[法] 商标"），直接渲染会出现 "\n" 乱码与词性重复。
+    清洗后交给渲染层，渲染层再把真实换行转成 <br>。
+    """
+    if not text:
+        return ""
+    t = str(text).replace("\\n", "\n")
+    lines = []
+    for raw in t.split("\n"):
+        line = raw.strip()
+        if not line:
+            continue
+        # 去行首词性前缀（n./vt./a./r. …），避免与 headword 的 pos 徽章重复
+        line = _GLOSS_POS_PREFIX_RE.sub("", line)
+        # 再去无点词性码（r=副词/s=形容词），如 "r in a systematic manner"
+        line = _GLOSS_BARE_POS_RE.sub("", line)
+        # 领域标签规整：[计]/[法]/[医] → 〔计〕/〔法〕/〔医〕
+        line = re.sub(r"\[([^\]]+)\]", r"〔\1〕", line)
+        # 折叠内部多余空格
+        line = re.sub(r"[ \t]{2,}", " ", line)
+        if line:
+            lines.append(line)
+    return "\n".join(lines)
+
+
+# ═══════════════════════════════════════════════════════════
 # WordBank 统一入口
 # ═══════════════════════════════════════════════════════════
 class WordBank:
@@ -475,14 +540,14 @@ class WordBank:
         if ec:
             result["sources"]["ecdict"] = True
             if ec.get("translation_zh"):
-                result["gloss_zh"] = ec["translation_zh"]
+                result["gloss_zh"] = clean_ecdict_gloss(ec["translation_zh"])
             if not result["gloss_en"] and ec.get("definition_en"):
-                result["gloss_en"] = ec["definition_en"]
+                result["gloss_en"] = clean_ecdict_gloss(ec["definition_en"])
             if not result["ipa"] and ec.get("phonetic"):
                 result["ipa"] = ec["phonetic"]
                 result["sources"]["ipa"] = "ecdict"
             if not result["pos"] and ec.get("pos"):
-                result["pos"] = ec["pos"]
+                result["pos"] = normalize_pos(ec["pos"])
 
         return result
 

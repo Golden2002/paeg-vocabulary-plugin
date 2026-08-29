@@ -1,0 +1,1507 @@
+{
+  "ok": true,
+  "errors": [],
+  "html_path": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\Being Alive_词汇表.html",
+  "pdf_path": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\Being Alive_词汇表.pdf",
+  "docx_path": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\Being Alive_词汇表.docx",
+  "accessories": {
+    "高明词统计.html": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\高明词统计.html",
+    "语言学习价值说明.md": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\语言学习价值说明.md",
+    "词频统计报告.md": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\词频统计报告.md",
+    "作者语言风格分析.md": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\作者语言风格分析.md",
+    "短语句式统计.md": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\短语句式统计.md",
+    "SRS复习计划.md": "D:\\桌面\\智能体架构与开发（含大模型）\\14.3_paeg-vocabulary-plugin\\output\\SRS复习计划.md"
+  },
+  "entries_count": 60,
+  "candidates_count": 60,
+  "entries_preview": [
+    {
+      "headword": "tim",
+      "pos": "n.",
+      "ipa": "/tɪm/",
+      "gloss_zh": "蒂姆（男子名）",
+      "gloss_en": "A male given name; also a variant of 'timber' or 'time'",
+      "cefr": "B1",
+      "freq": 9,
+      "etymology": "源自中世纪英语 'Tim'，为 Timothy 的昵称，希腊语 Timotheos 意为“尊崇神”。在古英语中亦与 'timbrian'（建造）相关，后演变为“木材”义。",
+      "examples": [
+        {
+          "en": "Tim Ingold is the author of this book.",
+          "zh": "蒂姆·英戈尔德是这本书的作者。"
+        }
+      ],
+      "collocations": [
+        "Tim Ingold",
+        "Tim's work"
+      ]
+    },
+    {
+      "headword": "alive",
+      "pos": "adj.",
+      "ipa": "/əˈlaɪv/",
+      "gloss_zh": "活着的；有活力的；存在的",
+      "gloss_en": "Living; having life; active or functioning",
+      "cefr": "B1",
+      "freq": 6,
+      "etymology": "源自古英语 'on līfe'（在生命中），由介词 'on' 与名词 'līf'（生命）组合，中古英语时期合并为 'alive'。与德语 'lebendig' 同源。",
+      "examples": [
+        {
+          "en": "The forest is alive with the sounds of birds.",
+          "zh": "森林里鸟鸣声声，生机勃勃。"
+        },
+        {
+          "en": "He felt more alive than ever before.",
+          "zh": "他感到比以往任何时候都更有活力。"
+        }
+      ],
+      "collocations": [
+        "alive and well",
+        "come alive",
+        "keep alive",
+        "alive with"
+      ]
+    },
+    {
+      "headword": "isbn",
+      "pos": "n.",
+      "ipa": "/ˌaɪ ɛs biː ˈɛn/",
+      "gloss_zh": "国际标准书号（International Standard Book Number）",
+      "gloss_en": "International Standard Book Number, a unique identifier for books",
+      "cefr": "C1",
+      "freq": 5,
+      "etymology": "缩写自 International Standard Book Number，1970年由国际标准化组织（ISO）制定，取代了之前的 SBN（Standard Book Number）。",
+      "examples": [
+        {
+          "en": "The ISBN of this book is 978-0-123-45678-9.",
+          "zh": "这本书的ISBN是978-0-123-45678-9。"
+        }
+      ],
+      "collocations": [
+        "ISBN number",
+        "assign an ISBN",
+        "ISBN-13"
+      ]
+    },
+    {
+      "headword": "anthropology",
+      "pos": "n.",
+      "ipa": "/ˌænθrəˈpɑːlədʒi/",
+      "gloss_zh": "人类学，研究人类及其文化的学科",
+      "gloss_en": "The study of humans, their societies, and cultures",
+      "cefr": "B2",
+      "freq": 4,
+      "etymology": "源自希腊语 'anthrōpos'（人）+ '-logia'（研究），16世纪经拉丁语进入英语，最初指“人的自然史”，19世纪发展为系统学科。",
+      "examples": [
+        {
+          "en": "Anthropology explores cultural diversity across the globe.",
+          "zh": "人类学探索全球文化多样性。"
+        },
+        {
+          "en": "She studied anthropology at university.",
+          "zh": "她在大学学习人类学。"
+        }
+      ],
+      "collocations": [
+        "social anthropology",
+        "cultural anthropology",
+        "anthropology of life",
+        "anthropological perspective"
+      ]
+    },
+    {
+      "headword": "philosophy",
+      "pos": "n.",
+      "ipa": "/fəˈlɑːsəfi/",
+      "gloss_zh": "哲学；人生哲理；思想体系",
+      "gloss_en": "The study of fundamental nature of knowledge, reality, and existence; a system of beliefs",
+      "cefr": "B2",
+      "freq": 4,
+      "etymology": "源自古希腊语 'philosophia'，由 'philos'（爱）+ 'sophia'（智慧）组成，意为“爱智慧”，经拉丁语 philosophia 进入英语。",
+      "examples": [
+        {
+          "en": "His philosophy of life emphasizes connection with nature.",
+          "zh": "他的人生哲学强调与自然的联系。"
+        },
+        {
+          "en": "Philosophy asks questions about existence and knowledge.",
+          "zh": "哲学追问存在与知识的问题。"
+        }
+      ],
+      "collocations": [
+        "philosophy of life",
+        "political philosophy",
+        "moral philosophy",
+        "philosophy of mind"
+      ]
+    },
+    {
+      "headword": "world",
+      "pos": "n.",
+      "ipa": "/wɜːrld/",
+      "gloss_zh": "世界；地球；领域；世间",
+      "gloss_en": "The earth and all its inhabitants; a particular sphere or domain",
+      "cefr": "A2",
+      "freq": 4,
+      "etymology": "源自古英语 'woruld'，由 'wer'（人）+ 'eld'（年龄、时代）组成，原意“人的时代”，后演变为“世界、宇宙”。与德语 'Welt' 同源。",
+      "examples": [
+        {
+          "en": "The world is changing rapidly.",
+          "zh": "世界正在迅速变化。"
+        },
+        {
+          "en": "She lives in the world of art.",
+          "zh": "她生活在艺术领域。"
+        }
+      ],
+      "collocations": [
+        "the natural world",
+        "world view",
+        "around the world",
+        "the world of ideas"
+      ]
+    },
+    {
+      "headword": "movement",
+      "pos": "n.",
+      "ipa": "/ˈmuːvmənt/",
+      "gloss_zh": "运动；移动；活动",
+      "gloss_en": "the act or process of moving, or a change in position or location",
+      "cefr": "B1",
+      "freq": 4,
+      "etymology": "源自中古英语 movement，借自古法语 movement，源自拉丁语 movimentum，由 movere（移动）加后缀 -mentum（结果、手段）构成。词根 mov- 与英语 move 同源。",
+      "examples": [
+        {
+          "en": "The movement of animals shapes their surrounding environment.",
+          "zh": "动物的移动塑造着它们周围的环境。"
+        },
+        {
+          "en": "She observed the subtle movements of leaves in the breeze.",
+          "zh": "她观察着树叶在微风中的细微移动。"
+        }
+      ],
+      "collocations": [
+        "movement through space",
+        "bodily movement",
+        "social movement",
+        "rhythmic movement"
+      ]
+    },
+    {
+      "headword": "life",
+      "pos": "n.",
+      "ipa": "/laɪf/",
+      "gloss_zh": "生命；生活；一生",
+      "gloss_en": "the condition that distinguishes organisms from inorganic objects, characterized by growth, reproduction, and response to stimuli",
+      "cefr": "A2",
+      "freq": 3,
+      "etymology": "源自中古英语 lif，古英语 līf，源自原始日耳曼语 *libam（生命，生活），与古诺斯语 líf、古高地德语 lib 同源，最终源自原始印欧语 *leip-（粘附、持续）。",
+      "examples": [
+        {
+          "en": "Life is not a thing but a continual movement of becoming.",
+          "zh": "生命不是一种事物，而是一个持续生成的运动。"
+        },
+        {
+          "en": "The life of a plant is intertwined with the soil and sunlight.",
+          "zh": "植物的生命与土壤和阳光交织在一起。"
+        }
+      ],
+      "collocations": [
+        "life process",
+        "way of life",
+        "life force",
+        "organic life"
+      ]
+    },
+    {
+      "headword": "perception",
+      "pos": "n.",
+      "ipa": "/pərˈsɛpʃən/",
+      "gloss_zh": "感知；知觉；认知",
+      "gloss_en": "the process of becoming aware of something through the senses, or a way of regarding or understanding something",
+      "cefr": "B2",
+      "freq": 3,
+      "etymology": "源自中古英语 percepcioun，借自古法语 percepcion，源自拉丁语 perceptio（接收、感知），由 percipere（感知）加后缀 -tio 构成，per- 意为“完全”，capere 意为“抓住”。",
+      "examples": [
+        {
+          "en": "Perception arises through the organism's active exploration of its surroundings.",
+          "zh": "感知产生于有机体对其环境的主动探索。"
+        },
+        {
+          "en": "Our perception of the landscape changes as we walk through it.",
+          "zh": "我们穿行于风景中时，对它的感知会发生变化。"
+        }
+      ],
+      "collocations": [
+        "perception of environment",
+        "sensory perception",
+        "direct perception",
+        "perceptual activity"
+      ]
+    },
+    {
+      "headword": "environment",
+      "pos": "n.",
+      "ipa": "/ɪnˈvaɪrənmənt/",
+      "gloss_zh": "环境；周围状况",
+      "gloss_en": "the surroundings or conditions in which a person, animal, or plant lives or operates",
+      "cefr": "B1",
+      "freq": 3,
+      "etymology": "源自法语 environnement，由 environ（周围）加后缀 -ment 构成，environ 源自古法语 environ（在周围），可能由 en（在）和 viron（圆圈）组合，viron 源自 virer（转向）。",
+      "examples": [
+        {
+          "en": "Organisms do not adapt to a fixed environment; they participate in its formation.",
+          "zh": "有机体并非适应固定的环境，而是参与其形成。"
+        },
+        {
+          "en": "The environment is not a container but a mesh of relationships.",
+          "zh": "环境不是容器，而是关系的网络。"
+        }
+      ],
+      "collocations": [
+        "built environment",
+        "natural environment",
+        "environmental perception",
+        "organism-environment"
+      ]
+    },
+    {
+      "headword": "knowledge",
+      "pos": "n.",
+      "ipa": "/ˈnɑːlɪdʒ/",
+      "gloss_zh": "知识；学问；认识",
+      "gloss_en": "information, understanding, or skills acquired through experience or education",
+      "cefr": "B1",
+      "freq": 3,
+      "etymology": "源自中古英语 knowleche，由 knowen（知道）加后缀 -leche（表示状态或行为），-leche 可能源自古英语 -læcan（给予）。与 know 同源。",
+      "examples": [
+        {
+          "en": "Knowledge grows along the paths of practice, not in isolated minds.",
+          "zh": "知识沿着实践的路径生长，而不是在孤立的头脑中。"
+        },
+        {
+          "en": "Traditional knowledge is passed on through hands-on engagement.",
+          "zh": "传统知识通过亲身参与得以传承。"
+        }
+      ],
+      "collocations": [
+        "practical knowledge",
+        "embodied knowledge",
+        "knowledge in practice",
+        "tacit knowledge"
+      ]
+    },
+    {
+      "headword": "description",
+      "pos": "n.",
+      "ipa": "/dɪˈskrɪpʃən/",
+      "gloss_zh": "描述；描写；说明",
+      "gloss_en": "a spoken or written account of a person, object, or event, or the act of describing",
+      "cefr": "B1",
+      "freq": 3,
+      "etymology": "源自中古英语 descripcioun，借自古法语 description，源自拉丁语 descriptio（描绘），由 describere（描述）加后缀 -tio 构成，de- 意为“向下”，scribere 意为“写”。",
+      "examples": [
+        {
+          "en": "A good description of a landscape can convey its living rhythms.",
+          "zh": "对风景的好的描述能传达其生命节奏。"
+        },
+        {
+          "en": "The scientist's description of the organism was shaped by his active observation.",
+          "zh": "科学家对有机体的描述受其主动观察的影响。"
+        }
+      ],
+      "collocations": [
+        "detailed description",
+        "verbal description",
+        "ethnographic description",
+        "descriptive account"
+      ]
+    },
+    {
+      "headword": "routledge",
+      "pos": "n.",
+      "ipa": "/ˈraʊtlɪdʒ/",
+      "gloss_zh": "劳特利奇（出版社名）",
+      "gloss_en": "Routledge, a major academic publisher",
+      "cefr": "C1",
+      "freq": 3,
+      "etymology": "源自中世纪英语地名Routledge，原为姓氏，后成为出版公司名。词源不确定，可能与古英语 'rout'（道路）和 'ledge'（边缘）有关。",
+      "examples": [
+        {
+          "en": "The book was published by Routledge.",
+          "zh": "这本书由劳特利奇出版社出版。"
+        }
+      ],
+      "collocations": [
+        "Routledge publications",
+        "Routledge editor"
+      ]
+    },
+    {
+      "headword": "franci",
+      "pos": "n.",
+      "ipa": "/ˈfræntʃi/",
+      "gloss_zh": "弗朗西（姓氏或地名）",
+      "gloss_en": "Franci, a surname or place name",
+      "cefr": "C2",
+      "freq": 3,
+      "etymology": "源自意大利语或拉丁语，与'Francesco'相关，源自中世纪拉丁语Franciscus，意为'法国人'或'自由人'。",
+      "examples": [
+        {
+          "en": "Franci was mentioned in the introduction.",
+          "zh": "弗朗西在引言中被提及。"
+        }
+      ],
+      "collocations": [
+        "Franci family",
+        "Franci region"
+      ]
+    },
+    {
+      "headword": "trademark",
+      "pos": "n.",
+      "ipa": "/ˈtreɪdmɑːrk/",
+      "gloss_zh": "商标；标志性特征",
+      "gloss_en": "A distinctive sign or indicator used by an individual or organization; a distinctive characteristic",
+      "cefr": "B2",
+      "freq": 3,
+      "etymology": "源自16世纪英语，'trade'（贸易）和'mark'（标记）组合，最初指商人在商品上做的标记，后演变为法律保护的商标。",
+      "examples": [
+        {
+          "en": "The company's trademark is recognized worldwide.",
+          "zh": "该公司的商标举世闻名。"
+        },
+        {
+          "en": "Her humor is her trademark.",
+          "zh": "她的幽默是她的标志性特征。"
+        }
+      ],
+      "collocations": [
+        "registered trademark",
+        "trademark symbol",
+        "trademark infringement"
+      ]
+    },
+    {
+      "headword": "line",
+      "pos": "n.",
+      "ipa": "/laɪn/",
+      "gloss_zh": "线；线条；路线；行；边界",
+      "gloss_en": "A long, narrow mark; a route or direction; a row of words or objects; a boundary",
+      "cefr": "B1",
+      "freq": 2,
+      "etymology": "源自拉丁语'linea'（亚麻线），经由古法语'linge'进入英语，最初指亚麻制成的线，后引申为各种线状物。",
+      "examples": [
+        {
+          "en": "Draw a straight line.",
+          "zh": "画一条直线。"
+        },
+        {
+          "en": "The railway line runs through the valley.",
+          "zh": "铁路线穿过山谷。"
+        }
+      ],
+      "collocations": [
+        "straight line",
+        "line of thought",
+        "on the line",
+        "line drawing"
+      ]
+    },
+    {
+      "headword": "art",
+      "pos": "n.",
+      "ipa": "/ɑːrt/",
+      "gloss_zh": "艺术；技艺；美术",
+      "gloss_en": "The expression of creative skill and imagination; a skill or craft",
+      "cefr": "B1",
+      "freq": 2,
+      "etymology": "源自拉丁语'ars'（技艺），经由古法语'art'进入英语。最初指任何技能或学问，后特指美术和创造性表达。",
+      "examples": [
+        {
+          "en": "She studied art at university.",
+          "zh": "她在大学学习艺术。"
+        },
+        {
+          "en": "The art of cooking is passed down through generations.",
+          "zh": "烹饪技艺代代相传。"
+        }
+      ],
+      "collocations": [
+        "fine art",
+        "work of art",
+        "art form",
+        "the art of"
+      ]
+    },
+    {
+      "headword": "ecology",
+      "pos": "n.",
+      "ipa": "/ɪˈkɑːlədʒi/",
+      "gloss_zh": "生态学；生态",
+      "gloss_en": "The branch of biology dealing with relations of organisms to their environment; the environment itself",
+      "cefr": "B2",
+      "freq": 2,
+      "etymology": "源自德语'Ökologie'，由希腊语'oikos'（家）和'-logy'（学科）组合，由恩斯特·海克尔于1866年创造，意为'研究生物与其环境关系的科学'。",
+      "examples": [
+        {
+          "en": "Ecology is essential for understanding climate change.",
+          "zh": "生态学对于理解气候变化至关重要。"
+        },
+        {
+          "en": "The ecology of the region is fragile.",
+          "zh": "该地区的生态十分脆弱。"
+        }
+      ],
+      "collocations": [
+        "human ecology",
+        "ecology of mind",
+        "deep ecology",
+        "ecological balance"
+      ]
+    },
+    {
+      "headword": "simultaneously",
+      "pos": "adv.",
+      "ipa": "/ˌsaɪmlˈteɪniəsli/",
+      "gloss_zh": "同时地",
+      "gloss_en": "at the same time",
+      "cefr": "B2",
+      "freq": 2,
+      "etymology": "源自拉丁语 simul（同时）+ 后缀 -aneous（具有…性质的）+ -ly（副词后缀），经法语 simultané 进入英语。",
+      "examples": [
+        {
+          "en": "The two events occurred simultaneously.",
+          "zh": "这两个事件同时发生。"
+        },
+        {
+          "en": "She can speak and write simultaneously.",
+          "zh": "她能同时说话和写作。"
+        }
+      ],
+      "collocations": [
+        "occur simultaneously",
+        "simultaneously with",
+        "run simultaneously"
+      ]
+    },
+    {
+      "headword": "science",
+      "pos": "n.",
+      "ipa": "/ˈsaɪəns/",
+      "gloss_zh": "科学；自然科学",
+      "gloss_en": "the systematic study of the structure and behavior of the physical and natural world through observation and experiment",
+      "cefr": "B1",
+      "freq": 2,
+      "etymology": "源自拉丁语 scientia（知识），来自 scire（知道），经古法语 science 进入英语，14世纪起指系统知识。",
+      "examples": [
+        {
+          "en": "Science has advanced rapidly in recent decades.",
+          "zh": "近几十年来科学进步迅速。"
+        },
+        {
+          "en": "Modern science relies on empirical evidence.",
+          "zh": "现代科学依赖经验证据。"
+        }
+      ],
+      "collocations": [
+        "natural science",
+        "social science",
+        "science fiction",
+        "scientific method"
+      ]
+    },
+    {
+      "headword": "publication",
+      "pos": "n.",
+      "ipa": "/ˌpʌblɪˈkeɪʃən/",
+      "gloss_zh": "出版；出版物；发表",
+      "gloss_en": "the act of making information available to the public, especially in printed or digital form",
+      "cefr": "B2",
+      "freq": 2,
+      "etymology": "源自拉丁语 publicare（公开），来自 publicus（公共的），经古法语 publication 进入英语，15世纪指公开行为，后特指出版。",
+      "examples": [
+        {
+          "en": "Her latest publication was widely cited.",
+          "zh": "她最新的出版物被广泛引用。"
+        },
+        {
+          "en": "The journal's publication is monthly.",
+          "zh": "该期刊每月出版。"
+        }
+      ],
+      "collocations": [
+        "academic publication",
+        "research publication",
+        "publication date",
+        "peer-reviewed publication"
+      ]
+    },
+    {
+      "headword": "consistently",
+      "pos": "adv.",
+      "ipa": "/kənˈsɪstəntli/",
+      "gloss_zh": "一贯地；始终如一地",
+      "gloss_en": "in a way that is steady, regular, and unchanging",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自拉丁语 consistere（站立一起），由 com-（一起）+ sistere（站立）组成，经英语 consistent + -ly 构成。",
+      "examples": [
+        {
+          "en": "He consistently performs well in exams.",
+          "zh": "他在考试中表现一贯出色。"
+        },
+        {
+          "en": "The data has been consistently reliable.",
+          "zh": "数据一直可靠。"
+        }
+      ],
+      "collocations": [
+        "consistently good",
+        "consistently high",
+        "consistently maintained",
+        "consistently applied"
+      ]
+    },
+    {
+      "headword": "exploratory",
+      "pos": "adj.",
+      "ipa": "/ɪkˈsplɔːrətɔːri/",
+      "gloss_zh": "探索性的；勘探的",
+      "gloss_en": "relating to the act of exploring or investigating",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "源自拉丁语 explorare（探查），由 ex-（向外）+ plorare（呼喊）组成，经英语 explore + -atory 构成。",
+      "examples": [
+        {
+          "en": "The exploratory study revealed new insights.",
+          "zh": "探索性研究揭示了新见解。"
+        },
+        {
+          "en": "They conducted an exploratory survey of the area.",
+          "zh": "他们对该地区进行了勘探性调查。"
+        }
+      ],
+      "collocations": [
+        "exploratory research",
+        "exploratory study",
+        "exploratory phase",
+        "exploratory analysis"
+      ]
+    },
+    {
+      "headword": "provocative",
+      "pos": "adj.",
+      "ipa": "/prəˈvɑːkətɪv/",
+      "gloss_zh": "挑衅的；引起争论的",
+      "gloss_en": "causing anger, interest, or thought; intended to provoke a reaction",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "源自拉丁语 provocare（召唤），由 pro-（向前）+ vocare（呼叫）组成，经法语 provocatif 进入英语，16世纪起指挑衅性的。",
+      "examples": [
+        {
+          "en": "Her provocative questions sparked a lively debate.",
+          "zh": "她挑衅性的问题引发了热烈的辩论。"
+        },
+        {
+          "en": "The article was highly provocative and controversial.",
+          "zh": "这篇文章极具挑衅性且引发争议。"
+        }
+      ],
+      "collocations": [
+        "provocative statement",
+        "provocative idea",
+        "provocative question",
+        "provocative style"
+      ]
+    },
+    {
+      "headword": "exactingly",
+      "pos": "adv.",
+      "ipa": "/ɪɡˈzæktɪŋli/",
+      "gloss_zh": "严格地，苛求地",
+      "gloss_en": "in a manner that demands great precision, accuracy, or strictness",
+      "cefr": "C2",
+      "freq": 1,
+      "etymology": "源自拉丁语 exactus（精确的，完成的），由 ex-（出）+ agere（驱动）的过去分词构成，经法语 exact 进入英语，加后缀 -ing（形容词）+ -ly（副词）形成。",
+      "examples": [
+        {
+          "en": "The task was exactingly detailed, leaving no room for error.",
+          "zh": "这项任务严格细致，容不得半点差错。"
+        }
+      ],
+      "collocations": [
+        "exactingly precise",
+        "exactingly detailed",
+        "exactingly demanding"
+      ]
+    },
+    {
+      "headword": "lucid",
+      "pos": "adj.",
+      "ipa": "/ˈluːsɪd/",
+      "gloss_zh": "清晰的，易懂的；神志清醒的",
+      "gloss_en": "clear and easy to understand; mentally sound or rational",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "源自拉丁语 lucidus（明亮的，清晰的），来自 lux（光）的词根 luc-，经法语 lucide 进入英语，17世纪起用于指思想或表达的清晰。",
+      "examples": [
+        {
+          "en": "Her lucid prose made complex ideas accessible to all readers.",
+          "zh": "她清晰的文笔使复杂的观点对读者来说易于理解。"
+        }
+      ],
+      "collocations": [
+        "lucid explanation",
+        "lucid prose",
+        "lucid mind",
+        "lucid dream"
+      ]
+    },
+    {
+      "headword": "poetic",
+      "pos": "adj.",
+      "ipa": "/poʊˈɛtɪk/",
+      "gloss_zh": "诗的，诗歌的；富有诗意的",
+      "gloss_en": "relating to poetry; having a quality of beauty, imagination, or emotional depth typical of poetry",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自希腊语 poiētikos（创造的，诗的），来自 poiētēs（诗人），源自 poiein（制作，创造），经拉丁语 poeticus 和法语 poétique 进入英语。",
+      "examples": [
+        {
+          "en": "The author's poetic descriptions of nature evoke deep emotions.",
+          "zh": "作者对自然的诗意描写唤起了深深的情感。"
+        }
+      ],
+      "collocations": [
+        "poetic language",
+        "poetic imagery",
+        "poetic justice",
+        "poetic license"
+      ]
+    },
+    {
+      "headword": "eloquence",
+      "pos": "n.",
+      "ipa": "/ˈɛləkwəns/",
+      "gloss_zh": "雄辩，口才；流利而有说服力的表达",
+      "gloss_en": "fluent, persuasive, and expressive speech or writing",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "源自拉丁语 eloquentia（雄辩），来自 eloqui（说出，表达），由 e-（出）+ loqui（说话）构成，经古法语 eloquence 进入英语。",
+      "examples": [
+        {
+          "en": "His eloquence moved the audience to tears.",
+          "zh": "他的雄辩使听众感动落泪。"
+        }
+      ],
+      "collocations": [
+        "powerful eloquence",
+        "natural eloquence",
+        "speak with eloquence",
+        "rhetorical eloquence"
+      ]
+    },
+    {
+      "headword": "amongst",
+      "pos": "prep.",
+      "ipa": "/əˈmʌŋst/",
+      "gloss_zh": "在…之中，在…之间（among 的变体）",
+      "gloss_en": "in the midst of; surrounded by; among",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自中古英语 amonges，由 among + 属格后缀 -es 演变而来，最终源自古英语 on gemang（在人群中），gemang 意为“混合，群体”。",
+      "examples": [
+        {
+          "en": "She felt at ease amongst her colleagues.",
+          "zh": "她在同事中间感到自在。"
+        }
+      ],
+      "collocations": [
+        "amongst friends",
+        "amongst others",
+        "amongst the crowd",
+        "amongst themselves"
+      ]
+    },
+    {
+      "headword": "calligraphy",
+      "pos": "n.",
+      "ipa": "/kəˈlɪɡrəfi/",
+      "gloss_zh": "书法；书法艺术",
+      "gloss_en": "the art of beautiful handwriting, often with a brush or pen; decorative lettering",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "源自希腊语 kalligraphia，由 kallos（美丽）+ graphein（书写）构成，经拉丁语 calligraphia 和法语 calligraphie 进入英语，16世纪起使用。",
+      "examples": [
+        {
+          "en": "The ancient manuscript was renowned for its exquisite calligraphy.",
+          "zh": "这份古代手稿以其精美的书法而闻名。"
+        }
+      ],
+      "collocations": [
+        "Chinese calligraphy",
+        "calligraphy pen",
+        "calligraphy art",
+        "master of calligraphy"
+      ]
+    },
+    {
+      "headword": "carpentry",
+      "pos": "n.",
+      "ipa": "/ˈkɑːrpəntri/",
+      "gloss_zh": "木工手艺；木工业",
+      "gloss_en": "the art or trade of a carpenter; woodworking",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "From Old French 'carpenterie' (woodworking), from Latin 'carpentum' (wagon, cart), from Gaulish 'carbanto-' (chariot). The suffix '-ry' denotes trade or practice.",
+      "examples": [
+        {
+          "en": "He learned carpentry from his grandfather.",
+          "zh": "他从祖父那里学会了木工手艺。"
+        },
+        {
+          "en": "The cabin was built with fine carpentry.",
+          "zh": "这间小屋的木工活做得非常精细。"
+        }
+      ],
+      "collocations": [
+        "carpentry skills",
+        "carpentry tools",
+        "carpentry workshop"
+      ]
+    },
+    {
+      "headword": "kite",
+      "pos": "n.",
+      "ipa": "/kaɪt/",
+      "gloss_zh": "风筝；鸢（猛禽）",
+      "gloss_en": "a light frame covered with paper or cloth, flown in the wind; also a bird of prey of the hawk family",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "From Old English 'cyta' (kite bird), possibly from Proto-Germanic '*kutijon'. The meaning of toy kite developed in the 17th century, named for the bird's soaring flight.",
+      "examples": [
+        {
+          "en": "The children flew a kite in the park.",
+          "zh": "孩子们在公园里放风筝。"
+        },
+        {
+          "en": "A red kite circled above the valley.",
+          "zh": "一只红鸢在山谷上空盘旋。"
+        }
+      ],
+      "collocations": [
+        "fly a kite",
+        "kite string",
+        "kite flying"
+      ]
+    },
+    {
+      "headword": "aboriginal",
+      "pos": "adj. & n.",
+      "ipa": "/ˌæbəˈrɪdʒənl/",
+      "gloss_zh": "土著的；原住民的；土著居民",
+      "gloss_en": "relating to the original inhabitants of a place; native; an original inhabitant",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "From Latin 'aborigines' (original inhabitants of Latium), from 'ab origine' (from the beginning). The word was adopted in English in the 16th century to refer to indigenous peoples.",
+      "examples": [
+        {
+          "en": "The aboriginal tribes have lived here for thousands of years.",
+          "zh": "这些土著部落已在此生活数千年。"
+        },
+        {
+          "en": "Aboriginal art is rich in symbolism.",
+          "zh": "土著艺术富含象征意义。"
+        }
+      ],
+      "collocations": [
+        "aboriginal people",
+        "aboriginal culture",
+        "aboriginal land rights"
+      ]
+    },
+    {
+      "headword": "alaskan",
+      "pos": "adj. & n.",
+      "ipa": "/əˈlæskən/",
+      "gloss_zh": "阿拉斯加的；阿拉斯加人",
+      "gloss_en": "relating to Alaska or its people; a native or inhabitant of Alaska",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "From the place name 'Alaska', derived from Aleut 'alaxsxaq' (mainland, the object toward which the sea acts). Suffix '-an' denotes belonging or origin.",
+      "examples": [
+        {
+          "en": "The Alaskan wilderness is vast and wild.",
+          "zh": "阿拉斯加的荒野广袤而原始。"
+        },
+        {
+          "en": "She met an Alaskan who taught her about sled dogs.",
+          "zh": "她遇到一位阿拉斯加人，教她关于雪橇犬的知识。"
+        }
+      ],
+      "collocations": [
+        "Alaskan native",
+        "Alaskan wilderness",
+        "Alaskan culture"
+      ]
+    },
+    {
+      "headword": "arachnid",
+      "pos": "n.",
+      "ipa": "/əˈræknɪd/",
+      "gloss_zh": "蛛形纲动物（蜘蛛、蝎子、螨等）",
+      "gloss_en": "an arthropod of the class Arachnida, having eight legs and no antennae, including spiders, scorpions, mites, and ticks",
+      "cefr": "C2",
+      "freq": 1,
+      "etymology": "From French 'arachnide', from Greek 'arachnē' (spider) + '-id' (member of a taxonomic group). The term was coined in the 19th century for the class of arthropods.",
+      "examples": [
+        {
+          "en": "Spiders are the most familiar arachnids.",
+          "zh": "蜘蛛是最为人熟知的蛛形纲动物。"
+        },
+        {
+          "en": "Scientists discovered a new arachnid species in the cave.",
+          "zh": "科学家在洞穴中发现了一种新的蛛形纲物种。"
+        }
+      ],
+      "collocations": [
+        "arachnid species",
+        "arachnid venom",
+        "arachnid anatomy"
+      ]
+    },
+    {
+      "headword": "meditation",
+      "pos": "n.",
+      "ipa": "/ˌmɛdɪˈteɪʃən/",
+      "gloss_zh": "冥想；沉思；默想",
+      "gloss_en": "the practice of focusing the mind, often for relaxation or spiritual purposes; deep thought or contemplation",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "From Latin 'meditatio' (thinking over, reflection), from 'meditari' (to think, ponder, contemplate). The word entered English via Old French 'meditacioun' in the 13th century.",
+      "examples": [
+        {
+          "en": "She practices meditation every morning.",
+          "zh": "她每天早上练习冥想。"
+        },
+        {
+          "en": "His meditation on the meaning of life lasted hours.",
+          "zh": "他对生命意义的沉思持续了数小时。"
+        }
+      ],
+      "collocations": [
+        "mindfulness meditation",
+        "meditation practice",
+        "deep meditation"
+      ]
+    },
+    {
+      "headword": "passionate",
+      "pos": "adj.",
+      "ipa": "/ˈpæʃənət/",
+      "gloss_zh": "热情的；充满激情的",
+      "gloss_en": "showing or caused by intense feeling or strong belief",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自拉丁语 passio（受苦、情感），经古法语 passioun 进入中古英语，-ate 形容词后缀表示‘具有…性质的’。最初指‘受难’（如基督受难），后引申为‘强烈情感’。",
+      "examples": [
+        {
+          "en": "She is passionate about environmental conservation.",
+          "zh": "她对环境保护充满热情。"
+        },
+        {
+          "en": "His passionate speech moved the audience.",
+          "zh": "他充满激情的演讲打动了观众。"
+        }
+      ],
+      "collocations": [
+        "passionate about",
+        "passionate love",
+        "passionate speech"
+      ]
+    },
+    {
+      "headword": "rebuttal",
+      "pos": "n.",
+      "ipa": "/rɪˈbʌtəl/",
+      "gloss_zh": "反驳；反证",
+      "gloss_en": "a statement or argument that opposes or disproves another",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "源自中古英语 rebuten（反驳），来自古法语 reboter（击退），由 re-（回）+ boter（击打）构成，-al 名词后缀表示行为或结果。",
+      "examples": [
+        {
+          "en": "The scientist offered a strong rebuttal to the criticism.",
+          "zh": "这位科学家对批评提出了有力的反驳。"
+        },
+        {
+          "en": "Her rebuttal was well-reasoned and convincing.",
+          "zh": "她的反驳论证严密且令人信服。"
+        }
+      ],
+      "collocations": [
+        "rebuttal argument",
+        "offer a rebuttal",
+        "rebuttal evidence"
+      ]
+    },
+    {
+      "headword": "reductionism",
+      "pos": "n.",
+      "ipa": "/rɪˈdʌkʃənɪzəm/",
+      "gloss_zh": "还原论；简化论",
+      "gloss_en": "the practice of explaining complex phenomena by reducing them to simpler or more fundamental components",
+      "cefr": "C2",
+      "freq": 1,
+      "etymology": "由 reduce（减少，还原）派生，reduce 源自拉丁语 reducere（带回），re-（回）+ ducere（引导），-ism 名词后缀表示学说或主义。",
+      "examples": [
+        {
+          "en": "Critics argue that reductionism fails to capture the essence of living beings.",
+          "zh": "批评者认为还原论无法捕捉生命体的本质。"
+        },
+        {
+          "en": "The philosophical debate on reductionism remains unresolved.",
+          "zh": "关于还原论的哲学争论仍未解决。"
+        }
+      ],
+      "collocations": [
+        "scientific reductionism",
+        "critique of reductionism",
+        "reductionism in biology"
+      ]
+    },
+    {
+      "headword": "celebration",
+      "pos": "n.",
+      "ipa": "/ˌsɛləˈbreɪʃən/",
+      "gloss_zh": "庆祝；庆典",
+      "gloss_en": "the act of celebrating; a public or private event to mark a special occasion",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自拉丁语 celebratio（庆祝），来自 celebrare（频繁举行、颂扬），由 celeber（人群、热闹）派生，-tion 名词后缀。",
+      "examples": [
+        {
+          "en": "The festival was a celebration of life and community.",
+          "zh": "这个节日是对生命和社区的庆祝。"
+        },
+        {
+          "en": "They held a celebration for the successful harvest.",
+          "zh": "他们为丰收举行了庆祝活动。"
+        }
+      ],
+      "collocations": [
+        "in celebration of",
+        "celebration ceremony",
+        "joyful celebration"
+      ]
+    },
+    {
+      "headword": "creativity",
+      "pos": "n.",
+      "ipa": "/ˌkriːeɪˈtɪvəti/",
+      "gloss_zh": "创造力；创造性",
+      "gloss_en": "the ability to produce original and valuable ideas or works",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自拉丁语 creare（创造），经 create + -ive 形容词后缀 + -ity 名词后缀，表示‘创造性’的品质。",
+      "examples": [
+        {
+          "en": "Creativity is essential for scientific discovery.",
+          "zh": "创造力对科学发现至关重要。"
+        },
+        {
+          "en": "The artist's creativity knows no bounds.",
+          "zh": "这位艺术家的创造力无边无际。"
+        }
+      ],
+      "collocations": [
+        "creative thinking",
+        "foster creativity",
+        "human creativity"
+      ]
+    },
+    {
+      "headword": "broadest",
+      "pos": "adj.",
+      "ipa": "/ˈbrɔːdɪst/",
+      "gloss_zh": "最广泛的；最宽阔的",
+      "gloss_en": "largest in extent or scope; widest",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "broad 源自古英语 brād（宽阔的），-est 为最高级后缀，表示‘最…的’。",
+      "examples": [
+        {
+          "en": "This is the broadest definition of life.",
+          "zh": "这是对生命最广泛的定义。"
+        },
+        {
+          "en": "She has the broadest knowledge in the field.",
+          "zh": "她拥有该领域最广泛的知识。"
+        }
+      ],
+      "collocations": [
+        "broadest sense",
+        "broadest possible",
+        "broadest scope"
+      ]
+    },
+    {
+      "headword": "humane",
+      "pos": "adj.",
+      "ipa": "/hjuːˈmeɪn/",
+      "gloss_zh": "人道的；仁慈的；人文的",
+      "gloss_en": "showing kindness, care, and sympathy towards others, especially those who are suffering",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自拉丁语 humanus（人类的，人道的），经由古法语 humain 演变而来。与 human 同源，但保留了更古老的拼写和意义，强调人性中仁慈、文明的一面。",
+      "examples": [
+        {
+          "en": "A humane society treats all living beings with respect.",
+          "zh": "一个人道的社会尊重所有生命体。"
+        },
+        {
+          "en": "The humane approach to medicine focuses on the patient's well-being.",
+          "zh": "人道的医学方法关注患者的福祉。"
+        }
+      ],
+      "collocations": [
+        "humane treatment",
+        "humane society",
+        "humane education",
+        "humane values"
+      ]
+    },
+    {
+      "headword": "stuart",
+      "pos": "n.",
+      "ipa": "/ˈstuːərt/",
+      "gloss_zh": "斯图亚特（姓氏或名字）",
+      "gloss_en": "a surname or given name, often associated with the Stuart dynasty of Scotland and England",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自苏格兰盖尔语 Steward，意为“管家”，后成为王室姓氏。斯图亚特王朝统治苏格兰和英格兰，该名字在历史语境中常指代这一王朝。",
+      "examples": [
+        {
+          "en": "Stuart is a common surname in Scotland.",
+          "zh": "斯图亚特在苏格兰是常见的姓氏。"
+        },
+        {
+          "en": "The Stuart dynasty played a significant role in British history.",
+          "zh": "斯图亚特王朝在英国历史上扮演了重要角色。"
+        }
+      ],
+      "collocations": [
+        "Stuart dynasty",
+        "Stuart period",
+        "Stuart Hall"
+      ]
+    },
+    {
+      "headword": "mclean",
+      "pos": "n.",
+      "ipa": "/məˈkleɪn/",
+      "gloss_zh": "麦克莱恩（姓氏）",
+      "gloss_en": "a surname of Scottish origin",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "源自苏格兰盖尔语 Mac Gille Eathain，意为“圣约翰仆人的儿子”，后简化为 McLean 或 McLean。",
+      "examples": [
+        {
+          "en": "Dr. McLean published several papers on ecology.",
+          "zh": "麦克莱恩博士发表了几篇生态学论文。"
+        },
+        {
+          "en": "The McLean family has a long history in the Highlands.",
+          "zh": "麦克莱恩家族在高地有悠久的历史。"
+        }
+      ],
+      "collocations": [
+        "McLean Hospital",
+        "Norman McLean",
+        "McLean County"
+      ]
+    },
+    {
+      "headword": "minnesota",
+      "pos": "n.",
+      "ipa": "/ˌmɪnɪˈsoʊtə/",
+      "gloss_zh": "明尼苏达（美国州名）",
+      "gloss_en": "a state in the northern United States, known for its lakes and cold winters",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自达科他语（苏语）的 mní sota，意为“浑浊的水”，指明尼苏达河。后成为该地区名称。",
+      "examples": [
+        {
+          "en": "Minnesota is known as the Land of 10,000 Lakes.",
+          "zh": "明尼苏达以“万湖之州”闻名。"
+        },
+        {
+          "en": "The University of Minnesota has a strong research program.",
+          "zh": "明尼苏达大学拥有强大的研究项目。"
+        }
+      ],
+      "collocations": [
+        "University of Minnesota",
+        "Minnesota River",
+        "Minnesota Vikings"
+      ]
+    },
+    {
+      "headword": "all-encompass",
+      "pos": "v.",
+      "ipa": "/ˌɔːl ɪnˈkʌmpəs/",
+      "gloss_zh": "包含一切；涵盖全部",
+      "gloss_en": "to include or cover everything completely",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "由 all（全部）和 encompass（包围，包含）复合而成。encompass 源自中古法语 encomprasser，由 en-（使）和 compass（范围）组成。",
+      "examples": [
+        {
+          "en": "The theory aims to all-encompass all aspects of human existence.",
+          "zh": "该理论旨在涵盖人类存在的所有方面。"
+        },
+        {
+          "en": "Her approach all-encompasses both the physical and the spiritual.",
+          "zh": "她的方法涵盖了物质和精神两个方面。"
+        }
+      ],
+      "collocations": [
+        "all-encompassing view",
+        "all-encompassing framework",
+        "all-encompassing theory"
+      ]
+    },
+    {
+      "headword": "aliveness",
+      "pos": "n.",
+      "ipa": "/əˈlaɪvnəs/",
+      "gloss_zh": "活力；生命力；生机",
+      "gloss_en": "the state of being alive; vitality or liveliness",
+      "cefr": "C2",
+      "freq": 1,
+      "etymology": "由 alive（活着的）加上名词后缀 -ness 构成。alive 源自古英语 on līfe，意为“在生命中”，后演变为 alive。",
+      "examples": [
+        {
+          "en": "The garden is full of aliveness in spring.",
+          "zh": "春天的花园充满生机。"
+        },
+        {
+          "en": "Her paintings capture the aliveness of the natural world.",
+          "zh": "她的画作捕捉了自然世界的活力。"
+        }
+      ],
+      "collocations": [
+        "sense of aliveness",
+        "vibrant aliveness",
+        "aliveness of life"
+      ]
+    },
+    {
+      "headword": "affirmative",
+      "pos": "adj./n.",
+      "ipa": "/əˈfɜːrmətɪv/",
+      "gloss_zh": "肯定的；赞成的；肯定语",
+      "gloss_en": "expressing agreement or consent; positive",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自拉丁语 affirmativus，由 affirmare（肯定，使坚定）加后缀 -ivus 构成；affirmare 来自 ad-（向）+ firmare（使坚固），firmare 源自 firmus（坚固的）。",
+      "examples": [
+        {
+          "en": "The affirmative response was met with cheers.",
+          "zh": "肯定的回答赢得了欢呼。"
+        },
+        {
+          "en": "He gave an affirmative nod.",
+          "zh": "他肯定地点了点头。"
+        }
+      ],
+      "collocations": [
+        "affirmative action",
+        "in the affirmative",
+        "affirmative answer"
+      ]
+    },
+    {
+      "headword": "hayden",
+      "pos": "n.",
+      "ipa": "/ˈheɪdən/",
+      "gloss_zh": "海登（姓氏或人名）",
+      "gloss_en": "a surname or given name",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自英语姓氏，可能源自古英语，意为“干草谷”或“干草丘”，由 hēg（干草）+ denu（谷）或 dūn（丘）组合。",
+      "examples": [
+        {
+          "en": "Hayden's work on perception influenced the discussion.",
+          "zh": "海登关于感知的研究影响了讨论。"
+        },
+        {
+          "en": "The reference to Hayden is essential here.",
+          "zh": "这里对海登的引用至关重要。"
+        }
+      ],
+      "collocations": [
+        "Hayden White",
+        "Hayden's theory"
+      ]
+    },
+    {
+      "headword": "lorimer",
+      "pos": "n.",
+      "ipa": "/ˈlɔːrɪmər/",
+      "gloss_zh": "洛里默（姓氏或人名）",
+      "gloss_en": "a surname or given name",
+      "cefr": "C2",
+      "freq": 1,
+      "etymology": "源自中世纪英语，可能源自诺曼法语，意为“马具匠”或“马镫制造者”，源自古法语 loremier，进一步源自拉丁语 lorum（皮带）。",
+      "examples": [
+        {
+          "en": "Lorimer's critique of spatial metaphors is cited.",
+          "zh": "洛里默对空间隐喻的批评被引用。"
+        },
+        {
+          "en": "The author engages with Lorimer's ideas.",
+          "zh": "作者与洛里默的观点进行了对话。"
+        }
+      ],
+      "collocations": [
+        "Lorimer's argument",
+        "Lorimer and Ingold"
+      ]
+    },
+    {
+      "headword": "glasgow",
+      "pos": "n.",
+      "ipa": "/ˈɡlæzɡoʊ/",
+      "gloss_zh": "格拉斯哥（苏格兰城市名）",
+      "gloss_en": "a city in Scotland",
+      "cefr": "B2",
+      "freq": 1,
+      "etymology": "源自苏格兰盖尔语 Glaschu，意为“绿色的洼地”或“绿色的峡谷”，由 glas（绿色）+ cu（洼地、峡谷）构成，后演变为英语 Glasgow。",
+      "examples": [
+        {
+          "en": "The conference was held in Glasgow.",
+          "zh": "会议在格拉斯哥举行。"
+        },
+        {
+          "en": "He studied at Glasgow.",
+          "zh": "他在格拉斯哥学习。"
+        }
+      ],
+      "collocations": [
+        "Glasgow University",
+        "Glasgow School",
+        "city of Glasgow"
+      ]
+    },
+    {
+      "headword": "iconoclastic",
+      "pos": "adj.",
+      "ipa": "/aɪˌkɑːnəˈklæstɪk/",
+      "gloss_zh": "打破偶像的；反传统的；标新立异的",
+      "gloss_en": "attacking or rejecting cherished beliefs or institutions; icon-breaking",
+      "cefr": "C2",
+      "freq": 1,
+      "etymology": "源自希腊语 eikonoklastēs，由 eikon（偶像、图像）+ klaein（打破）构成，原指破坏圣像者，后引申为挑战传统观念的人。",
+      "examples": [
+        {
+          "en": "Her iconoclastic approach reshaped the field.",
+          "zh": "她反传统的方法重塑了该领域。"
+        },
+        {
+          "en": "The iconoclastic artist broke all conventions.",
+          "zh": "这位打破传统的艺术家摒弃了一切旧规。"
+        }
+      ],
+      "collocations": [
+        "iconoclastic view",
+        "iconoclastic thinker",
+        "iconoclastic style"
+      ]
+    },
+    {
+      "headword": "dichotomy",
+      "pos": "n.",
+      "ipa": "/daɪˈkɑːtəmi/",
+      "gloss_zh": "二分法；对立；一分为二",
+      "gloss_en": "a division or contrast between two things that are opposed or entirely different",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "源自希腊语 dichotomia，由 dikho-（二）+ temnein（切）构成，字面意为“切成两部分”，后用于逻辑和哲学表示二分对立。",
+      "examples": [
+        {
+          "en": "The dichotomy between mind and body is problematic.",
+          "zh": "心身二分法是有问题的。"
+        },
+        {
+          "en": "We must overcome the false dichotomy.",
+          "zh": "我们必须克服这种虚假的二分法。"
+        }
+      ],
+      "collocations": [
+        "false dichotomy",
+        "nature-culture dichotomy",
+        "binary dichotomy"
+      ]
+    },
+    {
+      "headword": "likeness",
+      "pos": "n.",
+      "ipa": "/ˈlaɪk.nəs/",
+      "gloss_zh": "相似，类似；相像之处；肖像，画像",
+      "gloss_en": "the state or quality of being like or resembling; a representation or image of a person or thing",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "From Middle English liknesse, from Old English līcnes, from līc ('body, form') + -nes (abstract noun suffix). Cognate with Dutch gelijkenis, German Gleichnis. Root is Proto-Germanic *līką ('body, form'), from PIE *leig- ('to resemble').",
+      "examples": [
+        {
+          "en": "The likeness between the two species is striking.",
+          "zh": "这两个物种之间的相似性令人瞩目。"
+        },
+        {
+          "en": "She painted a likeness of her grandmother.",
+          "zh": "她画了一幅祖母的肖像。"
+        }
+      ],
+      "collocations": [
+        "striking likeness",
+        "family likeness",
+        "bear a likeness to"
+      ]
+    },
+    {
+      "headword": "polarity",
+      "pos": "n.",
+      "ipa": "/poʊˈlær.ə.ti/",
+      "gloss_zh": "极性；两极性；截然相反",
+      "gloss_en": "the property of having poles or being polar; the state of having two opposite or contrasting aspects",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "From Late Latin polaritas, from Latin polaris ('of the pole'), from polus ('pole'), from Greek polos ('axis, pivot'). Suffix -ity forms abstract nouns. First used in scientific contexts in the 17th century.",
+      "examples": [
+        {
+          "en": "The polarity of the magnet determines its orientation.",
+          "zh": "磁铁的极性决定其方向。"
+        },
+        {
+          "en": "There is a clear polarity between the two philosophical positions.",
+          "zh": "这两种哲学立场之间存在明显的对立。"
+        }
+      ],
+      "collocations": [
+        "magnetic polarity",
+        "polarity reversal",
+        "polarity of opinion"
+      ]
+    },
+    {
+      "headword": "contra",
+      "pos": "prep./adv./n.",
+      "ipa": "/ˈkɑːn.trə/",
+      "gloss_zh": "反对，相反；相反地；反对者（尤指尼加拉瓜反政府武装）",
+      "gloss_en": "against, opposite; contrarily; (as noun) a person who opposes, especially a member of the Nicaraguan rebel forces",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "From Latin contra ('against, opposite'), from Proto-Italic *kom-terā, from PIE *kom ('beside, near') + *ter- ('over, beyond'). Used in English as a prefix and preposition since the 14th century.",
+      "examples": [
+        {
+          "en": "He argued contra the prevailing theory.",
+          "zh": "他反对流行的理论。"
+        },
+        {
+          "en": "The two proposals are directly contra to each other.",
+          "zh": "这两个提议直接相互对立。"
+        }
+      ],
+      "collocations": [
+        "contra to",
+        "pro and contra",
+        "contra dance"
+      ]
+    },
+    {
+      "headword": "compose",
+      "pos": "v.",
+      "ipa": "/kəmˈpoʊz/",
+      "gloss_zh": "组成，构成；创作，谱写；使镇定",
+      "gloss_en": "to make up or form; to create (music, poetry, etc.); to calm or settle",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "From Old French composer, from Latin componere ('to put together'), from com- ('together') + ponere ('to place'). Influenced by French poser ('to place'). First used in English in the 15th century.",
+      "examples": [
+        {
+          "en": "Water is composed of hydrogen and oxygen.",
+          "zh": "水由氢和氧组成。"
+        },
+        {
+          "en": "She composed a beautiful symphony.",
+          "zh": "她创作了一首优美的交响曲。"
+        }
+      ],
+      "collocations": [
+        "be composed of",
+        "compose a letter",
+        "compose oneself"
+      ]
+    },
+    {
+      "headword": "sentient",
+      "pos": "adj.",
+      "ipa": "/ˈsen.ʃənt/",
+      "gloss_zh": "有感觉能力的，有知觉的；有意识的",
+      "gloss_en": "able to perceive or feel things; conscious",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "From Latin sentientem, present participle of sentire ('to feel, perceive, know'), from PIE root *sent- ('to feel, go'). First used in English in the 17th century.",
+      "examples": [
+        {
+          "en": "All sentient beings deserve respect.",
+          "zh": "所有有感知能力的生物都应得到尊重。"
+        },
+        {
+          "en": "The sentient robot seemed to experience emotions.",
+          "zh": "那个有意识的机器人似乎能体验情感。"
+        }
+      ],
+      "collocations": [
+        "sentient being",
+        "sentient life",
+        "sentient awareness"
+      ]
+    },
+    {
+      "headword": "inhabitant",
+      "pos": "n.",
+      "ipa": "/ɪnˈhæb.ɪ.tənt/",
+      "gloss_zh": "居民，住户；栖居者",
+      "gloss_en": "a person or animal that lives in a particular place",
+      "cefr": "C1",
+      "freq": 1,
+      "etymology": "From Old French inhabitant, from Latin inhabitantem, present participle of inhabitare ('to dwell in'), from in- ('in') + habitare ('to dwell'), frequentative of habere ('to have, hold'). First used in English in the 16th century.",
+      "examples": [
+        {
+          "en": "The inhabitants of the island have a unique culture.",
+          "zh": "岛上的居民有独特的文化。"
+        },
+        {
+          "en": "Forest inhabitants include many species of birds.",
+          "zh": "森林的栖居者包括许多鸟类。"
+        }
+      ],
+      "collocations": [
+        "local inhabitant",
+        "original inhabitant",
+        "inhabitant of"
+      ]
+    }
+  ],
+  "completed_stages": [
+    "clean_dedup",
+    "enrich",
+    "filter",
+    "pdf_ingest",
+    "render"
+  ],
+  "cefr_max": "C2",
+  "u_level": 0.6
+}

@@ -21,7 +21,7 @@ from ..enrichers.ipa_enricher import IpaEnricher
 # §3.116 ⭐ 语言现象识别（熟词生义/固定搭配/俚语）
 from ..enrichers.idiom_enricher import detect_phenomena
 # P5 ⭐ 本地专业词库（离线音标/释义/等级）
-from ..wordbank import WordBank
+from ..wordbank import WordBank, clean_ecdict_gloss, normalize_pos
 # P5 ⭐ LLM 批量补全（20 词/批）
 from ..enrichers.batch_llm import batch_enrich
 # P5 ⭐ 原著搭配提取（N-gram + PMI）
@@ -55,7 +55,7 @@ def _ecdict_zh(word: str) -> str:
                         _ECDICT_CACHE[_row[0].strip().lower()] = _row[3].strip()
         except Exception:
             _ECDICT_CACHE = {}
-    return _ECDICT_CACHE.get(word.strip().lower(), "")
+    return clean_ecdict_gloss(_ECDICT_CACHE.get(word.strip().lower(), ""))
 
 
 # §3.116 ⭐ 词根词缀离线规则表（LLM 缺失时的兜底——常见前缀/后缀/词根）
@@ -160,7 +160,7 @@ def enrich_entries(ctx: VocabularyContext,
 
         entry = VocabularyEntry(
             headword=cand.headword,
-            pos=cand.pos or wb_r.get("pos") or "",
+            pos=normalize_pos(cand.pos or wb_r.get("pos") or ""),
             lemma=cand.lemma,
             freq_rank=cand.freq_count,
             cefr_level=cand.cefr_guess or wb_r.get("cefr") or "",
@@ -217,6 +217,16 @@ def enrich_entries(ctx: VocabularyContext,
     if chat_fn is not None and entries:
         entries = batch_enrich(entries, chat_fn, batch_size=6,
                                book_title=book_title, book_author=book_author)
+
+    # §3.116 ⭐ 语言规范 L0 校对（复用 paeg_lang_style 14.1）：
+    # 对生成的中文释义/词源/义项/例句翻译做 gate_short/fix_known_gaffes，
+    # 缺失 paeg_lang_style 时 apply_l0 优雅降级为原文。
+    try:
+        from ..lang_style import apply_l0_to_entry
+        for _e in entries:
+            apply_l0_to_entry(_e)
+    except Exception:
+        pass
 
     ctx.entries = entries
     ctx.mark_completed("enrich")

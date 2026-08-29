@@ -27,33 +27,68 @@ def _esc(s) -> str:
     return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+def _nl2br(s) -> str:
+    """真实换行 → <br>（ecdict 释义清洗后为多行，渲染时逐行展示）。"""
+    return str(s).replace("\n", "<br>")
+
+
+# CEFR 等级徽章配色（与 make_high_freq_html 保持一致）
+_CEFR_COLORS = {"A1": "#10b981", "A2": "#22c55e", "B1": "#eab308",
+                "B2": "#f97316", "C1": "#ef4444", "C2": "#7c3aed"}
+
+# 口音键 → 友好中文标签（en_us=美 / en_uk=英 / de=德 / fr=法 / es=西）
+_ACCENT_LABELS = {"en_us": "美", "en_uk": "英", "de": "德", "fr": "法", "es": "西", "zh": "汉"}
+
+
 @register_field("headword")
 def _render_headword(e: VocabularyEntry) -> str:
     head = _esc(e.headword)
-    ipa = ""
-    if e.ipa:
-        ipa = ' <span class="ipa">' + _esc(" / ".join(e.ipa.values())) + "</span>"
-    pos = f' <span class="pos">{_esc(e.pos)}</span>' if e.pos else ""
-    return f'<div class="headword">{head}{ipa}{pos}</div>'
+    pos = f'<span class="pos">{_esc(e.pos)}</span>' if e.pos else ""
+    badges = ""
+    cefr = (e.cefr_level or "").strip().upper()
+    if cefr in _CEFR_COLORS:
+        badges += f'<span class="badge-cefr" style="background:{_CEFR_COLORS[cefr]}">{cefr}</span>'
+    if getattr(e, "freq_rank", 0) and int(e.freq_rank) > 0:
+        badges += (f'<span class="badge-freq" title="本书出现 {e.freq_rank} 次">'
+                   f'×{e.freq_rank}</span>')
+    return f'<div class="headword"><span class="word">{head}</span>{pos}{badges}</div>'
 
 
 @register_field("ipa")
 def _render_ipa(e: VocabularyEntry) -> str:
     if not e.ipa:
         return ""
-    return '<div class="ipa-row">' + " ".join(
-        f'<span class="ipa-accent">{k}</span> <span class="ipa-val">{_esc(v)}</span>'
-        for k, v in e.ipa.items()) + "</div>"
+    ipa = e.ipa
+    if isinstance(ipa, str):
+        # §修复：LLM 偶发把 ipa 返回为字符串——兜底单口音展示
+        ipa = {"en_us": ipa}
+    parts = []
+    for k, v in ipa.items():
+        label = _ACCENT_LABELS.get(k, k)
+        parts.append(f'<span class="ipa-accent">{label}</span> <span class="ipa-val">{_esc(v)}</span>')
+    return '<div class="ipa-row">' + "　".join(parts) + "</div>"
 
 
 @register_field("gloss")
 def _render_gloss(e: VocabularyEntry) -> str:
     if not e.gloss_bilingual:
         return ""
-    zh = _esc(e.gloss_bilingual.get("zh", ""))
-    en = _esc(e.gloss_bilingual.get("en", ""))
-    return (f'<div class="gloss"><span class="gloss-zh">{zh}</span>'
-            f'<span class="gloss-en">{en}</span></div>')
+    g = e.gloss_bilingual
+    if isinstance(g, str):
+        # §修复：审查 LLM 偶发把整段释义当字符串——兜底为中文释义
+        zh, en = g, ""
+    else:
+        zh, en = g.get("zh", ""), g.get("en", "")
+    zh = _nl2br(_esc(zh))
+    en = _nl2br(_esc(en))
+    parts = []
+    if zh:
+        parts.append(f'<span class="gloss-zh">{zh}</span>')
+    if en:
+        parts.append(f'<span class="gloss-en">{en}</span>')
+    if not parts:
+        return ""
+    return '<div class="gloss">' + "".join(parts) + "</div>"
 
 
 @register_field("senses")
@@ -64,8 +99,8 @@ def _render_senses(e: VocabularyEntry) -> str:
     for s in e.senses:
         ctx = (f'<span class="book-context">{_esc(s.book_context)}</span>'
                if s.book_context else "")
-        parts.append(f'<div class="sense"><span class="sense-zh">{_esc(s.gloss_zh)}</span>'
-                     f'<span class="sense-en">{_esc(s.gloss_en)}</span>{ctx}</div>')
+        parts.append(f'<div class="sense"><span class="sense-zh">{_nl2br(_esc(s.gloss_zh))}</span>'
+                     f'<span class="sense-en">{_nl2br(_esc(s.gloss_en))}</span>{ctx}</div>')
     return '<div class="senses">' + "".join(parts) + "</div>"
 
 
@@ -80,26 +115,58 @@ def _render_etymology(e: VocabularyEntry) -> str:
 def _render_morpheme(e: VocabularyEntry) -> str:
     if not e.morpheme:
         return ""
+
+    def _affix(item, key):
+        """词缀段：只渲染非空内容，避免出现空「」。"""
+        if isinstance(item, dict):
+            seg = str(item.get(key, "")).strip()
+            mean = str(item.get("meaning", "")).strip()
+        else:
+            seg = str(item or "").strip()
+            mean = ""
+        if not seg and not mean:
+            return ""
+        if seg and mean:
+            return f'{seg}「{mean}」'
+        return seg or f'「{mean}」'
+
     parts = []
-    if e.morpheme.prefix:
-        if isinstance(e.morpheme.prefix, dict):
-            p = e.morpheme.prefix
-            parts.append(f'{p.get("p", "")}「{p.get("meaning", "")}」')
-        elif isinstance(e.morpheme.prefix, list):
-            for item in e.morpheme.prefix:
-                if isinstance(item, dict):
-                    parts.append(f'{item.get("p", "")}「{item.get("meaning", "")}」')
-    for r in e.morpheme.roots:
+    pre = e.morpheme.prefix
+    if isinstance(pre, list):
+        for item in pre:
+            seg = _affix(item, "p")
+            if seg:
+                parts.append(seg)
+    elif pre:
+        seg = _affix(pre, "p")
+        if seg:
+            parts.append(seg)
+
+    for r in e.morpheme.roots or []:
         if isinstance(r, dict):
-            parts.append(f'{r.get("root", "")}({r.get("lang", "")}「{r.get("meaning", "")}」)')
-    if e.morpheme.suffix:
-        if isinstance(e.morpheme.suffix, dict):
-            s = e.morpheme.suffix
-            parts.append(f'{s.get("s", "")}「{s.get("meaning", "")}」')
-        elif isinstance(e.morpheme.suffix, list):
-            for item in e.morpheme.suffix:
-                if isinstance(item, dict):
-                    parts.append(f'{item.get("s", "")}「{item.get("meaning", "")}」')
+            root = str(r.get("root", "")).strip()
+            lang = str(r.get("lang", "")).strip()
+            mean = str(r.get("meaning", "")).strip()
+            if not (root or lang or mean):
+                continue
+            seg = root
+            if lang or mean:
+                seg += "(" + lang + ("「" + mean + "」" if mean else "") + ")"
+            parts.append(seg)
+        elif r:
+            parts.append(str(r).strip())
+
+    suf = e.morpheme.suffix
+    if isinstance(suf, list):
+        for item in suf:
+            seg = _affix(item, "s")
+            if seg:
+                parts.append(seg)
+    elif suf:
+        seg = _affix(suf, "s")
+        if seg:
+            parts.append(seg)
+
     if not parts:
         return ""
     return f'<div class="morpheme">构词：{" + ".join(parts)}</div>'

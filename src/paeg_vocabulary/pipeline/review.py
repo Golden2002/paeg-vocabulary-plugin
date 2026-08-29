@@ -78,6 +78,13 @@ def _apply_fix(entry: Dict[str, Any], fix: Dict[str, Any]) -> None:
         return
     if not field or not after:
         return
+    # §3.116 ⭐ 语言规范 L0 校对：审查回写的中文字段再跑一遍 gate_short/fix_known_gaffes
+    # （paeg_lang_style 缺失时 apply_l0 优雅降级为原文）。
+    try:
+        from ..lang_style import apply_l0
+        after = apply_l0(after)
+    except Exception:
+        pass
     # 顶层字段
     if field in entry:
         entry[field] = after

@@ -13,13 +13,14 @@ import os
 from typing import Any, Callable, Dict, Optional
 
 from .protocols import DEFAULT_LLM, DEFAULT_READER, LLMCallable, PDFReader
+from .llm_client import EnvLLM
 
 
 class VocabularyRegistry:
     """词汇表插件注册表（类级全局单例）。"""
 
-    # 宿主依赖
-    llm: LLMCallable = DEFAULT_LLM
+    # 宿主依赖：默认用环境变量 DeepSeek（独立接入 LLM ⭐），宿主仍可 inject 覆盖
+    llm: LLMCallable = EnvLLM()
     reader: PDFReader = DEFAULT_READER
 
     # 可扩展注册表
@@ -38,7 +39,8 @@ class VocabularyRegistry:
 
     @classmethod
     def reset(cls) -> None:
-        cls.llm = DEFAULT_LLM
+        # 回到默认：环境变量 DeepSeek（独立接入），读 host 注入
+        cls.llm = EnvLLM()
         cls.reader = DEFAULT_READER
 
     @classmethod
@@ -76,18 +78,33 @@ class VocabularyRegistry:
     @classmethod
     def generate_vocabulary(cls, pdf_path: str, lang: str = "en",
                             user_filter: Optional[Dict[str, Any]] = None,
-                            chat_fn: Optional[Callable] = None) -> Dict[str, Any]:
+                            chat_fn: Optional[Callable] = None,
+                            progress_cb: Optional[Callable[[str, int], None]] = None,
+                            ) -> Dict[str, Any]:
         """主入口：PDF → 词汇表（全流程工作流引擎 ⭐）。
 
         5 阶段：ingest → clean → filter → enrich → render + accessories。
         §3.116 ⭐ user_filter 支持水平档位：
           {"exam": "kaoyan", "score": 70} 或 {"preset": "kaoyan-70"} → CEFR 阈值过滤
+
+        progress_cb（可选，§长任务改造 ⭐）：进度回调 progress_cb(stage: str, pct: int)，
+        在关键阶段边界调用——供 web 层长任务 job_id + 轮询进度展示使用。默认 None（不回调）。
         """
         from .core.context import VocabularyContext
         from .pipeline import ingest_pdf, clean_corpus, enrich_entries, render_html
         from .accessories import generate_all_accessories
 
+        def _report(stage: str, pct: int) -> None:
+            """安全地转发进度回调（回调异常绝不阻塞主流程）。"""
+            if progress_cb is None:
+                return
+            try:
+                progress_cb(stage, int(pct))
+            except Exception:
+                pass
+
         uf = user_filter or {}
+        _report("准备", 1)
         ctx = VocabularyContext(
             pdf_path=pdf_path,
             target_lang=lang,
@@ -110,7 +127,9 @@ class VocabularyRegistry:
 
         # 阶段1-5（P4 分位筛选）
         ctx = ingest_pdf(ctx, pdf_path)
+        _report("解析 PDF", 8)
         ctx = clean_corpus(ctx)
+        _report("清洗语料", 15)
         # §3.116 ⭐ 本书关键术语库（LLM 第一节点）：判断哪些词对本书重要——
         # 无论什么水平的学生都必须呈现（must_keep 豁免筛选）
         _must_keep: set = set()
@@ -140,6 +159,7 @@ class VocabularyRegistry:
                 _must_keep = set(_mk2.keys())
         except Exception:
             _must_keep = set()
+        _report("识别关键术语", 25)
         # P4 ⭐ 统一分位筛选：Q ≥ U OR important（替代旧 zipf/CEFR 双轨）
         try:
             from .quantile_filter import quantile_filter_candidates
@@ -152,6 +172,7 @@ class VocabularyRegistry:
             from .pipeline.filter import filter_candidates
             ctx = filter_candidates(ctx, filter_mode=uf.get("filter_mode", "learn"),
                                     must_keep=_must_keep)
+        _report("分位筛选", 35)
 
         # §3.116 ⭐ 提取书元数据（书名/作者）——用 LLM 读前几页判定（用户方案，
         # 不依赖文件名——文件名格式随上传作品而异无法泛化）
@@ -159,12 +180,14 @@ class VocabularyRegistry:
         from .metadata import extract_book_meta_llm
         book_title, book_author = extract_book_meta_llm(
             pdf_path, chat_fn=_chat_for_meta, user_filter=uf)
+        _report("提取书名/作者", 45)
 
         # P5 ⭐ enrich：wordbank 离线优先 + batch_llm 批量补全 + collocations
         ctx = enrich_entries(ctx,
                              chat_fn=chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None),
                              book_title=book_title, book_author=book_author,
                              domains=domains)
+        _report("批量补全词条", 70)
 
         # §3.116 ⭐ 渲染前 LLM 审查（LLM 第三节点）：结构化词条 + 用户需求上下文
         # 一并发送给 LLM，逐条审查（纠错/补漏/降噪）后再渲染
@@ -186,13 +209,23 @@ class VocabularyRegistry:
                         continue
                     for _k in ("gloss_bilingual", "pos", "etymology"):
                         _v = _rd.get(_k)
-                        if _v:
-                            setattr(_e, _k, _v)
+                        if not _v:
+                            continue
+                        # §修复：审查 LLM 可能把 gloss_bilingual 整段返回为字符串
+                        # （field="gloss_bilingual" 而非 gloss_bilingual.zh）——
+                        # 统一包回 dict，避免下游渲染/导出对 str 调 .get 崩溃。
+                        if _k == "gloss_bilingual" and isinstance(_v, str):
+                            _old = _e.gloss_bilingual or {}
+                            _old_en = _old.get("en", "") if isinstance(_old, dict) else ""
+                            _v = {"zh": _v, "en": _old_en}
+                        setattr(_e, _k, _v)
         except Exception:
             pass
+        _report("审查词条", 88)
 
         # P6 ⭐ 渲染（FIELD_RENDERERS + L1 门）
         ctx = render_html(ctx, book_title=book_title, book_author=book_author)
+        _report("渲染 HTML", 96)
 
         # 附件
         try:
@@ -200,18 +233,31 @@ class VocabularyRegistry:
             ctx.accessories = acc
         except Exception as e:
             ctx.errors.append(f"附件生成失败: {str(e)[:100]}")
+        _report("生成附件", 99)
 
         # §3.116 ⭐ V-R7 词条预览（前端在线浏览 + 筛选，最多 300 条防爆）
+        # §3.117 ⭐ 加全字段（完整释义/词源/例句/搭配）——支撑交互式网页翻页+点击反馈
         _preview = []
         for _e in ctx.entries[:300]:
             _gloss = _e.gloss_bilingual or {}
+            if isinstance(_gloss, str):
+                _gloss = {"zh": _gloss, "en": ""}
+            _ipa = _e.ipa or {}
+            if not isinstance(_ipa, dict):
+                _ipa = {}
             _preview.append({
                 "headword": _e.headword, "pos": _e.pos or "",
-                "ipa": (_e.ipa or {}).get("en_us", ""),
-                "gloss_zh": _gloss.get("zh", "")[:80],
+                "ipa": _ipa.get("en_us", ""),
+                "gloss_zh": _gloss.get("zh", ""),
+                "gloss_en": _gloss.get("en", ""),
                 "cefr": _e.cefr_level or "",
                 "freq": getattr(_e, "freq_rank", 0) or 0,
+                "etymology": getattr(_e, "etymology", "") or "",
+                "examples": (_e.examples or [])[:2],
+                "collocations": (_e.collocations or [])[:4],
             })
+
+        _report("完成", 100)
 
         return {
             # §3.116 ⭐ 缺陷3修复：零词条不报 ok:True（弱模式空表假阳性）

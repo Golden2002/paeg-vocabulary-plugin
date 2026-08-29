@@ -38,8 +38,18 @@ def _build_entry_html(entry: VocabularyEntry) -> str:
     if entry.ipa:
         ipa = ' <span class="ipa">' + _esc(" / ".join(entry.ipa.values())) + "</span>"
     pos = f' <span class="pos">{_esc(entry.pos)}</span>' if entry.pos else ""
-    zh = _esc(entry.gloss_bilingual.get("zh", "")) if entry.gloss_bilingual else ""
-    en = _esc(entry.gloss_bilingual.get("en", "")) if entry.gloss_bilingual else ""
+    badges = ""
+    _cefr = (entry.cefr_level or "").strip().upper()
+    if _cefr in {"A1", "A2", "B1", "B2", "C1", "C2"}:
+        _c = {"A1": "#10b981", "A2": "#22c55e", "B1": "#eab308",
+              "B2": "#f97316", "C1": "#ef4444", "C2": "#7c3aed"}[_cefr]
+        badges += f'<span class="badge-cefr" style="background:{_c}">{_cefr}</span>'
+    if getattr(entry, "freq_rank", 0) and int(entry.freq_rank) > 0:
+        badges += f'<span class="badge-freq">×{entry.freq_rank}</span>'
+    zh = (_esc(entry.gloss_bilingual.get("zh", "")).replace("\n", "<br>")
+          if entry.gloss_bilingual else "")
+    en = (_esc(entry.gloss_bilingual.get("en", "")).replace("\n", "<br>")
+          if entry.gloss_bilingual else "")
 
     senses_html = ""
     if entry.senses:
@@ -58,14 +68,26 @@ def _build_entry_html(entry: VocabularyEntry) -> str:
     morpheme_html = ""
     if entry.morpheme:
         parts = []
-        if entry.morpheme.prefix:
-            p = entry.morpheme.prefix
-            parts.append(f'{p.get("p","")}「{p.get("meaning","")}」')
-        for r in entry.morpheme.roots:
-            parts.append(f'{r.get("root","")}({r.get("lang","")}「{r.get("meaning","")}」)')
-        if entry.morpheme.suffix:
-            s = entry.morpheme.suffix
-            parts.append(f'{s.get("s","")}「{s.get("meaning","")}」')
+        pre = entry.morpheme.prefix
+        if pre:
+            p_seg = str(pre.get("p", "")).strip()
+            p_mean = str(pre.get("meaning", "")).strip()
+            if p_seg or p_mean:
+                parts.append(f'{p_seg}「{p_mean}」' if (p_seg and p_mean) else (p_seg or f'「{p_mean}」'))
+        for r in entry.morpheme.roots or []:
+            root = str(r.get("root", "")).strip()
+            lang = str(r.get("lang", "")).strip()
+            mean = str(r.get("meaning", "")).strip()
+            if not (root or lang or mean):
+                continue
+            seg = root + ("(" + lang + ("「" + mean + "」" if mean else "") + ")" if (lang or mean) else "")
+            parts.append(seg)
+        suf = entry.morpheme.suffix
+        if suf:
+            s_seg = str(suf.get("s", "")).strip()
+            s_mean = str(suf.get("meaning", "")).strip()
+            if s_seg or s_mean:
+                parts.append(f'{s_seg}「{s_mean}」' if (s_seg and s_mean) else (s_seg or f'「{s_mean}」'))
         if parts:
             morpheme_html = f'<div class="morpheme">构词：{" + ".join(parts)}</div>'
 
@@ -93,7 +115,7 @@ def _build_entry_html(entry: VocabularyEntry) -> str:
             phen_html = '<div class="phenomena">' + "".join(_tags) + "</div>"
 
     return f"""<div class="entry">
-  <div class="headword">{head}{ipa}{pos}</div>
+  <div class="headword">{head}{ipa}{pos}{badges}</div>
   <div class="gloss"><span class="gloss-zh">{zh}</span><span class="gloss-en">{en}</span></div>
   {senses_html}
   {etymology}
@@ -220,6 +242,56 @@ def _render_pdf(html_path: Path, out_dir: Optional[str], ctx: VocabularyContext)
         return None
 
 
+def _morpheme_text(m) -> str:
+    """词素 → 可读文本（与 HTML 渲染一致的构词链，避免 docx 出现 dataclass repr）。"""
+    if not m:
+        return ""
+    parts = []
+
+    def _affix(item, key):
+        if isinstance(item, dict):
+            seg = str(item.get(key, "")).strip()
+            mean = str(item.get("meaning", "")).strip()
+        else:
+            seg = str(item or "").strip()
+            mean = ""
+        if not seg and not mean:
+            return ""
+        return f'{seg}「{mean}」' if (seg and mean) else (seg or f'「{mean}」')
+
+    pre = m.prefix
+    if isinstance(pre, list):
+        pre = pre[0] if pre else None
+    if pre:
+        seg = _affix(pre, "p")
+        if seg:
+            parts.append(seg)
+    for r in (m.roots or []):
+        if isinstance(r, dict):
+            root = str(r.get("root", "")).strip()
+            lang = str(r.get("lang", "")).strip()
+            mean = str(r.get("meaning", "")).strip()
+            if not (root or lang or mean):
+                continue
+            seg = root + ("(" + lang + ("「" + mean + "」" if mean else "") + ")" if (lang or mean) else "")
+            parts.append(seg)
+        elif r:
+            parts.append(str(r).strip())
+    suf = m.suffix
+    if isinstance(suf, list):
+        suf = suf[0] if suf else None
+    if suf:
+        seg = _affix(suf, "s")
+        if seg:
+            parts.append(seg)
+    return " + ".join(parts)
+
+
+def _docx_line(s) -> str:
+    """docx 段落文本清洗：真实换行 → 分隔符（OOXML <w:t> 内不支持裸 \\n）。"""
+    return str(s or "").replace("\r", "").replace("\n", " / ")
+
+
 def _render_docx(entries: List[VocabularyEntry], out_dir: Optional[str],
                  ctx: VocabularyContext, book_title: str = "") -> Optional[Path]:
     """§3.116 ⭐ V-R3 Word(.docx) 导出——范本对标要求（范本有 xlsx，工具补 Word）。
@@ -237,18 +309,25 @@ def _render_docx(entries: List[VocabularyEntry], out_dir: Optional[str],
     for e in entries:
         _pos = f"（{e.pos}）" if e.pos else ""
         doc.add_heading(f"{e.headword}{_pos}", level=2)
-        _ipa = e.ipa.get("en_us") or e.ipa.get("uk") or ""
-        if _ipa:
-            doc.add_paragraph(f"音标：/{_ipa}/")
+        # §修复：审查 LLM 偶发把 ipa/gloss 返回为字符串——统一兜底为 dict/标量
+        _ipa = e.ipa or {}
+        if isinstance(_ipa, str):
+            _ipa = {"en_us": _ipa}
+        _ipa_txt = _ipa.get("en_us") or _ipa.get("uk") or ""
+        if _ipa_txt:
+            doc.add_paragraph(f"音标：/{_ipa_txt}/")
         _gloss = e.gloss_bilingual or {}
+        if isinstance(_gloss, str):
+            _gloss = {"zh": _gloss, "en": ""}
         if _gloss.get("en"):
-            doc.add_paragraph(f"英文释义：{_gloss['en']}")
+            doc.add_paragraph(f"英文释义：{_docx_line(_gloss['en'])}")
         if _gloss.get("zh"):
-            doc.add_paragraph(f"中文释义：{_gloss['zh']}")
+            doc.add_paragraph(f"中文释义：{_docx_line(_gloss['zh'])}")
         if getattr(e, "etymology", None):
-            doc.add_paragraph(f"词源：{e.etymology}")
-        if getattr(e, "morpheme", None):
-            doc.add_paragraph(f"词素：{e.morpheme}")
+            doc.add_paragraph(f"词源：{_docx_line(e.etymology)}")
+        _morph = _morpheme_text(getattr(e, "morpheme", None))
+        if _morph:
+            doc.add_paragraph(f"词素：{_morph}")
         for ex in (e.examples or [])[:2]:
             if isinstance(ex, dict) and ex.get("en"):
                 _zh = f"（{ex['zh']}）" if ex.get("zh") else ""

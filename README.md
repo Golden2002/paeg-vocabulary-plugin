@@ -186,13 +186,20 @@ paeg-vocabulary-mcp
 
 **词形归一化策略**（§3.116）：屈折（POS 不变 -ed/-ing/-s）归一化 lemma；派生（POS 改变 / -tion/-ment/-ness）保留原形——`abandonment` 是海德格尔学术术语，不合并。
 
+**动名词/名词歧义**（§3.116 Round 7）：`reading/feeling/drawing/...` 既是动名词又是独立名词。无 spaCy 时规则级兜底（频率信号 + stoplist）收敛但无法彻底消除；安装 `spaCy` + `en_core_web_sm` 后 `_lemmatize_with_pos` 按上下文 POS 消歧——动词 `reading`→`read`，名词 `reading` 保留原形。
+
 ## 测试
 
 ```bash
-python -m pytest tests/ -q    # 169/169 全绿
+python -m pytest tests/ -q    # 190 passed（无 spaCy，规则兜底路径）
+# 启用 spaCy POS 消歧后（可选 [nlp] 依赖）：
+py -3.12 -m venv .venv-spacy312
+.venv-spacy312/Scripts/python -m pip install "spacy>=3.7" pytest
+.venv-spacy312/Scripts/python -m spacy download en_core_web_sm
+.venv-spacy312/Scripts/python -m pytest tests/ -q   # 198 passed（+8 spaCy POS 测试）
 ```
 
-覆盖：词汇条目校验 / 难度矩阵 / 词形归一化 / 语言现象识别 / 附件生成 / 端到端管线 / 词库接线 / 页眉页脚剥离。
+覆盖：词汇条目校验 / 难度矩阵 / 词形归一化（规则兜底 + spaCy POS 双重路径）/ 语言现象识别 / 附件生成 / 端到端管线 / 词库接线 / 页眉页脚剥离。`test_spacy_pos.py` 用 `pytest.importorskip("spacy")` 自动降级：无 spaCy 时跳过，不阻塞管线。
 
 ## Token 成本估算（LLM 用量模型）
 
@@ -236,7 +243,7 @@ python -m pytest tests/ -q    # 169/169 全绿
 PAEG 工具生态
 ├── paeg-lang-style-plugin      语言规范（83/83 测试 · MCP）
 ├── paeg-teaching-materials     教学物料（74/74 测试 · MCP）
-├── paeg-vocabulary             ⭐ 词汇表生成（169/169 测试 · MCP）
+├── paeg-vocabulary             ⭐ 词汇表生成（190 测试 · 含 spaCy 时 198 · MCP）
 └── 主项目 PAEG（插件优先双轨 · material_bridge · sys.path 引用插件副本）
 ```
 

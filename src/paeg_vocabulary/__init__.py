@@ -18,12 +18,15 @@ from .executor import execute
 from .core.entry import VocabularyEntry, Sense, CandidateWord, validate_entry
 from .core.context import VocabularyContext
 from .protocols import LLMCallable, PDFReader, NullLLM, NullPDFReader
+from .llm_client import chat, EnvLLM, available
 from .enrichers import EnricherRegistry, register_default_enrichers
 from .cleaners import OCRRepairPipeline, ExampleSanitizer
 from .level_matrix import (
     select_cefr_max, filter_by_level, guess_cefr_from_zipf,
     resolve_preset, user_presets, level_matrix_table,
 )
+# §3.116 ⭐ 语言规范 L0 校对（复用 paeg_lang_style 14.1，缺失优雅降级）
+from .lang_style import has_lang_style, apply_l0, apply_l0_to_entry
 
 __version__ = "0.1.0"
 
@@ -36,9 +39,12 @@ __all__ = [
     "VocabularyEntry", "Sense", "CandidateWord", "validate_entry",
     "VocabularyContext",
     "LLMCallable", "PDFReader", "NullLLM", "NullPDFReader",
+    "chat", "EnvLLM", "available",
     "EnricherRegistry", "register_default_enrichers",
     "OCRRepairPipeline", "ExampleSanitizer",
     "select_cefr_max", "filter_by_level", "guess_cefr_from_zipf",
     "resolve_preset", "user_presets", "level_matrix_table",
+    # §3.116 ⭐ 语言规范 L0 校对（复用 paeg_lang_style 14.1）
+    "has_lang_style", "apply_l0", "apply_l0_to_entry",
     "__version__",
 ]
