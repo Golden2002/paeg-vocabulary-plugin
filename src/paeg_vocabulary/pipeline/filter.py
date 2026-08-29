@@ -116,7 +116,20 @@ def _build_candidates(ctx: VocabularyContext) -> List[CandidateWord]:
     """从 clean_corpus 构建候选词（词频统计 + 通用词频 + CEFR 猜测）。"""
     counts = Counter(t.lemma for t in ctx.clean_corpus)
     cands = []
+    # 短词（≤3 字符）词典校验：无音标且无释义 → 断词残片/噪声，过滤
+    _wb = None
     for lemma, count in counts.items():
+        if len(lemma) <= 3:
+            if _wb is None:
+                try:
+                    from ..wordbank import WordBank
+                    _wb = WordBank()
+                except Exception:
+                    _wb = False
+            if _wb:
+                r = _wb.lookup(lemma)
+                if not r.get("ipa") and not r.get("gloss_zh") and not r.get("gloss_en"):
+                    continue  # 词典无此词 → 残片
         c = CandidateWord(
             headword=lemma,
             lemma=lemma,

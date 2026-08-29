@@ -77,7 +77,7 @@ def enrich_entries(ctx: VocabularyContext,
     if not corpus and getattr(ctx, "clean_corpus", None):
         # 从清洗词流重建句子（退化：按词流整体）
         try:
-            corpus = [" ".join(t.text for t in ctx.clean_corpus[:200])]
+            corpus = [" ".join(getattr(t, "token", "") or getattr(t, "text", "") for t in ctx.clean_corpus[:200])]
         except Exception:
             corpus = []
     all_colls = extract_collocations(corpus or [], n=2, min_count=2, top_n=60) if corpus else []

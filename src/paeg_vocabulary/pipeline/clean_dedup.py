@@ -126,6 +126,25 @@ _EN_STOPWORDS = {
 }
 
 
+def _is_noise_word(word: str) -> bool:
+    """噪声词判定（OCR 污染/重复字符/断词残片）。
+
+    - 同一字符重复 ≥3 次（ggggg/aaaaa）
+    - 交替重复模式（abababab）
+    """
+    low = word.lower()
+    if len(low) < 2:
+        return True
+    if re.match(r"^([a-z])\1{2,}$", low):
+        return True
+    if re.match(r"^([a-z]{2})\1{2,}$", low):
+        return True
+    # 3 字符内同字符占 2/3 以上
+    if len(low) <= 3 and max(low.count(ch) for ch in set(low)) >= 2:
+        return True
+    return False
+
+
 def clean_corpus(ctx: VocabularyContext, repair: bool = True) -> VocabularyContext:
     """阶段 2：raw_corpus → clean_corpus（清洗 + 分词 + 词元 + 去停用词）。
 
@@ -163,7 +182,7 @@ def clean_corpus(ctx: VocabularyContext, repair: bool = True) -> VocabularyConte
     prev_tok = ""  # 判断句首（前一 token 以句末标点结尾）
     for tok, info in zip(tokens, lemmas_info):
         low = info["lemma"].lower()
-        if low in _EN_STOPWORDS or len(low) < 2:
+        if low in _EN_STOPWORDS or len(low) < 2 or _is_noise_word(low):
             prev_tok = tok
             continue
         # 大写统计：非句首位置的大写（句子开头大写不算专名信号）

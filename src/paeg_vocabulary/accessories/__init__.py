@@ -121,7 +121,7 @@ def phrase_statistics(ctx) -> str:
     from ..collocations import extract_collocations
     corpus = getattr(ctx, "clean_sentences", None)
     if not corpus and getattr(ctx, "clean_corpus", None):
-        corpus = [" ".join(t.text for t in ctx.clean_corpus[:500])]
+        corpus = [" ".join(getattr(t, "token", "") or getattr(t, "text", "") for t in ctx.clean_corpus[:500])]
     bigrams = extract_collocations(corpus or [], n=2, min_count=3, top_n=30)
     trigrams = extract_collocations(corpus or [], n=3, min_count=2, top_n=20)
     lines = ["# 短语句式统计", ""]
