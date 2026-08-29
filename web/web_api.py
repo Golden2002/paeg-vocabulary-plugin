@@ -84,11 +84,32 @@ def create_app(config: dict | None = None) -> Flask:
             return send_file(str(p), as_attachment=True)
         return jsonify({"error": "文件不存在"}), 404
 
+    @app.route("/api/lookup", methods=["POST"])
+    def lookup():
+        """点击查词（阅读器）——查词义/音标/CEFR/本书义。"""
+        data = request.get_json(force=True) or {}
+        word = (data.get("word", "") or "").strip()
+        if not word:
+            return jsonify({"ok": False, "error": "缺少 word"}), 400
+        try:
+            from paeg_vocabulary.executor import execute
+            return jsonify(json.loads(execute("lookup_word", {"word": word})))
+        except Exception as e:
+            return jsonify({"ok": False, "error": str(e)[:200]})
+
     @app.route("/")
     def index():
         idx = _WEB_DIR / "index.html"
         if idx.exists():
             return idx.read_text(encoding="utf-8")
         return "词汇表制作网页运行中"
+
+    @app.route("/reader")
+    def reader():
+        """点击查词阅读器（P2：对标 LingQ 即点即查）。"""
+        r = _WEB_DIR / "reader.html"
+        if r.exists():
+            return r.read_text(encoding="utf-8")
+        return "阅读器待构建"
 
     return app

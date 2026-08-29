@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>点击查词阅读器</title>
+<style>
+:root{
+  --brand:#4F46E5; --ink:#0F172A; --ink-500:#64748B; --ink-400:#94A3B8;
+  --bg:#F5F7FB; --surface:#fff; --border:#E2E8F0;
+  --new:#4F46E5; --learning:#F59E0B; --mastered:#10B981;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column}
+.header{height:52px;display:flex;align-items:center;gap:12px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.header .logo{font-weight:700}
+.header a{color:var(--brand);font-size:13px;text-decoration:none;margin-left:auto}
+.layout{flex:1;display:grid;grid-template-columns:1fr 320px;min-height:0}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.side{display:none}}
+.reader{padding:16px;overflow-y:auto}
+.reader .toolbar{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.reader textarea{width:100%;min-height:120px;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:inherit;font-size:14px;resize:vertical}
+.reader .article{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;line-height:1.9;font-size:15px}
+.reader .article .w{cursor:pointer;border-radius:4px;padding:0 1px;transition:background .15s}
+.reader .article .w:hover{background:#EEF2FF}
+.reader .article .w.new{background:#EEF2FF;border-bottom:1px solid var(--new)}
+.reader .article .w.learning{background:#FEF3C7;border-bottom:1px solid var(--learning)}
+.reader .article .w.mastered{background:#ECFDF5;border-bottom:1px solid var(--mastered)}
+.side{background:var(--surface);border-left:1px solid var(--border);padding:14px;overflow-y:auto}
+.side .word{font-size:20px;font-weight:700}
+.side .pos{color:var(--brand);font-size:12px;margin-left:6px}
+.side .ipa{color:var(--ink-500);font-size:13px;margin:2px 0}
+.side .gloss{font-size:14px;margin:8px 0;line-height:1.6}
+.side .row{font-size:12px;color:var(--ink-500);margin:4px 0}
+.side .btn{width:100%;padding:8px;border-radius:8px;border:1px solid var(--brand);background:var(--brand);color:#fff;font-size:13px;cursor:pointer;margin-top:10px}
+.side .btn.ghost{background:#fff;color:var(--brand)}
+.side .empty{color:var(--ink-400);text-align:center;margin-top:40px;font-size:13px}
+.status-bar{display:flex;gap:10px;margin-bottom:10px;font-size:12px;color:var(--ink-500)}
+.status-bar b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="header">
+  <span class="logo">📖 点击查词阅读器</span>
+  <a href="/">← 返回词汇表制作</a>
+</div>
+<div class="layout">
+  <div class="reader">
+    <div class="toolbar">
+      <button class="side-btn" onclick="renderArticle()" style="padding:8px 16px;border-radius:8px;border:1px solid var(--brand);background:var(--brand);color:#fff;cursor:pointer">渲染文本</button>
+      <span style="font-size:12px;color:var(--ink-500)">粘贴/输入英文文本 → 渲染 → 点击任意单词查词</span>
+    </div>
+    <textarea id="source" placeholder="粘贴英文文章/段落，如：The phenomenon of life is not reducible to physics..."></textarea>
+    <div class="status-bar" id="statusBar"></div>
+    <div class="article" id="article"></div>
+  </div>
+  <div class="side" id="side">
+    <div class="empty">点击左侧任意单词，查看释义、音标、词源，并标记词汇状态。</div>
+  </div>
+</div>
+
+<script>
+let known = {};   // {word: 'new'|'learning'|'mastered'}
+
+function tokenize(text){
+  // 分词：英文单词 + 保留标点
+  return text.match(/[A-Za-z][A-Za-z'-]*|[^A-Za-z]+/g) || [];
+}
+
+function renderArticle(){
+  const src = document.getElementById('source').value.trim();
+  if(!src){ return; }
+  const tokens = tokenize(src);
+  const html = tokens.map(t => {
+    if(!/^[A-Za-z]/.test(t)) return esc(t);
+    const w = t.toLowerCase().replace(/[^a-z'-]/g,'');
+    const st = known[w] || '';
+    return `<span class="w ${st}" data-word="${esc(w)}" onclick="lookup('${esc(w)}')">${esc(t)}</span>`;
+  }).join('');
+  document.getElementById('article').innerHTML = html;
+  updateStatus();
+}
+
+async function lookup(word){
+  try{
+    const r = await fetch('/api/lookup', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({word})});
+    const d = await r.json();
+    if(!d.ok){ document.getElementById('side').innerHTML = `<div class="empty">查词失败：${esc(d.error||'')}</div>`; return; }
+    renderSide(word, d);
+  }catch(e){ document.getElementById('side').innerHTML = `<div class="empty">查词失败：${e.message}</div>`; }
+}
+
+function renderSide(word, d){
+  const gloss = (d.gloss_zh || d.gloss_en || '').slice(0, 300);
+  const ipa = d.ipa || '';
+  const pos = d.pos || '';
+  const cefr = d.cefr || '';
+  const etymology = (d.etymology || '').slice(0, 200);
+  const st = known[word] || 'new';
+  document.getElementById('side').innerHTML = `
+    <div class="word">${esc(word)}<span class="pos">${esc(pos)}</span></div>
+    ${ipa?`<div class="ipa">/${esc(ipa)}/</div>`:''}
+    ${cefr?`<div class="row">难度：${esc(cefr)}</div>`:''}
+    <div class="gloss">${esc(gloss)||'（无释义）'}</div>
+    ${etymology?`<div class="row">词源：${esc(etymology)}</div>`:''}
+    <div class="row">当前状态：<b>${st==='new'?'生词':st==='learning'?'学习中':'已掌握'}</b></div>
+    <button class="btn" onclick="markWord('${esc(word)}','learning')">标记：学习中</button>
+    <button class="btn ghost" onclick="markWord('${esc(word)}','mastered')">标记：已掌握</button>
+  `;
+}
+
+function markWord(word, status){
+  known[word] = status;
+  renderArticle();
+  lookup(word);
+  updateStatus();
+}
+
+function updateStatus(){
+  const words = Object.keys(known);
+  const n = words.filter(w=>known[w]==='new').length;
+  const l = words.filter(w=>known[w]==='learning').length;
+  const m = words.filter(w=>known[w]==='mastered').length;
+  document.getElementById('statusBar').innerHTML =
+    `词汇库 <b>${words.length}</b> 词 · 生词 <b>${n}</b> · 学习中 <b>${l}</b> · 已掌握 <b>${m}</b>`;
+}
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>
