@@ -195,6 +195,56 @@ class OxfordLevelSource:
         return r.get("cefr") if r else None
 
 
+class EcdictSource:
+    """ECDICT 双语词典（skywind3000/ECDICT，77 万词全列）⭐。
+
+    列：word, phonetic(1), definition(2), translation(3), pos(4),
+        collins(5), oxford(6), tag(7), bnc(8), frq(9), ...
+    懒加载 word → 字段映射（模块级缓存，内存查询，只存所需字段）。
+    """
+
+    _CACHE: Optional[Dict[str, Dict[str, str]]] = None
+
+    @classmethod
+    def _load(cls) -> Dict[str, Dict[str, str]]:
+        if cls._CACHE is not None:
+            return cls._CACHE
+        import csv
+        cache: Dict[str, Dict[str, str]] = {}
+        p = _DATA_DIR / "ecdict.csv"
+        try:
+            with open(p, encoding="utf-8", errors="ignore") as f:
+                for row in csv.reader(f):
+                    if len(row) < 5 or not row[0]:
+                        continue
+                    w = row[0].strip().lower()
+                    pos = row[4].strip() if len(row) > 4 else ""
+                    if not pos:
+                        # pos 列常空——从释义前缀提取（n./v./adj. 等）
+                        for src_col in (2, 3):
+                            if len(row) > src_col:
+                                m = re.match(r"([a-z]+\.)\s", row[src_col].strip())
+                                if m:
+                                    pos = m.group(1)
+                                    break
+                    cache[w] = {
+                        "phonetic": row[1].strip() if len(row) > 1 else "",
+                        "definition_en": row[2].strip() if len(row) > 2 else "",
+                        "translation_zh": row[3].strip() if len(row) > 3 else "",
+                        "pos": pos,
+                        "collins": row[5].strip() if len(row) > 5 else "",
+                        "oxford": row[6].strip() if len(row) > 6 else "",
+                        "frq": row[9].strip() if len(row) > 9 else "",
+                    }
+        except Exception:
+            pass
+        cls._CACHE = cache
+        return cache
+
+    def lookup(self, word: str) -> Optional[Dict[str, str]]:
+        return self._load().get(word.strip().lower())
+
+
 # ═══════════════════════════════════════════════════════════
 # 学科术语辞典（kaikki Wiktionary topic 分片——真实下载数据）
 # 数据源：kaikki.org（CC BY-SA + GFDL），7 个学科 topic JSONL
@@ -370,6 +420,7 @@ class WordBank:
         self.cmu = CmuIpaSource()
         self.cefr = CefrGlossSource()
         self.oxford = OxfordLevelSource()
+        self.ecdict = EcdictSource()
         self.domain = DomainGlossary(domains)
         self.level_strategy = level_strategy
 
@@ -377,10 +428,11 @@ class WordBank:
         w = word.strip().lower()
         result: Dict[str, Any] = {
             "word": w, "ipa": None, "gloss_en": None, "gloss_zh": None,
-            "cefr": None, "pos": None, "domain_term": None, "sources": {},
+            "cefr": None, "pos": None, "domain_term": None, "etymology": None,
+            "senses": [], "sources": {},
         }
 
-        # 1. 音标（CMU 权威）
+        # 1. 音标（CMU 权威，ECDICT 兜底）
         result["ipa"] = self.cmu.lookup(w)
         if result["ipa"]:
             result["sources"]["ipa"] = "cmu"
@@ -402,11 +454,35 @@ class WordBank:
             result["sources"]["level"] = "|".join(
                 k for k, v in levels.items() if v)
 
-        # 4. 学科术语辞典
+        # 4. 学科术语辞典（kaikki：gloss_en/pos/词源/多义项）
         dt = self.domain.lookup(w)
         if dt:
             result["domain_term"] = dt
             result["sources"]["domain"] = dt.get("domain", "")
+            if not result["gloss_en"] and dt.get("gloss_en"):
+                result["gloss_en"] = dt["gloss_en"]
+            if not result["pos"] and dt.get("pos"):
+                result["pos"] = dt["pos"]
+            if dt.get("etymology"):
+                result["etymology"] = dt["etymology"]
+                result["sources"]["etymology"] = "kaikki"
+            # 多义项（kaikki glosses 前 3 条 → senses）
+            glosses = dt.get("glosses") or []
+            result["senses"] = glosses[:3]
+
+        # 5. ECDICT 双语（全列接线 ⭐：zh 释义/英文兜底/音标兜底/词性兜底）
+        ec = self.ecdict.lookup(w)
+        if ec:
+            result["sources"]["ecdict"] = True
+            if ec.get("translation_zh"):
+                result["gloss_zh"] = ec["translation_zh"]
+            if not result["gloss_en"] and ec.get("definition_en"):
+                result["gloss_en"] = ec["definition_en"]
+            if not result["ipa"] and ec.get("phonetic"):
+                result["ipa"] = ec["phonetic"]
+                result["sources"]["ipa"] = "ecdict"
+            if not result["pos"] and ec.get("pos"):
+                result["pos"] = ec["pos"]
 
         return result
 
@@ -418,4 +494,5 @@ class WordBank:
             "cefr_words": len(_load_cefr_gloss()),
             "oxford_words": len(_load_oxford()),
             "domain_terms": len(kaikki),
+            "ecdict_words": len(self.ecdict._load()),
         }

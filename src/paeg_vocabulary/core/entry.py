@@ -90,6 +90,7 @@ class CandidateWord:
     cefr_guess: str = ""          # 难度猜测
     source_pages: List[int] = field(default_factory=list)
     contexts: List[str] = field(default_factory=list)  # 原书上下文（例句候选）
+    must_keep: bool = False  # §3.116 ⭐ 本书关键术语（LLM 判断，豁免筛选）
 
 
 def entry_required_fields() -> List[str]:

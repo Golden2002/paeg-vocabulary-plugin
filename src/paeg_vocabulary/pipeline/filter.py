@@ -223,7 +223,8 @@ def filter_candidates(ctx: VocabularyContext,
                       strategies: Optional[List[FilterStrategy]] = None,
                       cefr_max: Optional[str] = None,
                       zipf_threshold: Optional[float] = None,
-                      filter_mode: str = "learn") -> VocabularyContext:
+                      filter_mode: str = "learn",
+                      must_keep: Optional[set] = None) -> VocabularyContext:
     """阶段 3：clean_corpus → candidates（应用筛选策略）。
 
     §3.116 ⭐ cefr_max: 用户水平档位 CEFR 上限（如 "C1"——雅思 7.5）。
@@ -231,6 +232,8 @@ def filter_candidates(ctx: VocabularyContext,
     filter_mode: "learn"（需学习的生词——难度≥阈值）/ "master"（能掌握的词）。
     §3.116 ⭐ 语言现象豁免：熟词生义/固定搭配/俚语 = 学习价值信号，
     即使 zipf 不达标也保留（phenomenon_keep 集合）。
+    §3.116 ⭐ must_keep（本书关键术语库）：LLM 判断的本书核心术语，
+    无论什么水平的学生都必须呈现——豁免一切筛选。
     """
     if not ctx.clean_corpus:
         ctx.errors.append("无清洗词流（阶段2未执行）")
@@ -262,8 +265,13 @@ def filter_candidates(ctx: VocabularyContext,
         pass
 
     kept = []
+    mk = {w.lower() for w in (must_keep or set())}
     for c in all_cands:
-        if all(s.should_keep(c) for s in strategies):
+        if c.lemma.lower() in mk:
+            # §3.116 ⭐ 本书关键术语：必定保留（豁免一切筛选）
+            c.must_keep = True
+            kept.append(c)
+        elif all(s.should_keep(c) for s in strategies):
             kept.append(c)
         elif c.lemma.lower() in _phenomenon_keep:
             # 语言现象豁免（zipf 不达标但熟词生义/俚语 → 保留）

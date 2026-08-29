@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>词汇表模板 v2 · 示例（《钟形罩》The Bell Jar）</title>
+<link rel="stylesheet" href="template_v2.css">
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     封面（与原版一致；B5 · 210mm 内容高度，page-break-after 换页）
+     ════════════════════════════════════════════════════════════════════ -->
+<section class="cover">
+  <h1>Vocabulary · Template v2</h1>
+  <div class="rule"></div>
+  <div class="sub">《钟形罩》The Bell Jar · 词汇表渲染模板示例</div>
+  <div class="vol">PAEG Vocabulary Plugin · 14.3 · 渲染模板固定资产</div>
+  <div class="note">本页为排版示例：B5 · 衬线宋体系 · 青灰点缀 #3b5b6e · 黑白打印可辨</div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     使用说明 + v2 新字段图例（.legend 为 v2 新增结构）
+     ════════════════════════════════════════════════════════════════════ -->
+<section class="how-to-use">
+  <h2>使用说明 · How to Use</h2>
+  <ul>
+    <li>阅读顺序：先看<strong>词头与音标</strong>，再读<strong>中英释义</strong>，最后回到<strong>原书语境</strong>。</li>
+    <li><strong>义项编号</strong>（如 1.1 / 1.2）：第一层为词源路径，第二层为该路径下的义项。</li>
+    <li><strong>例句来源</strong>：标注「原书 · 语境例句」者出自原著或配套学术评注；标注「义项 · 补充例句」者为释义佐证。</li>
+    <li><strong>词根词缀</strong>：显示词素形式、来源语言与含义，帮助理解词汇家族。</li>
+    <li><strong>CEFR 徽章与频次</strong>：提示学习阶段与全书出现频率，安排复习优先级。</li>
+  </ul>
+
+  <!-- v2 新字段图例：将抽象类名翻译成可见样式，模板资产自解释 -->
+  <div class="legend">
+    <h3>新字段图例 · Legend</h3>
+    <div class="legend-row">
+      <span class="legend-cap">音标</span>
+      <span class="ipa-accent">US</span> <span class="ipa-val">/fəˈnɑːmənən/</span>
+      <span class="ipa-accent">UK</span> <span class="ipa-val">/fəˈnɒmɪnən/</span>
+    </div>
+    <div class="legend-row">
+      <span class="legend-cap">义项编号</span>
+      <span class="sense-num">1.1</span><span>词源路径一 · 第一义项</span>
+      <span class="sense-num">1.2</span><span>词源路径一 · 第二义项</span>
+    </div>
+    <div class="legend-row">
+      <span class="legend-cap">词根词缀</span>
+      <span class="m-item"><span class="m-part">phain</span><span class="m-lang">Gr.</span>「<span class="m-meaning">显现</span>」</span>
+      <span class="m-sep">+</span>
+      <span class="m-item"><span class="m-part">-omenon</span><span class="m-lang">Gr.</span>「<span class="m-meaning">被显现之物</span>」</span>
+    </div>
+    <div class="legend-row">
+      <span class="legend-cap">例句来源</span>
+      <span class="ex-src">原书 · 语境例句</span>
+      <span class="ex-src">义项 1.2 · 补充例句</span>
+    </div>
+    <div class="legend-row">
+      <span class="legend-cap">徽章</span>
+      <span class="cefr">B2</span>
+      <span class="freq">频次 37 · 全书第 42</span>
+      <span class="phen-tag">熟词生义</span>
+      <span class="colloc">natural phenomenon</span>
+    </div>
+  </div>
+</section>
+
+<main class="entries">
+
+<!-- ════════════════════════════════════════════════════════════════════
+     P 组 · phenomenon —— 完整示例：展示全部 v2 新字段
+     布局意图：
+     · 头行右缘 CEFR + 频次徽章（margin-left:auto 贴右，不干扰词头焦点）
+     · ipa-row 双口音并排（US/UK 小型大写标签 + 等宽音标值）
+     · senses.numeric + sense-group：自动编号 1.1 / 1.2（词源.义项双层）
+     · etymology 承载 kaikki 英文散文
+     · morpheme 结构化：词素形式（青灰加粗）· 来源语言 · 含义三段式
+     · 例句双来源：原书语境（真实《钟形罩》评注引文）×2 + 义项补充 ×1
+     · collocations 词块化（2-6 个，圆角细框）
+     ════════════════════════════════════════════════════════════════════ -->
+<h2 class="alpha-header">P</h2>
+
+<article class="entry">
+  <header class="headword">
+    <span class="word">phenomenon</span>
+    <span class="ipa">/fəˈnɒmɪnən/</span>
+    <span class="pos">noun</span>
+    <!-- v2：右侧元信息区——CEFR 徽章（仅描边，黑白打印可辨）+ 全书频次排名 -->
+    <span class="head-meta">
+      <span class="freq">频次 37 · 全书第 42</span>
+      <span class="cefr">B2</span>
+    </span>
+  </header>
+
+  <!-- v2：多口音音标行（渲染器 ipa 字段：en_us / en_uk；demo 用 US/UK 显示标签） -->
+  <div class="ipa-row">
+    <span class="ipa-accent">US</span> <span class="ipa-val">/fəˈnɑːmənən/</span>
+    <span class="ipa-accent">UK</span> <span class="ipa-val">/fəˈnɒmɪnən/</span>
+    <span class="ipa-accent">复数</span> <span class="ipa-val">phenomena</span>
+  </div>
+
+  <div class="zh-def">现象；奇观；非凡的人（或事物）。可被感知、观察或记录的事实与事件，尤指不寻常或难以解释者；引申指因出色或轰动而引人注目的人或事物。</div>
+  <div class="en-def">a fact or event that can be observed and studied, especially one that is unusual or difficult to explain; a person or thing that is very successful or impressive.</div>
+
+  <!-- v2：双层编号义项——.senses.numeric 开启计数器；.sense-group 为词源层（第一层），
+       .sense 为义项层（第二层），编号由 CSS 自动生成 1.1 / 1.2，后端无需写数字 -->
+  <div class="senses numeric">
+    <section class="sense-group">
+      <!-- 词源层引导行：说明本组义项共用的词源路径 -->
+      <div class="sense-ety">希腊语 phainomenon「显现之物」← phainein「使显现、照亮」</div>
+      <div class="sense">
+        <span class="sense-zh">现象（可观察的事实或事件，尤指不寻常或难以解释者）</span>
+        <span class="sense-en">a fact or event that can be observed, especially one that is unusual or difficult to explain</span>
+        <span class="book-context">原书语境：批评文本将贝蒂·弗里丹命名的“女性迷思”归为社会现象</span>
+      </div>
+      <div class="sense">
+        <span class="sense-zh">奇才；引起轰动的人或事物</span>
+        <span class="sense-en">a person or thing that is very successful or impressive</span>
+        <span class="book-context">引申义：称某人某事为“现象”，意味着其引人注目、超乎寻常</span>
+        <!-- v2：义项内嵌补充例句——比词条级例句多一层缩进（挂靠本义项） -->
+        <div class="ex-group">
+          <span class="ex-src">义项 1.2 · 补充例句</span>
+          <div class="example"><span class="example-en">A child prodigy who composes symphonies at seven is a rare phenomenon.</span><span class="example-zh">七岁便能创作交响乐的神童，是罕见的现象级人物。</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- kaikki etymology_text：英文散文式词源（原版 .etymology 斜体 + ◦ 前缀直接承载） -->
+  <div class="etymology">From Late Latin phaenomenon, from Greek phainomenon “that which appears or is seen,” neuter present participle of phainesthai “to appear,” passive of phainein “to bring to light, cause to appear.” Related to phantasm, epiphany, and diaphanous.</div>
+
+  <!-- v2：结构化词根词缀——三段式：词素形式 / 来源语言 / 含义 -->
+  <div class="morpheme">
+    <span class="m-item"><span class="m-part">phain</span><span class="m-lang">Gr.</span>「<span class="m-meaning">显现</span>」</span><span class="m-sep">+</span><span class="m-item"><span class="m-part">-omenon</span><span class="m-lang">Gr.</span>「<span class="m-meaning">被显现之物（被动分词后缀）</span>」</span>
+  </div>
+
+  <div class="phenomena"><span class="phen-tag">熟词生义</span><span class="phen-tag">学科术语</span></div>
+
+  <!-- v2：例句双来源之一——原书语境例句（摘自《钟形罩》学术评注，真实引文） -->
+  <div class="ex-group">
+    <span class="ex-src">原书 · 语境例句</span>
+    <div class="example"><span class="example-en">psychiatrists’ and psychologists’ vocabulary has been enriched by the term “the bell jar syndrome” as the novel triggered a wave of suicides among female university and college students suffering from the phenomenon called by Betty Friedan “the feminine mystique.”</span><span class="example-zh">精神病学家与心理学家的语汇因“钟形罩综合征”一词而得以充实——这部小说在女大学生中引发了一波自杀浪潮，她们所承受的正是贝蒂·弗里丹所说的“女性迷思”这一现象。</span></div>
+  </div>
+  <div class="ex-group">
+    <span class="ex-src">原书 · 语境例句</span>
+    <div class="example"><span class="example-en">This phenomenon of contemporary culture is analysed by, among others, Naomi Wolf in The Beauty Myth (see Works Cited). 4.</span><span class="example-zh">当代文化的这一现象，娜奥米·沃尔夫等人在《美的神话》中作过分析（见引用文献）。4.</span></div>
+  </div>
+
+  <!-- v2：短语搭配词块（2-6 个；无底纹细框，打印不糊） -->
+  <div class="collocations">
+    <span class="colloc">natural phenomenon</span><span class="colloc">social phenomenon</span><span class="colloc">cultural phenomenon</span><span class="colloc">rare phenomenon</span><span class="colloc">a phenomenon of nature</span>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     G 组 · genotype —— 超长词条示例
+     布局意图：
+     · .entry.long：允许词条跨页，但义项/例句/词块内部不断开；
+       断点处可插入 .page-hint 分页提示（虚线细于正文分隔线）
+     · 词根词缀：双词根复合词（gen + type），展示多 roots 并列
+     · etymology 散文：词源含造词人 Wilhelm Johannsen（1909）
+     ════════════════════════════════════════════════════════════════════ -->
+<h2 class="alpha-header">G</h2>
+
+<article class="entry long">
+  <header class="headword">
+    <span class="word">genotype</span>
+    <span class="ipa">/ˈdʒiːnətaɪp/</span>
+    <span class="pos">noun</span>
+    <span class="head-meta">
+      <span class="freq">频次 9 · 全书第 128</span>
+      <span class="cefr">C1</span>
+    </span>
+  </header>
+
+  <div class="ipa-row">
+    <span class="ipa-accent">US</span> <span class="ipa-val">/ˈdʒiːnətaɪp/</span>
+    <span class="ipa-accent">UK</span> <span class="ipa-val">/ˈdʒenətaɪp/</span>
+    <span class="ipa-accent">对比</span> <span class="ipa-val">phenotype /ˈfiːnətaɪp/</span>
+  </div>
+
+  <div class="zh-def">基因型；遗传型。生物体所携带的整套遗传构成（与表现型 phenotype 相对）；比喻义指某事物表象之下的内在根源或底层编码。</div>
+  <div class="en-def">the genetic constitution of an organism, as distinguished from its observable characteristics; figuratively, the underlying constitution or inner code of a thing.</div>
+
+  <div class="senses numeric">
+    <section class="sense-group">
+      <div class="sense-ety">希腊语 genos「出生、种类」+ typos「类型、印记」</div>
+      <div class="sense">
+        <span class="sense-zh">基因型（遗传学标准义：决定生物遗传特性的基因构成）</span>
+        <span class="sense-en">the set of genes in an organism that determines a particular characteristic</span>
+        <span class="book-context">学科语境：与表现型相对——基因型是潜在的编码，表现型是显现的结果</span>
+      </div>
+      <div class="sense">
+        <span class="sense-zh">引申义：事物的内在根源、底层编码（比喻用法）</span>
+        <span class="sense-en">the underlying constitution or inner logic of something</span>
+        <div class="ex-group">
+          <span class="ex-src">义项 1.2 · 补充例句</span>
+          <div class="example"><span class="example-en">The genotype of a culture determines which phenotypes—ideas, customs, institutions—it will express.</span><span class="example-zh">一种文化的基因型，决定了它将表达出哪些表现型——观念、习俗与制度。</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- kaikki 散文词源：记录造词人、年份与构词理据 -->
+  <div class="etymology">Coined in 1909 by the Danish botanist Wilhelm Johannsen, from German Genotypus, a blend of Greek genos “race, kind, birth” and typos “type, mark, model.” Johannsen introduced the term to distinguish the heritable constitution of an organism (genotype) from its visible form (phenotype).</div>
+
+  <!-- 双词根复合词：两个 roots 并列，各自带来源语言与含义 -->
+  <div class="morpheme">
+    <span class="m-item"><span class="m-part">gen</span><span class="m-lang">Gr.</span>「<span class="m-meaning">出生、种类</span>」</span><span class="m-sep">+</span><span class="m-item"><span class="m-part">-o-</span><span class="m-lang">连接元音</span>「<span class="m-meaning">复合词中缀</span>」</span><span class="m-sep">+</span><span class="m-item"><span class="m-part">type</span><span class="m-lang">Gr.</span>「<span class="m-meaning">类型、印记</span>」</span>
+  </div>
+
+  <div class="phenomena"><span class="phen-tag">学科术语</span></div>
+
+  <!-- genotype 未见于原书正文——此例句为排版占位示意（接入后端数据时由 field_renderers 输出） -->
+  <div class="ex-group">
+    <span class="ex-src">原书 · 语境例句</span>
+    <div class="example"><span class="example-en">【占位例句】Even before she understands her own inheritance, the novel has already written her genotype into its opening sentence.</span><span class="example-zh">【占位例句】在她理解自己的遗传之前，小说早已把她的基因型写进了开篇第一句话。</span></div>
+  </div>
+
+  <!-- v2：分页提示占位——若渲染器检测到本词条被分页断开，可在断点插入此元素 -->
+  <div class="page-hint">转下页 · 续</div>
+
+  <div class="collocations">
+    <span class="colloc">genotype frequency</span><span class="colloc">genotype–phenotype distinction</span><span class="colloc">heterozygous genotype</span><span class="colloc">dominant genotype</span><span class="colloc">recessive genotype</span><span class="colloc">genotype analysis</span>
+  </div>
+</article>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     A 组 · abandonment —— 兼容性验证词条
+     布局意图：本词条使用 field_renderers.py 的【原始输出形状】
+     （headword 裸文本 + 内联 .ipa；gloss 系列；example 双 span），
+     用于证明 v2 CSS 对旧渲染器输出零退化。
+     ════════════════════════════════════════════════════════════════════ -->
+<h2 class="alpha-header">A</h2>
+
+<article class="entry">
+  <div class="headword">abandonment <span class="ipa">/əˈbændənmənt/</span> <span class="pos">noun</span></div>
+  <div class="gloss"><span class="gloss-zh">放弃；抛弃；遗弃</span><span class="gloss-en">the act of giving up or leaving someone or something behind</span></div>
+  <div class="etymology">源自古法语 abandoner「放任」，出自短语 à bandon「任凭支配」→ 弃置</div>
+  <div class="example"><span class="example-en">After all, within the context of normative heterosexuality, the oedipal crisis for the little girl involves not only the abandonment of her desire for the first love object and its redirection to an object of the opposite sex, but also the enforced identification with the position of inferiority of the now devalued mother.</span><span class="example-zh">毕竟，在规范性异性恋的语境中，小女孩的俄狄浦斯危机不仅涉及她对第一个爱恋对象的欲望之放弃与转向，还涉及被迫认同于如今被贬低的母亲所处的低等位置。</span></div>
+</article>
+
+</main>
+</body>
+</html>

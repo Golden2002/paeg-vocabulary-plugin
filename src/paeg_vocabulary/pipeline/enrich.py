@@ -16,7 +16,7 @@ from __future__ import annotations
 from typing import List, Optional
 
 from ..core.context import VocabularyContext
-from ..core.entry import VocabularyEntry
+from ..core.entry import VocabularyEntry, Sense, Morpheme
 from ..enrichers.ipa_enricher import IpaEnricher
 # §3.116 ⭐ 语言现象识别（熟词生义/固定搭配/俚语）
 from ..enrichers.idiom_enricher import detect_phenomena
@@ -56,6 +56,73 @@ def _ecdict_zh(word: str) -> str:
         except Exception:
             _ECDICT_CACHE = {}
     return _ECDICT_CACHE.get(word.strip().lower(), "")
+
+
+# §3.116 ⭐ 词根词缀离线规则表（LLM 缺失时的兜底——常见前缀/后缀/词根）
+_PREFIX_RULES = {
+    "pre": "在前/预先（Latin prae）", "re": "再/重新（Latin re-）",
+    "sub": "在下/次于（Latin sub）", "inter": "之间（Latin inter）",
+    "trans": "跨越（Latin trans）", "super": "超过（Latin super）",
+    "anti": "反对（Greek anti）", "auto": "自己（Greek autos）",
+    "bio": "生命（Greek bios）", "geo": "地球（Greek ge）",
+    "micro": "微小（Greek mikros）", "multi": "多（Latin multus）",
+    "mono": "单一（Greek monos）", "poly": "多（Greek polys）",
+    "tri": "三（Latin tres）", "uni": "一（Latin unus）",
+    "di": "二（Greek dis）", "gen": "产生/起源（Greek genos）",
+    "hetero": "异（Greek heteros）", "homo": "同（Greek homos）",
+    "pheno": "显现（Greek phainein）", "proto": "最初（Greek protos）",
+    "tele": "远（Greek tele）", "hyper": "超出（Greek hyper）",
+    "hypo": "在下（Greek hypo）", "para": "旁边（Greek para）",
+}
+_SUFFIX_RULES = {
+    "ology": "学科（Greek -logia）", "ism": "主义/状态（Greek -ismos）",
+    "tion": "名词化（Latin -tio）", "ity": "性质（Latin -itas）",
+    "ment": "行为/结果（Latin -mentum）", "ness": "状态（Old English -nes）",
+    "able": "能够（Latin -abilis）", "ible": "能够（Latin -ibilis）",
+    "ous": "充满（Latin -osus）", "ive": "倾向（Latin -ivus）",
+    "ic": "属于（Greek -ikos）", "al": "相关（Latin -alis）",
+    "ize": "使成为（Greek -izein）", "type": "类型（Greek typos）",
+    "some": "具有（Old English -sum）", "like": "像（Old English -lic）",
+}
+_ROOT_RULES = {
+    "gene": {"lang": "Greek", "meaning": "产生/基因（genos 起源）"},
+    "pheno": {"lang": "Greek", "meaning": "显现/表现（phainein）"},
+    "allel": {"lang": "Greek", "meaning": "相互（allelon 彼此的）"},
+    "loc": {"lang": "Latin", "meaning": "位置（locus 地点）"},
+    "morph": {"lang": "Greek", "meaning": "形态（morphe）"},
+    "herit": {"lang": "Latin", "meaning": "继承（hereditas）"},
+    "dom": {"lang": "Latin", "meaning": "统治/领域（dominus 主人）"},
+    "part": {"lang": "Latin", "meaning": "部分（pars）"},
+    "cess": {"lang": "Latin", "meaning": "行走/让步（cedere）"},
+    "spect": {"lang": "Latin", "meaning": "看（specere）"},
+    "struct": {"lang": "Latin", "meaning": "建造（struere）"},
+}
+
+
+def _rule_morpheme(word: str):
+    """规则级词根词缀拆解（LLM 缺失时兜底）。"""
+    w = word.strip().lower()
+    if len(w) < 5:
+        return None
+    prefix = None
+    suffix = None
+    roots = []
+    for p, meaning in _PREFIX_RULES.items():
+        if w.startswith(p) and len(w) > len(p) + 2:
+            prefix = {"p": p, "meaning": meaning}
+            w = w[len(p):]
+            break
+    for s, meaning in _SUFFIX_RULES.items():
+        if w.endswith(s) and len(w) > len(s) + 2:
+            suffix = {"s": s, "meaning": meaning}
+            w = w[:-len(s)]
+            break
+    for r, info in _ROOT_RULES.items():
+        if r in w:
+            roots.append({"root": r, "lang": info["lang"], "meaning": info["meaning"]})
+    if not prefix and not suffix and not roots:
+        return None
+    return Morpheme(roots=roots, prefix=prefix, suffix=suffix)
 
 
 def enrich_entries(ctx: VocabularyContext,
@@ -107,18 +174,32 @@ def enrich_entries(ctx: VocabularyContext,
             _fb = _ipa_fallback.enrich(cand.headword)
             if _fb:
                 entry.ipa.update(_fb)
-        # 释义：CEFR 词库离线优先（en），zh 由 LLM 补
-        if wb_r.get("gloss_en"):
-            entry.gloss_bilingual = {"en": wb_r["gloss_en"], "zh": ""}
-        elif chat_fn is None:
-            # §3.116 ⭐ ecdict 接线：无 LLM 时用 ecdict 中文释义兜底
-            # （修复弱模式空词汇表根因——离线 77 万词 zh 释义）
-            _zh = _ecdict_zh(cand.headword)
-            if _zh:
-                entry.gloss_bilingual = {"en": "", "zh": _zh}
+        # 释义：离线双轨——en（CEFR/kaikki/ECDICT 兜底链）+ zh（ECDICT）
+        gloss_en = wb_r.get("gloss_en") or ""
+        gloss_zh = wb_r.get("gloss_zh") or ""
+        if not gloss_zh:
+            _zh2 = _ecdict_zh(cand.headword)
+            gloss_zh = _zh2
+        entry.gloss_bilingual = {"en": gloss_en, "zh": gloss_zh}
+        # 词源：kaikki 离线（LLM 批量阶段可精修）
+        if wb_r.get("etymology"):
+            entry.etymology = wb_r["etymology"]
+        # 多义项：kaikki glosses 前 3 条 → Sense（词源.义项 双层编号）
+        if wb_r.get("senses"):
+            entry.senses = [
+                Sense(sense_id=f"1.{i}", gloss_en=s[:200],
+                      gloss_zh=entry.gloss_bilingual.get("zh", ""))
+                for i, s in enumerate(wb_r["senses"], 1)
+            ]
+        # 词根词缀：离线规则表兜底（LLM 批量阶段可精修）
+        _morph = _rule_morpheme(cand.headword)
+        if _morph:
+            entry.morpheme = _morph
         # 学科术语：domain 命中 → 标记术语（筛选豁免信号）
         if wb_r.get("domain_term"):
-            entry.phenomena.setdefault("domain_term", [wb_r["domain_term"].get("gloss_zh", "")])
+            entry.phenomena.setdefault(
+                "domain_term",
+                [wb_r["domain_term"].get("gloss_en", "")[:120]])
         # 原书例句（上下文优先）
         if cand.contexts:
             entry.examples = [{"en": c[:200], "zh": ""} for c in cand.contexts[:2]]

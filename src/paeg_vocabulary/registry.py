@@ -111,16 +111,47 @@ class VocabularyRegistry:
         # 阶段1-5（P4 分位筛选）
         ctx = ingest_pdf(ctx, pdf_path)
         ctx = clean_corpus(ctx)
-        # P4 ⭐ 统一分位筛选：Q ≥ U OR is_important（替代旧 zipf/CEFR 双轨）
+        # §3.116 ⭐ 本书关键术语库（LLM 第一节点）：判断哪些词对本书重要——
+        # 无论什么水平的学生都必须呈现（must_keep 豁免筛选）
+        _must_keep: set = set()
+        try:
+            _chat_for_gate = chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None)
+            from .enrichers.book_term_gate import judge_book_terms, fallback_must_keep
+            if _chat_for_gate is not None:
+                _cand_brief = [
+                    {"headword": c.headword, "freq_count": c.freq_count,
+                     "contexts": c.contexts[:1]}
+                    for c in getattr(ctx, "candidates", []) or []
+                ]
+                # clean 后有 clean_corpus，先粗建候选简况用于判断
+                from collections import Counter
+                _cnt = Counter(t.lemma for t in ctx.clean_corpus)
+                _cand_brief = [
+                    {"headword": w, "freq_count": n, "contexts": []}
+                    for w, n in _cnt.most_common(300)
+                ]
+                _mk = judge_book_terms(
+                    book_title=uf.get("book_title", "") or str(pdf_path),
+                    candidates=_cand_brief, chat_fn=_chat_for_gate)
+                _must_keep = set(_mk.keys())
+            if not _must_keep:
+                # 无 LLM 兜底：高频词启发式
+                _mk2 = fallback_must_keep(_cand_brief if _cand_brief else [])
+                _must_keep = set(_mk2.keys())
+        except Exception:
+            _must_keep = set()
+        # P4 ⭐ 统一分位筛选：Q ≥ U OR important（替代旧 zipf/CEFR 双轨）
         try:
             from .quantile_filter import quantile_filter_candidates
             ctx = quantile_filter_candidates(
                 ctx, u_level=u_level,
+                important_words=_must_keep,
                 max_entries=int(uf.get("max_entries") or 2500))
         except Exception:
             # 兜底：旧筛选（保证可用）
             from .pipeline.filter import filter_candidates
-            ctx = filter_candidates(ctx, filter_mode=uf.get("filter_mode", "learn"))
+            ctx = filter_candidates(ctx, filter_mode=uf.get("filter_mode", "learn"),
+                                    must_keep=_must_keep)
 
         # §3.116 ⭐ 提取书元数据（书名/作者）——用 LLM 读前几页判定（用户方案，
         # 不依赖文件名——文件名格式随上传作品而异无法泛化）
@@ -134,6 +165,32 @@ class VocabularyRegistry:
                              chat_fn=chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None),
                              book_title=book_title, book_author=book_author,
                              domains=domains)
+
+        # §3.116 ⭐ 渲染前 LLM 审查（LLM 第三节点）：结构化词条 + 用户需求上下文
+        # 一并发送给 LLM，逐条审查（纠错/补漏/降噪）后再渲染
+        try:
+            _chat_for_review = chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None)
+            if _chat_for_review is not None and ctx.entries:
+                from .pipeline.review import review_entries
+                _dicts = [e.to_dict() for e in ctx.entries]
+                _user_ctx = "；".join([
+                    f"用户水平档位:{uf.get('level') or uf.get('cefr_max') or '未指定'}",
+                    f"筛选模式:{uf.get('filter_mode', 'learn')}",
+                    f"学习目标:{uf.get('goal') or '通用词汇学习'}",
+                ])
+                _reviewed = review_entries(_dicts, _chat_for_review,
+                                           user_context=_user_ctx)
+                # 应用审查结果回写 entries
+                for _e, _rd in zip(ctx.entries, _reviewed):
+                    if _rd.get("_removed"):
+                        continue
+                    for _k in ("gloss_bilingual", "pos", "etymology"):
+                        _v = _rd.get(_k)
+                        if _v:
+                            setattr(_e, _k, _v)
+        except Exception:
+            pass
+
         # P6 ⭐ 渲染（FIELD_RENDERERS + L1 门）
         ctx = render_html(ctx, book_title=book_title, book_author=book_author)
 

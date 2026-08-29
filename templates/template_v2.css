@@ -1,0 +1,263 @@
+/* ==========================================================================
+   template_v2.css — PAEG 词汇表渲染模板 v2（原版设计语言扩展）
+
+   定位：在《模板_钟形罩_原版.html》的设计语言上扩展结构，承载更多字段。
+   原则：美感继承 + 信息承载扩展——排版不得退化。
+
+   ────────────────────────────────────────────────────────────────────────
+   【一】类名兼容契约（field_renderers.py / entry_html.py 现有输出全部保留）
+   ────────────────────────────────────────────────────────────────────────
+   原版类（视觉行为与原版完全一致）：
+     .entry .headword .word .pos .zh-def .en-def .etymology
+     .example .example-en .example-zh .phenomena .phen-tag .alpha-header
+     .gloss .gloss-zh .gloss-en .senses .sense .sense-zh .sense-en
+     .book-context .morpheme .collocations
+     .ipa .ipa-row .ipa-val .ipa-accent .cover .how-to-use
+
+   v2 新增类（渲染器未输出也可由后端按映射补入，见下）：
+     .head-meta .cefr .freq                       —— 头行右侧徽章（CEFR/频次）
+     .senses.numeric .sense-group .sense-ety      —— 双层义项编号（词源.义项）
+     .sense-num                                   —— 显式义项编号（替代自动计数）
+     .m-item .m-part .m-lang .m-meaning .m-sep    —— 结构化词根词缀
+     .colloc                                      —— 短语搭配词块
+     .ex-group .ex-src                            —— 例句来源标注（原书/义项）
+     .entry.long .page-hint                       —— 超长词条分页策略
+     .legend .legend-row                          —— 使用说明中的图例
+
+   ────────────────────────────────────────────────────────────────────────
+   【二】field_renderers 输出 → v2 类 映射说明
+   ────────────────────────────────────────────────────────────────────────
+   | 渲染器输出类                       | v2 处理方式                          |
+   | headword 内联 <span class="ipa">   | 保留原样式（单音标紧凑显示）          |
+   | ipa → .ipa-row/.ipa-accent/.ipa-val| 保留 + 增强为 flex 并排（多口音）    |
+   | gloss → .gloss-zh/.gloss-en        | 保留（等效 .zh-def/.en-def）         |
+   | senses → .sense-zh/.sense-en       | 保留；容器加 .numeric 即得 1.1 编号；|
+   |   + .book-context                  | 加 .sense-group 即得「词源.义项」双层 |
+   | etymology → .etymology             | 保留（天然支持 kaikki 散文）         |
+   | morpheme → .morpheme（扁平文本）   | 保留；结构化时可改用 .m-item 系列     |
+   | phenomena → .phenomena/.phen-tag   | 保留                                 |
+   | examples → .example/.example-en/   | 保留；外包 .ex-group/.ex-src 标注来源|
+   |   .example-zh                      | （原书例句 book / 义项补充 sense）    |
+   | collocations → .collocations       | 保留（· 连接文本）；.colloc 词块化    |
+   ────────────────────────────────────────────────────────────────────────
+   打印约束：B5 页面不变；无外部字体/网络资源；青灰系黑白打印可辨。
+   ========================================================================== */
+
+/* ═══ 0. 设计令牌（取值与原版逐一对齐，仅提升为变量以利扩展） ═══ */
+:root {
+  --serif: "Cambria", "Georgia", "Times New Roman", "SimSun", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --cjk:   "SimSun", "宋体", "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  --mono:  "Consolas", "DejaVu Sans Mono", "Menlo", "Lucida Console", monospace;
+  --ink:      #1a1a1a;  /* 词头墨色（原版） */
+  --text:     #2b2b2b;  /* 正文（原版） */
+  --text-mid: #4a4a4a;  /* 英文释义（原版） */
+  --text-sub: #5a5a5a;  /* 词源/次要信息（原版） */
+  --accent:   #3b5b6e;  /* 青灰点缀（原版） */
+  --hairline: #e8e8e8;  /* 细分隔线（原版） */
+  --chip:     #d5dcdf;  /* v2 新增：中性词块描边（比 phen-tag 更淡一档） */
+  --faint:    #9aa5ab;  /* v2 新增：最次级提示（分页提示等） */
+}
+
+/* ═══ 1. 页面（原版，保持不变） ═══ */
+@page { size: B5; margin: 18mm 16mm 22mm 16mm; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+body {
+  font-family: var(--serif);
+  color: var(--text); background: #ffffff;
+  orphans: 2; widows: 2;
+}
+
+/* ═══ 2. 封面与使用说明（原版，保持不变） ═══ */
+.cover {
+  min-height: 210mm; display: flex; flex-direction: column;
+  justify-content: center; align-items: center; text-align: center;
+  page-break-after: always;
+}
+.cover h1 { font-size: 28pt; font-weight: 400; font-style: italic; color: var(--ink); letter-spacing: 0.01em; }
+.cover .rule { width: 60mm; border-top: 0.6pt solid var(--accent); margin: 14pt auto; }
+.cover .sub { font-size: 14pt; color: var(--accent); }
+.cover .vol { font-size: 11pt; color: var(--text-sub); font-style: italic; margin-top: 10pt; }
+.cover .note { font-size: 10pt; color: var(--text-sub); margin-top: 30pt; }
+.how-to-use { page-break-after: always; padding-top: 40pt; }
+.how-to-use h2 { font-size: 16pt; font-weight: 400; color: var(--accent); font-style: italic; margin-bottom: 16pt; }
+.how-to-use ul { list-style: none; }
+.how-to-use li { font-size: 10.5pt; line-height: 1.9; margin-bottom: 6pt; }
+.how-to-use li::before { content: "·"; color: var(--accent); margin-right: 8pt; }
+
+/* v2 新增：使用说明页中的新字段图例（自解释模板资产） */
+.legend { margin-top: 18pt; border-top: 0.6pt solid var(--hairline); padding-top: 10pt; }
+.legend h3 { font-size: 11pt; font-weight: 400; color: var(--accent); font-style: italic; margin-bottom: 6pt; }
+.legend-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4pt 12pt; font-size: 9pt; color: var(--text-sub); line-height: 1.8; }
+.legend-row .legend-cap { font-size: 7.5pt; font-variant: small-caps; letter-spacing: 0.06em; color: var(--accent); }
+
+/* ═══ 3. 字母分组头（原版，保持不变） ═══ */
+.alpha-header {
+  font-size: 16pt; font-weight: 400; font-style: italic; color: var(--accent);
+  border-bottom: 0.6pt solid var(--hairline); padding-bottom: 3pt;
+  margin: 18pt 0 8pt 0; break-after: avoid; page-break-after: avoid;
+}
+
+/* ═══ 4. 词条容器（原版 + v2 长词条分页策略） ═══ */
+/* 原版：词条整体不跨页断行（美感底线，保持不变） */
+.entry {
+  padding: 5pt 0 6pt 0;
+  break-inside: avoid; page-break-inside: avoid;
+}
+/* v2：超长词条（如义项繁多 + 多例句）可加 .long 允许适度分页；
+   内部子块各自 break-inside: avoid，保证「词条可断、义项不断」。 */
+.entry.long { break-inside: auto; page-break-inside: auto; }
+.entry.long .sense,
+.entry.long .ex-group,
+.entry.long .example,
+.entry.long .morpheme,
+.entry.long .collocations,
+.entry.long .sense-group { break-inside: avoid; page-break-inside: avoid; }
+/* v2：分页提示——后端检测到超长词条被断开时，可在断点插入
+   <div class="page-hint">（接上页 · 续）</div>；虚线细度刻意弱于正文分隔线 */
+.page-hint {
+  text-align: center; font-size: 7.5pt; letter-spacing: 0.35em;
+  color: var(--faint); border-top: 0.6pt dotted var(--hairline);
+  padding-top: 2pt; margin: 6pt 0 2pt 0;
+  break-inside: avoid; page-break-inside: avoid;
+}
+
+/* ═══ 5. 词头行（原版 + v2 右侧元信息徽章） ═══ */
+.headword { display: flex; align-items: baseline; gap: 6pt; font-size: 13pt; font-weight: 700; color: var(--ink); letter-spacing: 0.01em; }
+.word { font-size: 13pt; font-weight: 700; color: var(--ink); letter-spacing: 0.01em; }
+.pos {
+  font-size: 8.5pt; font-weight: 600; color: var(--accent);
+  font-variant: small-caps; letter-spacing: 0.04em;
+}
+/* v2：CEFR 徽章 + 全书频次排名，靠右贴齐（margin-left:auto 推开其余） */
+.head-meta { margin-left: auto; display: inline-flex; align-items: baseline; gap: 5pt; }
+.cefr {
+  font-size: 7.5pt; font-weight: 700; letter-spacing: 0.08em;
+  color: var(--accent); border: 0.7pt solid var(--accent);
+  border-radius: 2pt; padding: 0.5pt 3pt;
+  /* 仅描边不用底纹：黑白打印时徽章仍可辨 */
+}
+.freq {
+  font-size: 7.5pt; color: var(--text-sub);
+  font-variant: small-caps; letter-spacing: 0.04em;
+}
+
+/* ═══ 6. 音标（原版 §3.116 契约 + v2 多口音并排） ═══ */
+.ipa, .ipa-row, .ipa-val { font-family: var(--mono); font-size: 10.5pt; font-weight: 400; color: var(--text-mid); }
+.ipa-row {
+  /* v2：由块级改为 flex 行——US/UK 双口音并排，窄处自动换行；
+     line-height/margin 与原版节奏一致，不破坏呼吸感 */
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 1pt 8pt;
+  line-height: 1.5; margin-top: 2pt;
+}
+.ipa-accent { font-size: 8.5pt; font-weight: 600; color: var(--accent); font-variant: small-caps; letter-spacing: 0.04em; }
+/* 多口音时每对「口音标签 + 音标值」作为一个不可断单元 */
+.ipa-row .ipa-accent + .ipa-val { display: inline-block; }
+.ipa-row > * { break-inside: avoid; }
+
+/* ═══ 7. 释义（原版：zh-def/en-def 与 gloss 系列并存） ═══ */
+.zh-def { font-family: var(--cjk); font-size: 10.5pt; line-height: 1.5; color: var(--text); margin-top: 2pt; }
+.en-def { font-size: 10pt; line-height: 1.35; color: var(--text-mid); margin-top: 1.5pt; }
+.gloss { margin-top: 2pt; }
+.gloss-zh { display: block; font-family: var(--cjk); font-size: 10.5pt; line-height: 1.7; color: var(--text); }
+.gloss-en { display: block; font-size: 10pt; line-height: 1.35; color: var(--text-mid); margin-top: 1pt; }
+
+/* ═══ 8. 多义项（原版 + v2 双层编号「词源.义项」） ═══ */
+.senses { margin-top: 2pt; }
+.sense { margin-top: 2pt; }
+.sense-zh { display: block; font-family: var(--cjk); font-size: 10.5pt; line-height: 1.7; color: var(--text); }
+.sense-zh:not(:empty)::before { content: "◦ "; color: var(--accent); }
+.sense-en { display: block; font-size: 10pt; line-height: 1.35; color: var(--text-mid); margin-top: 1pt; }
+.book-context { font-size: 9pt; line-height: 1.4; color: var(--text-sub); font-style: italic; margin-left: 6pt; }
+
+/* v2：.senses.numeric 自动编号（无需后端写数字，计数器生成 1.1 / 1.2 …）
+   · 扁平义项（无 .sense-group）→ 单层编号 1. 2. 3.
+   · 分组义项（.sense-group 包 .sense）→ 双层编号 词源.义项 如 1.1 1.2 */
+.senses.numeric { counter-reset: sen-l1; }
+.senses.numeric > .sense::before,
+.senses.numeric .sense-group > .sense::before {
+  font-size: 8.5pt; font-weight: 600; color: var(--accent);
+  margin-right: 3pt; font-style: normal; font-variant-numeric: lining-nums;
+}
+.senses.numeric > .sense { counter-increment: sen-l1; }
+.senses.numeric > .sense::before { content: counter(sen-l1) "\2002"; }
+.senses.numeric .sense-group { counter-increment: sen-l1; counter-reset: sen-l2; margin-top: 3pt; }
+.senses.numeric .sense-group > .sense { counter-increment: sen-l2; margin-top: 1.5pt; }
+.senses.numeric .sense-group > .sense::before { content: counter(sen-l1) "." counter(sen-l2) "\2002"; }
+/* 编号模式下关闭 ◦ 项目符，避免「1.1 ◦ 释义」双重标记 */
+.senses.numeric .sense-zh::before { content: none; }
+/* v2：显式编号（后端直接输出 <span class="sense-num">1.1</span>）时用此类 */
+.sense-num { font-size: 8.5pt; font-weight: 600; color: var(--accent); margin-right: 3pt; }
+/* v2：词源层分组标签——义项按词源路径归组时的小型引导行 */
+.sense-ety {
+  font-size: 8.5pt; font-variant: small-caps; letter-spacing: 0.04em;
+  color: var(--text-sub); font-style: italic; margin-top: 1pt;
+}
+.sense-ety::before { content: "§ "; color: var(--accent); }
+/* v2：义项内嵌补充例句——比词条级例句多一层缩进，形成「释义 → 例句」挂靠 */
+.sense .ex-group, .sense .example { margin-left: 10pt; }
+
+/* ═══ 9. 词源（原版，天然支持 kaikki etymology_text 散文） ═══ */
+.etymology { font-size: 9pt; line-height: 1.3; color: var(--text-sub); font-style: italic; margin-top: 1.5pt; }
+.etymology::before { content: "◦ "; }
+
+/* ═══ 10. 词根词缀（原版扁平文本 + v2 结构化单元） ═══ */
+.morpheme { font-size: 9.5pt; line-height: 1.4; color: var(--text-sub); margin-top: 1.5pt; }
+.morpheme::before { content: "◦ "; color: var(--accent); }
+/* v2：结构化词素单元——形式 / 来源语言 / 含义 三段式；
+   视觉：形式用青灰加粗（可检索焦点），来源语小号小型大写（背景信息），
+   含义回归正文色（阅读终点），「+」为浅灰连接符 */
+.m-item { white-space: nowrap; }
+.m-part { font-weight: 600; color: var(--accent); font-style: normal; }
+.m-lang { font-size: 8pt; color: #6b767c; font-variant: small-caps; letter-spacing: 0.03em; margin: 0 1pt 0 2pt; }
+.m-meaning { color: var(--text); }
+.m-sep { color: var(--faint); margin: 0 3pt; }
+
+/* ═══ 11. 短语搭配（原版 · 连接 + v2 词块化） ═══ */
+.collocations { font-size: 9.5pt; line-height: 1.4; color: var(--text-sub); margin-top: 1.5pt; }
+/* v2：每个搭配一个圆角词块（描边与 phen-tag 同语言但更淡一档；
+   无底纹——黑白打印只呈现细框，不糊） */
+.collocations .colloc {
+  display: inline-block; font-size: 8.5pt; color: var(--text-sub);
+  border: 0.6pt solid var(--chip); border-radius: 6pt;
+  padding: 0.5pt 5pt; margin: 0 3pt 2pt 0;
+  break-inside: avoid;
+}
+/* 兼容：渲染器输出「a · b · c」扁平文本时，· 分隔符保持原貌 */
+
+/* ═══ 12. 例句（原版引号语 + v2 双来源标注） ═══ */
+.example { font-size: 10pt; line-height: 1.4; color: #3a3a3a; font-style: italic; margin-top: 2pt; }
+.example::before { content: "“"; color: var(--accent); }
+.example::after { content: "”"; color: var(--accent); }
+.example-en { display: inline; }
+.example-zh { display: inline; font-family: var(--cjk); font-size: 10.5pt; line-height: 1.7; color: var(--text); font-style: normal; white-space: pre-line; }
+.example-zh:not(:empty)::before { content: "\A"; }
+
+/* v2：例句来源标注——原书例句（book）/ 义项补充例句（sense）。
+   .ex-src 放在 .example 之外（引号伪元素仍只包裹例句正文），
+   小型大写 + 青灰下划线，弱于例句正文、强于脚注。 */
+.ex-group { margin-top: 2.5pt; break-inside: avoid; page-break-inside: avoid; }
+.ex-src {
+  display: inline-block; font-size: 7.5pt; font-weight: 600;
+  font-variant: small-caps; letter-spacing: 0.06em; color: var(--accent);
+  border-bottom: 0.6pt solid var(--accent); padding-bottom: 0.5pt; margin-bottom: 1pt;
+}
+.ex-src::before { content: "» "; font-weight: 400; }
+/* 同一来源的多个例句：后续 .example 收窄上边距，视觉成组 */
+.ex-group .example + .example { margin-top: 1pt; }
+
+/* ═══ 13. 语言现象标签（原版，保持不变） ═══ */
+.phenomena { margin-top: 2pt; display: flex; gap: 4pt; flex-wrap: wrap; }
+.phen-tag { font-size: 7.5pt; padding: 1pt 5pt; border-radius: 6pt; border: 0.6pt solid var(--accent); color: var(--accent); letter-spacing: 0.4pt; }
+.phen-tag::before { content: "\2605 "; }
+
+/* ═══ 14. 打印微调 ═══ */
+@media print {
+  .cover { page-break-after: always; }
+  .how-to-use { page-break-after: always; }
+  .alpha-header { break-after: avoid; page-break-after: avoid; }
+  a { color: inherit; text-decoration: none; }
+}
