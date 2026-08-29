@@ -2,13 +2,13 @@
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-60%2F60-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-179%2F179-brightgreen.svg)](tests/)
 [![MCP](https://img.shields.io/badge/MCP-Server-8A2BE2.svg)](src/paeg_vocabulary/mcp_server.py)
 
 <p align="center">
   <strong>paeg-vocabulary</strong> — 语言学习词汇表生成插件：书籍 PDF → 结构化词汇表
   <br>
-  <em>CEFR 难度分级 · 词源词根 · 多口音音标 · 熟词生义 · 本书含义 · Bell Jar 精美渲染</em>
+  <em>CEFR 难度分级 · 词源词根 · 多口音音标 · 熟词生义 · 本书含义 · SRS 间隔重复 · 词汇三态 · Bell Jar 精美渲染</em>
   <br>
   <em>可拆卸、可独立、可像 Python 库一样直接接入任何智能体。</em>
 </p>
@@ -33,6 +33,8 @@
 | **本书含义** | 多义词标注"在本书中，作者的意思是…"（基于原书语境） |
 | **精美渲染** | 完整复用 Bell Jar 精美 CSS 模板（封面/章节/词条布局）→ HTML + PDF |
 | **附件产物** | 语言学习价值说明 / 全书词频统计 / 作者语言风格分析 / 高明词统计页 |
+| **SRS 间隔重复** | SM-2 遗忘曲线：评分 0-5 → 间隔 1→6→递增、失败重置，产出 N 天复习计划 |
+| **词汇三态** | new（生词/蓝）→ learning（学习中/黄）→ mastered（已掌握/白），对标 LingQ |
 
 ## 核心特性
 
@@ -42,6 +44,7 @@
 - **统一执行入口**：`execute(name, args)`（JSON 契约，绝不抛异常）
 - **MCP server 直接安装**：`pip install` + MCP 配置声明即接入（5 工具）
 - **信息补全 sub-agent 插件化**：`EnricherRegistry` 按字段注册（新增字段/数据源即扩展）
+- **SRS 复习调度**：`srs_plan`（N 天复习计划）/ `srs_review`（SM-2 评分复习），对抗遗忘规律
 
 ## 架构
 
