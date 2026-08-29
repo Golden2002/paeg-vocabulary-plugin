@@ -261,3 +261,26 @@ MIT
 | **《生命现象学》/《The Bell Jar》渲染模板** | 用户英语学习资产 | Bell Jar 精美 CSS 模板（渲染引擎完整复用） |
 
 > 注：词库数据为第三方开源数据（各自主许可）；下载脚本 scripts/download_wordbank.py 按需获取。
+
+## 语言学学习论文（方法论依据）
+
+| 论文 | 作者/年份 | 核心观点 | 对工具的启示 |
+|---|---|---|---|
+| **The Input Hypothesis: Issues and Implications** | Krashen (1985) | 可理解输入 i+1：略高于当前水平的输入最有效 | 词汇难度分级（CEFR/词频），只给学习者"够一够"的词 |
+| **How Vocabulary is Learned** | Nation (2013) | 词汇学习四要素：meaning-focused input/output + language-focused learning + fluency | 12 字段补全 + 本书义 + 例句 |
+| **Distributed Practice in Verbal Recall Tasks** | Cepeda et al. (2006) | 间隔练习优于集中练习，最佳间隔随保留期增长 | SRS 间隔重复（SM-2 遗忘曲线） |
+| **A Framework for Developing EFL Reading Vocabulary** | Hunt & Beglar (2005) | 词汇学习框架：分级 + 语境 + 重复 | 分级内容 + 本书语境 + SRS |
+| **A New Academic Word List** | Coxhead (2000) | 570 学术词族覆盖学术文本 10% | 学科术语辞典（kaikki topics） |
+| **How Large a Vocabulary Is Needed?** | Nation (2006) | 阅读需 8000-9000 词族 | 词频驱动筛选（高频优先） |
+
+## 参考项目仓库
+
+| 项目 | 网址 | 借鉴能力 |
+|---|---|---|
+| **LingQ** | https://www.lingq.com | 分级阅读 + 蓝/黄/白词汇三态 + 点击查词 + SRS 复习（核心对标） |
+| **Readlang** | https://readlang.com | 网页阅读器 + 即点查词 + 闪卡复习 |
+| **Lute** | https://github.com/LuteOrg/lute-v3 | 开源 LingQ 替代（阅读 + 词汇库管理） |
+| **Anki** | https://apps.ankiweb.net | SRS 间隔重复（SM-2 算法源头） |
+| **english-read** | https://github.com/bitbw/english-read | EPUB 阅读器 + 艾宾浩斯间隔（1→30 天）+ 查词 + 学习统计 |
+| **HMPrgm/lingo** | https://github.com/HMPrgm/lingo | Language Learning Companion（词汇学习助手） |
+| **lang-reactor (开源版)** | https://github.com/sguzman/lang-reactor | 视频字幕查词 + 标注学习 |
