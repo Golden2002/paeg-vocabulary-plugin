@@ -284,3 +284,6 @@ MIT
 | **english-read** | https://github.com/bitbw/english-read | EPUB 阅读器 + 艾宾浩斯间隔（1→30 天）+ 查词 + 学习统计 |
 | **HMPrgm/lingo** | https://github.com/HMPrgm/lingo | Language Learning Companion（词汇学习助手） |
 | **lang-reactor (开源版)** | https://github.com/sguzman/lang-reactor | 视频字幕查词 + 标注学习 |
+| **欧路词典 Eudic** | https://www.eudic.net | 离线 mdx 词典 + 哈希索引快速查词 + 多词典合并 + 生词本（架构对标） |
+| **mdict-analysis** | https://github.com/liuyug/mdict-analysis | mdx/mdd 词典格式解析（Python，索引表 + LZO 记录块） |
+| **js-mdict** | https://github.com/terasum/js-mdict | mdx/mdd 解析（JS 实现，浏览器查词参考） |
