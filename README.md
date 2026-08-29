@@ -69,6 +69,18 @@ CandidateWord ──→ EnricherRegistry（字段 → 补全器，可扩展）
                     └─ cefr/freq：wordfreq 计算
 ```
 
+## 可扩展性
+
+| 扩展点 | 方式 | 机制 |
+|---|---|---|
+| **语种** | `VocabularyRegistry.register_language(lang)` | 内置 en/de/fr/es，可扩任意语种 |
+| **生成器** | `VocabularyRegistry.register_generator(name, fn)` | 词汇表/附件生成器动态注册 |
+| **补全字段** | `EnricherRegistry.register(field, enricher)` | 音标/释义/词源/义项/搭配按字段注册 |
+| **清洗器** | `cleaners/` 目录新增 | OCR 修复 / 例句去污染可插拔 |
+| **词库** | `wordbank.py` + `ecdict.csv` | 离线词库可替换 / 扩充 |
+| **LLM 后端** | `VocabularyRegistry.inject(llm=...)` | 注入式，零宿主耦合 |
+| **渲染模板** | `render/` 目录 | Bell Jar 精美模板，可换样式 |
+
 ## 安装
 
 ```bash
@@ -174,10 +186,46 @@ paeg-vocabulary-mcp
 ## 测试
 
 ```bash
-python -m pytest tests/ -q    # 60/60 全绿
+python -m pytest tests/ -q    # 169/169 全绿
 ```
 
-覆盖：词汇条目校验 / 难度矩阵 / 词形归一化 / 语言现象识别 / 附件生成 / 端到端管线。
+覆盖：词汇条目校验 / 难度矩阵 / 词形归一化 / 语言现象识别 / 附件生成 / 端到端管线 / 词库接线 / 页眉页脚剥离。
+
+## Token 成本估算（LLM 用量模型）
+
+在词库（ECDICT 77 万词 / CMU 音标 / kaikki 词源）与工具库完善的前提下，LLM 只承担三个职责节点，其余全部离线（0 token）。成本由「本书关键术语数 C」驱动。
+
+### 模型常数（DeepSeek deepseek-chat 实测校准）
+
+| 节点 | 批大小 | 输入 token/批 | 输出 token/批 | 说明 |
+|---|---|---|---|---|
+| book_term_gate（本书术语判断） | 15 词 | 1900 | 1000 | 只判词频 Top 150，固定 10 批 |
+| enrich（条目补全） | 6 词 | 2200 | 3600 | 完整字段 JSON |
+| review（渲染前审查） | 8 词 | 7000 | 1500 | 词条 JSON + 用户需求上下文 |
+| metadata（书名/作者） | 单次 | 1000 | 150 | 1 次调用 |
+
+### 公式
+
+- 候选术语数：`C = min(150, N / 1000)`（N = 书的总词数；每 1000 词约 1 个关键术语，上限 150）
+- 批次数：`B₁ = ⌈150/15⌉ = 10`；`B₂ = ⌈C/6⌉`（enrich）；`B₃ = ⌈C/8⌉`（review）
+- 输入 token：`T_in = 10×1900 + B₂×2200 + B₃×7000 + 1000`
+- 输出 token：`T_out = 10×1000 + B₂×3600 + B₃×1500 + 150`
+- 费用：`(T_in/1e6)×P_in + (T_out/1e6)×P_out`（P_in ≈ ¥1–2/M，P_out ≈ ¥3–8/M）
+
+### 算例
+
+| 书的规模 | C | 总 token | 保守费用（¥2/M in, ¥8/M out） | 典型费用（缓存命中 ¥1/M in, ¥5/M out） |
+|---|---|---|---|---|
+| 8 万词书（如《The Bell Jar》） | 80 | ≈ 0.20M | ≈ ¥0.85 | ≈ ¥0.50 |
+| 15 万词书（如学术专著） | 150 | ≈ 0.34M | ≈ ¥1.45 | ≈ ¥0.85 |
+
+### 说明
+
+1. **离线优先**：普通词条的音标/释义/等级/词源全部走本地词库（ECDICT/CMU/kaikki），不计 token；LLM 只处理「本书关键术语」的子集（C ≤ 150）。
+2. **gate 固定成本**：本书术语判断固定 10 批（Top 150 词），占总 token 不足 10%，不是成本驱动项；enrich 与 review 随 C 线性增长，是主要成本。
+3. **保守口径**：上述按「每批输入取设计上限、输出取保守上界」估算；实际因 must_keep 子集比例与 fixes 稀疏性，通常可再低 30–50%。
+4. **缓存**：三节点系统提示词共享前缀命中 DeepSeek 上下文缓存时，输入价格显著下降（表中典型档已考虑）。
+5. **重试缓冲**：断点续跑 + 偶发重试建议再预留 1.3× 缓冲。
 
 ## 生态定位（PAEG 工具生态）
 
@@ -185,7 +233,7 @@ python -m pytest tests/ -q    # 60/60 全绿
 PAEG 工具生态
 ├── paeg-lang-style-plugin      语言规范（83/83 测试 · MCP）
 ├── paeg-teaching-materials     教学物料（74/74 测试 · MCP）
-├── paeg-vocabulary             ⭐ 词汇表生成（60/60 测试 · MCP）
+├── paeg-vocabulary             ⭐ 词汇表生成（169/169 测试 · MCP）
 └── 主项目 PAEG（插件优先双轨 · material_bridge · sys.path 引用插件副本）
 ```
 
