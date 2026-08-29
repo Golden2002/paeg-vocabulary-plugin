@@ -22,6 +22,30 @@ def _simple_tokenize(text: str, lang: str = "en") -> List[str]:
     return _WORD_RE.findall(text)
 
 
+def _recover_truncated(word: str) -> str:
+    """词尾丢失恢复：scienc→science / includ→include / decad→decade / voic→voice。
+
+    根因：PDF 提取/OCR 时词尾字母（尤其 e）丢失。用 ecdict 词典校验——
+    词本身不在词典，但加尾字母（e/es/ed/d）后在词典 → 恢复为完整词。
+    词本身在词典时直接返回（不误伤 use→used 等合法词）。
+    """
+    low = word.strip().lower()
+    if not low or len(low) < 4:
+        return low
+    try:
+        from ..wordbank import EcdictSource
+        ec = EcdictSource()
+        if ec.lookup(low) is not None:
+            return low  # 词本身合法，不恢复
+        for suffix in ("e", "es", "ed", "d"):
+            cand = low + suffix
+            if ec.lookup(cand) is not None:
+                return cand
+    except Exception:
+        pass
+    return low
+
+
 def _lemmatize_spacy(tokens: List[str], lang: str = "en") -> List[str]:
     """用 spaCy 词元化（可用时）。"""
     try:
@@ -96,7 +120,11 @@ _S_SUFFIX_SAFE = {
 
 
 def _rule_lemmatize(word: str) -> str:
-    """规则级英文词形还原（无 spaCy 时兜底）：不规则表 + 安全规则还原。"""
+    """规则级英文词形还原（无 spaCy 时兜底）：不规则表 + 安全规则还原。
+
+    §3.116 ⭐ 修复：-es 规则只匹配真·es 复数（-ches/-shes/-xes/-zes/-sses），
+    否则 sciences→(误切es)→scienc。普通 -s 复数（sciences→science）走 -s 规则。
+    """
     low = word.strip().lower()
     if not low:
         return low
@@ -104,12 +132,21 @@ def _rule_lemmatize(word: str) -> str:
         return _IRREGULAR_LEMMAS[low]
     if low in _S_SUFFIX_SAFE:
         return low  # -s 结尾但非复数，不还原
-    # 规则屈折：-ies→-y / -es / -ed / -ing / -s（还原后长度 ≥3，避免误伤）
-    for suf, strip in (("ies", "y"), ("es", ""), ("ed", ""), ("ing", ""), ("s", "")):
+    # 规则屈折：-ies→-y / -ing / -ed（还原后长度 ≥3，避免误伤）
+    for suf, strip in (("ies", "y"), ("ing", ""), ("ed", "")):
         if low.endswith(suf) and len(low) > len(suf) + 2:
             base = low[:-len(suf)] + strip
             if base != low and len(base) >= 3:
                 return base
+    # -es 只在特定结尾（-ches/-shes/-xes/-zes/-sses）去掉 es（boxes→box）
+    if low.endswith("es") and len(low) > 4 and low.endswith(
+            ("ches", "shes", "xes", "zes", "sses")):
+        return low[:-2]
+    # -s（普通复数，最后兜底）
+    if low.endswith("s") and len(low) > 3:
+        base = low[:-1]
+        if base != low and len(base) >= 3:
+            return base
     return low
 
 
@@ -162,8 +199,8 @@ def clean_corpus(ctx: VocabularyContext, repair: bool = True) -> VocabularyConte
     if repair:
         text = OCRRepairPipeline(ctx.target_lang).repair(text)
 
-    # 2. 分词
-    tokens = _simple_tokenize(text, ctx.target_lang)
+    # 2. 分词 + 词尾丢失恢复（scienc→science / includ→include，ecdict 词典校验）
+    tokens = [_recover_truncated(t) for t in _simple_tokenize(text, ctx.target_lang)]
 
     # 3. 词元化 + 词性（§3.116 需 POS 判断派生）
     if ctx.target_lang == "en":
@@ -181,8 +218,11 @@ def clean_corpus(ctx: VocabularyContext, repair: bool = True) -> VocabularyConte
     cap_stats: dict = {}
     prev_tok = ""  # 判断句首（前一 token 以句末标点结尾）
     for tok, info in zip(tokens, lemmas_info):
+        # §3.116 ⭐ 修复：停用词过滤用「原始 token」+「词元」双重检查——
+        # 否则 this→(lemmatize)→thi 绕过停用词过滤，产生畸形词条 thi
+        tok_low = tok.lower()
         low = info["lemma"].lower()
-        if low in _EN_STOPWORDS or len(low) < 2 or _is_noise_word(low):
+        if tok_low in _EN_STOPWORDS or low in _EN_STOPWORDS or len(low) < 2 or _is_noise_word(low):
             prev_tok = tok
             continue
         # 大写统计：非句首位置的大写（句子开头大写不算专名信号）
