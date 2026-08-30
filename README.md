@@ -81,6 +81,7 @@ CandidateWord ──→ EnricherRegistry（字段 → 补全器，可扩展）
 | **补全字段** | `EnricherRegistry.register(field, enricher)` | 音标/释义/词源/义项/搭配按字段注册 |
 | **清洗器** | `cleaners/` 目录新增 | OCR 修复 / 例句去污染可插拔 |
 | **词库** | `wordbank.py` + `ecdict.csv` | 离线词库可替换 / 扩充 |
+| **多词典查询** | `multi_dict.py` | 一次性查多词库并合并相同/近似义项（来源标注） |
 | **LLM 后端** | `VocabularyRegistry.inject(llm=...)` | 注入式，零宿主耦合 |
 | **渲染模板** | `render/` 目录 | Bell Jar 精美模板，可换样式 |
 
@@ -144,6 +145,20 @@ print(execute("validate_entry", {"headword": "life", "pos": "n."}))
 print(execute("clean_examples", {"examples": ["…混入页码的例句…"]}))
 print(execute("generate_vocabulary", {"pdf_path": "book.pdf", "user_filter": {...}}))
 ```
+
+### 多词典一次性查询（义项合并去重）
+
+```python
+from paeg_vocabulary.multi_dict import MultiDict
+
+md = MultiDict()
+r = md.query("phenomenon")
+# → {"word": "phenomenon", "ipa": "...", "pos": "...", "cefr": "...",
+#    "senses_en": [{"text": "…", "sources": ["kaikki", "ecdict"]}, ...],
+#    "senses_zh": [{"text": "现象", "sources": ["ecdict"]}, ...]}
+```
+
+一次性查 ECDICT / CEFR / kaikki / Oxford / CMU + 可选 WordNet，`merge_senses` 对相同/近似义项去重合并并保留来源标注。CLI：`python scripts/multi_dict_query.py life phenomenon`。WordNet 离线数据：`python scripts/download_wordnet.py`（可选，未下载自动降级）。
 
 ## MCP 接入
 
@@ -263,6 +278,9 @@ MIT
 | **CMU Pronouncing Dictionary** | https://github.com/cmusphinx/cmudict | 126,052 词 ARPAbet 音标（IPA 转换） |
 | **ECDICT 英汉词典** | https://github.com/skywind3000/ECDICT | 77 万词中文释义+词频（MIT） |
 | **kaikki Wiktionary** | https://kaikki.org/dictionary/ | 学科术语辞典（philosophy/biology/physics/chemistry 等 722 topics） |
+| **WordNet（NLTK）** | https://www.nltk.org/nltk_data/ · https://wordnet.princeton.edu/ | 英文同义词集义项定义（可选离线源，`scripts/download_wordnet.py` 下载） |
+| **wordfreq** | https://pypi.org/project/wordfreq/ · https://github.com/rspeer/wordfreq | 多语词频 Zipf（分级桥接与 OCR 噪声判别信号） |
+| **mdict-analysis** | https://github.com/liuyug/mdict-analysis | mdx/mdd 词典格式解析（Python，索引表 + LZO 记录块） |
 | **CEFR-J Vocabulary Profile** | https://github.com/openlanguageprofiles/olp-en-cefrj | CEFR 分级词表（A1-C2） |
 | **Oxford 3000** | https://www.oxfordlearnersdictionaries.com/wordlists/ | CEFR 分级权威词表 |
 | **《生命现象学》/《The Bell Jar》渲染模板** | 用户英语学习资产 | Bell Jar 精美 CSS 模板（渲染引擎完整复用） |

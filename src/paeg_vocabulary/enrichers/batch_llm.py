@@ -31,15 +31,17 @@ BATCH_SYSTEM_PROMPT = """你是语言学习词汇补全专家。为给定的一�
     "senses": [{"zh": "义项1", "en": "sense1"}, {"zh": "义项2", "en": "sense2"}],
     "book_sense": {"zh": "本书义", "en": "book sense", "context": "在本书中的含义说明"},
     "examples": [{"en": "英文例句", "zh": "中文翻译"}],
-    "collocations": ["短语搭配1", "短语搭配2"]
+    "collocations": ["短语搭配1", "短语搭配2"],
+    "cefr_level": "CEFR 难度等级(A1/A2/B1/B2/C1/C2，无法确定可留空)"
   }
 ]
 
 要求：
 - 数组长度必须与输入词数一致，顺序一致
 - headword 必须与输入词完全一致（校验防串味）
-- 多义词按义项拆分 senses
-- 每个字段尽量给出；无法确定可留空但字段名保留
+- 多义词按义项拆分 senses（同一词不同词源义项分开编号）
+- 词源/词根词缀（roots/prefix/suffix）、多义项 senses、例句 examples、搭配 collocations、
+  CEFR 等级 cefr_level 六类字段都尽量给出；无法确定可留空但字段名保留
 - 只输出 JSON，不要其他文字"""
 
 
@@ -147,6 +149,8 @@ def _merge_to_entry(entry, data: Dict[str, Any]) -> None:
                           for e in data["examples"] if isinstance(e, dict)]
     if data.get("collocations"):
         entry.collocations = data["collocations"]
+    if data.get("cefr_level"):
+        entry.cefr_level = data["cefr_level"]
 
 
 def batch_enrich(entries: List[VocabularyEntry],

@@ -130,6 +130,15 @@ class VocabularyRegistry:
         _report("解析 PDF", 8)
         ctx = clean_corpus(ctx)
         _report("清洗语料", 15)
+        # §3.116 ⭐ OCR 词库清理（LLM 判别节点）：判别断裂词/专名/非词噪声/拼写错误，
+        # 修复词形、剔除噪声——失败静默降级到规则层（_is_clean_word/_is_proper_noun 兜底）
+        try:
+            from .enrichers.ocr_llm_cleaner import apply_llm_clean
+            ctx = apply_llm_clean(
+                ctx, chat_fn=chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None))
+        except Exception:
+            pass
+        _report("OCR 词库清理", 20)
         # §3.116 ⭐ 本书关键术语库（LLM 第一节点）：判断哪些词对本书重要——
         # 无论什么水平的学生都必须呈现（must_keep 豁免筛选）
         _must_keep: set = set()
@@ -241,7 +250,8 @@ class VocabularyRegistry:
             from .render.interactive import render_interactive_html
             ctx.interactive_path = render_interactive_html(
                 ctx, book_title=book_title,
-                llm_analysis=getattr(ctx, "llm_analysis", "") or "")
+                llm_analysis=getattr(ctx, "llm_analysis", "") or "",
+                fun_insights=getattr(ctx, "llm_fun", "") or "")
         except Exception as e:
             ctx.errors.append(f"交互式交付页生成失败: {str(e)[:100]}")
 

@@ -1,5 +1,20 @@
 # CHANGELOG — paeg-vocabulary-plugin（PAEG 工具生态 14.3 词汇表）
 
+## v0.1.12 (2026-08-31) — 多词典查询 + LLM 多环节接入审计（离线扩充 + OCR 判别 + 趣味附件）
+
+**更新路径**：multi_dict.py（新增）+ scripts/{multi_dict_query.py, download_wordnet.py}（新增）+ enrichers/ocr_llm_cleaner.py（新增）+ enrichers/batch_llm.py + accessories/__init__.py + render/interactive.py + registry.py + docs/LLM接入审计.md（新增）
+
+- **① 离线词典扩充 + 多词典查询脚本**：
+  - 新增 `multi_dict.py`：`MultiDict.query()` 一次性查 ECDICT/CEFR/kaikki/Oxford/CMU + 可选 WordNet，`merge_senses()` 对相同/近似义项去重合并（归一化 key + Jaccard≥0.6 + 子串包含），每条义项保留来源标注（如 `sources:["kaikki","ecdict"]`）；中英义项分列合并
+  - 新增 `scripts/multi_dict_query.py` CLI（JSON 输出，离线可跑）；新增 `scripts/download_wordnet.py`（NLTK WordNet 离线下载，未安装自动降级为空）
+  - README 参考文献补充 WordNet / wordfreq / mdict-analysis 来源 URL
+- **② LLM 多环节接入（python 算确定性数据 + 系统提示词 harness LLM）**：
+  - **a. OCR 词库清理**：新增 `enrichers/ocr_llm_cleaner.py`——确定性打标（词频+大写比例，只挑离线词典外词）→ LLM 五类判别（repair/spelling/proper/noise/keep）→ 修复词形/剔除专名噪声；接入 registry clean→filter 之间，失败降级到规则层
+  - **b. 在线制作词条**：审计并补强 `batch_llm`——schema 补 `cefr_level` 字段（词源/词素/多义项/例句/搭配/CEFR 六类字段全在线补全），`_merge_to_entry` 回写 CEFR
+  - **c. 有趣详实附件**：新增 `llm_fun_insights()`「趣味语言解读.md」（本书术语「为什么重要」/语言冷知识/同源词族/学习小贴士），交互式交付页新增「趣味解读」标签页
+- **③ LLM 接入审计**：新增 `docs/LLM接入审计.md`——7 个 LLM 环节逐项列「已接入/未接入/接入质量」+ 6 项补强清单 + 每环节系统提示词要点
+- 全量测试新增 36 项（multi_dict 11 + ocr_llm_cleaner 11 + batch cefr 2 + accessories 6 + 现有回归），全绿；不破坏既有能力与前端
+
 ## v0.1.11 (2026-08-31) — 顶尖标准调研 + 交互页 P0 升级（发音/深色模式/键盘导航/排版/动画）
 
 **更新路径**：render/interactive.py + docs/顶尖标准与改造方案.md（新增）

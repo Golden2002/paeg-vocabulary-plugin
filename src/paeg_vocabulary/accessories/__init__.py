@@ -285,6 +285,67 @@ def llm_analysis(ctx, chat_fn=None) -> str:
             return ""
 
 
+# §3.120 ⭐ 趣味语言解读（LLM 生成：本书术语为什么重要 / 语言冷知识 / 同源词族 / 学习小贴士）
+_FUN_INSIGHTS_SYSTEM = """你是外语词汇学习趣味内容作者。根据给定一本书的词条数据（高频词/词源/CEFR），
+产出四个部分有趣、详实、有据可依的内容（拒绝空话套话）：
+
+## 1. 本书关键术语「为什么重要」
+挑 3-5 个本书核心术语，用通俗语言解释：这个词为什么对理解本书/这个领域至关重要？
+它在本书论证或主题中扮演什么角色？
+
+## 2. 语言冷知识
+挑 3-5 个词，各讲一个词源/构词/历史冷知识（形近易混、同形异义、有趣的构词来源等），
+让人会心一笑或印象深刻。
+
+## 3. 同源词族
+挑 2-4 组同源词（共享同一词根，如 gene/genetic/genesis/genotype 共享希腊词根 gen-），
+列出一族词 + 共享词根 + 各自含义，帮助举一反三成片记忆。
+
+## 4. 学习小贴士
+针对本书词汇给出 3-6 条具体、可执行的学习建议（词根记忆/联想/语境/间隔重复组合）。
+
+要求：中文输出、markdown 格式、## 分节、直接引用给定的词/词源数据作依据、内容有趣可读。"""
+
+
+def llm_fun_insights(ctx, chat_fn=None) -> str:
+    """§3.120 ⭐ 用 LLM 生成趣味语言解读（术语为什么重要/冷知识/同源词族/学习小贴士）。
+
+    设计同 llm_analysis：python 先算好确定性数据（高频词 + 词源 + CEFR），
+    系统提示词 harness LLM 只做生成。失败返回空串（静默降级，不阻塞）。
+    """
+    if chat_fn is None:
+        try:
+            from ..llm_client import chat as _chat
+            chat_fn = _chat
+        except Exception:
+            return ""
+    from pathlib import Path
+
+    entries = ctx.entries or []
+    candidates = ctx.candidates or []
+    entry_by_word = {e.headword.lower(): e for e in entries}
+    top = sorted(candidates, key=lambda c: -c.freq_count)[:12]
+    lines = []
+    for c in top:
+        e = entry_by_word.get(c.headword.lower())
+        etym = (getattr(e, "etymology", "") or "")[:120] if e else ""
+        cefr = (e.cefr_level or c.cefr_guess or "") if e else (c.cefr_guess or "")
+        lines.append(f"- {c.headword}（出现 {c.freq_count} 次，CEFR {cefr}）词源：{etym}")
+
+    book = Path(str(ctx.pdf_path)).stem if ctx.pdf_path else "本书"
+    user = (f"书名：{book}\n词条总数：{len(entries)}\n"
+            f"高频词（词/频次/CEFR/词源）：\n" + "\n".join(lines) +
+            "\n\n请据此输出四部分趣味解读。")
+    try:
+        raw = chat_fn(_FUN_INSIGHTS_SYSTEM, user, max_tokens=2000, temperature=0.6)
+        return (raw or "").strip()
+    except Exception:
+        try:
+            return (chat_fn(_FUN_INSIGHTS_SYSTEM, user) or "").strip()
+        except Exception:
+            return ""
+
+
 def generate_all_accessories(ctx, out_dir=None, chat_fn=None) -> Dict[str, str]:
     """生成全部附件 + 高明词统计独立页 + LLM 深度解读。返回 {name: path}。
 
@@ -318,6 +379,14 @@ def generate_all_accessories(ctx, out_dir=None, chat_fn=None) -> Dict[str, str]:
             arts["智能学习解读.md"] = _analysis
     except Exception:
         ctx.llm_analysis = ""
+    # §3.120 ⭐ 趣味语言解读（术语为什么重要/冷知识/同源词族/学习小贴士）
+    try:
+        _fun = llm_fun_insights(ctx, chat_fn)
+        ctx.llm_fun = _fun or ""   # 存回 ctx，供交互式交付页复用
+        if _fun:
+            arts["趣味语言解读.md"] = _fun
+    except Exception:
+        ctx.llm_fun = ""
     # §3.116 ⭐ 高明词统计独立 HTML 小页面（非主文档）
     try:
         high_freq_html = make_high_freq_html(ctx.candidates, ctx.entries)

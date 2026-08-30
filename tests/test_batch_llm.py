@@ -12,7 +12,7 @@ import pytest
 from paeg_vocabulary.core.entry import VocabularyEntry
 from paeg_vocabulary.enrichers.batch_llm import (
     chunk_words, batch_enrich, build_batch_prompt, parse_batch_response,
-    enrich_with_batch,
+    enrich_with_batch, BATCH_SYSTEM_PROMPT,
 )
 
 
@@ -99,3 +99,22 @@ def test_batch_enrich_partial_failure():
     # 第二批成功 → c 有释义；a/b 失败保留原样
     assert result[2].gloss_bilingual.get("zh") == "c词"
     assert result[0].gloss_bilingual == {}
+
+
+# ── R5: 全字段在线补全（§3.116 ⭐ CEFR 等级字段补齐）──
+def test_batch_schema_has_all_fields():
+    """批量补全 schema 覆盖词源/词素/多义项/例句/搭配/CEFR 全字段。"""
+    for field in ("etymology", "morpheme", "senses", "examples",
+                  "collocations", "cefr_level", "book_sense"):
+        assert field in BATCH_SYSTEM_PROMPT
+
+
+def test_batch_enrich_cefr_level():
+    """LLM 返回 cefr_level → 合并到条目。"""
+    entries = [VocabularyEntry(headword="abandonment")]
+
+    def _mock_chat(sys_p, usr_p):
+        return '[{"headword": "abandonment", "pos": "n.", "cefr_level": "C1"}]'
+
+    result = batch_enrich(entries, _mock_chat, batch_size=1)
+    assert result[0].cefr_level == "C1"

@@ -141,12 +141,14 @@ def _compute_stats(ctx: VocabularyContext) -> Dict[str, Any]:
 
 
 def render_interactive_html(ctx: VocabularyContext, out_dir: Optional[str] = None,
-                            book_title: str = "", llm_analysis: str = "") -> Optional[str]:
+                            book_title: str = "", llm_analysis: str = "",
+                            fun_insights: str = "") -> Optional[str]:
     """生成自包含交互式交付单页，返回文件路径。"""
     if not ctx.entries:
         return None
     stats = _compute_stats(ctx)
     stats["analysis"] = llm_analysis or ""   # §3.120 ⭐ LLM 深度解读
+    stats["fun"] = fun_insights or ""         # §3.120 ⭐ 趣味语言解读
     title = book_title or Path(str(ctx.pdf_path or "词汇表")).stem
 
     # 数据注入（转义 </script> 防注入破坏）
@@ -299,6 +301,7 @@ th{color:var(--brand);font-weight:600;font-size:12px}
   <button data-t="highfreq">高明词</button>
   <button data-t="srs">SRS 计划</button>
   <button data-t="insight">智能解读</button>
+  <button data-t="fun">趣味解读</button>
 </nav>
 <div class="wrap">
   <section id="vocab" class="active">
@@ -323,6 +326,7 @@ th{color:var(--brand);font-weight:600;font-size:12px}
   <section id="highfreq"></section>
   <section id="srs"></section>
   <section id="insight"></section>
+  <section id="fun"></section>
 </div>
 <button class="theme-btn" id="themeBtn" title="切换深色模式" onclick="toggleTheme()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
 <button class="print-btn" onclick="window.print()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg> 导出 PDF</button>
@@ -511,6 +515,7 @@ function md2html(src){
   closeList();return out;
 }
 document.getElementById('insight').innerHTML='<div class="card"><div class="body">'+md2html(D.analysis)+'</div></div>';
+document.getElementById('fun').innerHTML='<div class="card"><div class="body">'+md2html(D.fun)+'</div></div>';
 
 renderList();
 </script>
