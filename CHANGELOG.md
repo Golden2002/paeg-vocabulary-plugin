@@ -1,5 +1,19 @@
 # CHANGELOG — paeg-vocabulary-plugin（PAEG 工具生态 14.3 词汇表）
 
+## v0.1.9 (2026-08-31) — 交互式交付单页（自包含可部署 HTML：附件卡片化 + 分页词汇表 + 导出 PDF）
+
+**更新路径**：src/paeg_vocabulary/render/interactive.py（新增）+ registry.py + CHANGELOG.md
+
+- **用户反馈**：附件（词频/风格/学习价值）只有 markdown 且内容薄；交付物应是一个方便、视觉良好的 HTML（按钮点击展开美化卡片）+ PDF；词汇表网页本身应能公网部署、有交互。
+- **新增交互式交付单页**（`render/interactive.py` → `interactive_path`）：
+  - 单个自包含 HTML（数据 + CSS + JS 全内联，无后端依赖），可静态部署（GitHub Pages/任意静态托管）或直接双击打开
+  - 顶部标签页：词汇表 / 词频统计 / 作者风格 / 学习价值 / 短语句式 / 高明词 / SRS 计划
+  - 词汇表：分页 + 搜索 + CEFR/SRS 筛选 + 点击展开词条详情 + SRS 三态（localStorage 记忆）
+  - 附件卡片化：`<details>` 点击展开/收起，含 CSS 柱状图（CEFR 分布/POS 分布）、排名表、风格画像、学习路径
+  - 「导出 PDF」按钮：`window.print()` + `@media print` 打印样式
+  - 增强统计：TTR 词汇密度、平均/最长句长、CEFR 分布、POS 分布、高频短语 PMI、高/中/低频分段
+- 全量 206 passed + 1 skipped
+
 ## v0.1.8 (2026-08-31) — PDF 页眉页脚美观化（去时间戳/URL，页眉书名 + 页脚页码）
 
 **更新路径**：src/paeg_vocabulary/pipeline/render_html.py + templates/{模板_钟形罩_原版.html, 模板_生命现象_原版.html}

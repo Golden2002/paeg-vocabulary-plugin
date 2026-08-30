@@ -235,6 +235,13 @@ class VocabularyRegistry:
             ctx.errors.append(f"附件生成失败: {str(e)[:100]}")
         _report("生成附件", 99)
 
+        # §3.119 ⭐ 交互式交付单页（自包含 HTML：分页词汇表 + 可展开附件卡片 + 导出 PDF）
+        try:
+            from .render.interactive import render_interactive_html
+            ctx.interactive_path = render_interactive_html(ctx, book_title=book_title)
+        except Exception as e:
+            ctx.errors.append(f"交互式交付页生成失败: {str(e)[:100]}")
+
         # §3.116 ⭐ V-R7 词条预览（前端在线浏览 + 筛选，最多 300 条防爆）
         # §3.117 ⭐ 加全字段（完整释义/词源/例句/搭配）——支撑交互式网页翻页+点击反馈
         _preview = []
@@ -267,6 +274,7 @@ class VocabularyRegistry:
             "pdf_path": str(ctx.pdf_path) if ctx.pdf_path else "",
             "docx_path": str(ctx.docx_path) if getattr(ctx, "docx_path", None) else "",
             "accessories": {k: str(v) for k, v in ctx.accessories.items()},
+            "interactive_path": str(getattr(ctx, "interactive_path", "") or ""),
             "entries_count": len(ctx.entries),
             "candidates_count": len(ctx.candidates),
             "entries_preview": _preview,
