@@ -1,5 +1,18 @@
 # CHANGELOG — paeg-vocabulary-plugin（PAEG 工具生态 14.3 词汇表）
 
+## v0.1.11 (2026-08-31) — 顶尖标准调研 + 交互页 P0 升级（发音/深色模式/键盘导航/排版/动画）
+
+**更新路径**：render/interactive.py + docs/顶尖标准与改造方案.md（新增）
+
+- **调研**：语言学习工具（LingQ/Readlang/Lute/Anki）+ 电子词典（欧路/GoldenDict/mdict）+ AI 词汇工具 + 网页设计 → 固化 21 条可执行标准（P0/P1/P2）+ 差距分析 → `docs/顶尖标准与改造方案.md`
+- **交互页 P0 落地**：
+  - 发音（P0-1）：词条旁喇叭按钮，Web Speech API 浏览器内置 TTS（零依赖）
+  - 深色模式（P0-2）：`data-theme=dark` #121212 系 + 切换按钮 + 跟随系统 prefers-color-scheme + localStorage 记忆
+  - 键盘导航（P0-3）：`←/→` 翻页、`[`/`]` 切标签、`d` 切深色
+  - 排版（P0-4）：正文 16px / 行高 1.6
+  - 动画（P0-5）：按钮 hover transform、body 过渡、尊重 prefers-reduced-motion
+- 全量 206 passed + 1 skipped
+
 ## v0.1.10 (2026-08-31) — LLM 深度解读（python 脚本 + 系统提示词 harness LLM 提升附件质量）
 
 **更新路径**：src/paeg_vocabulary/accessories/__init__.py + render/interactive.py + registry.py

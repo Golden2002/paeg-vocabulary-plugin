@@ -187,8 +187,17 @@ _HTML_TEMPLATE = r"""<!DOCTYPE html>
 <style>
 :root{--bg:#f7f8fa;--card:#fff;--ink:#1a1a1a;--mut:#6b7280;--brand:#2563eb;--line:#e5e7eb;
 --new:#3b82f6;--learning:#f59e0b;--mastered:#10b981}
+/* §3.122 ⭐ P0-2 深色模式（#121212 系，对比 ≥4.5:1） */
+[data-theme="dark"]{--bg:#121212;--card:#1e1e1e;--ink:#e5e7eb;--mut:#9ca3af;--line:#2d2d2d}
+[data-theme="dark"] .cover{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%)}
+[data-theme="dark"] .entry .zh,[data-theme="dark"] .detail .ex{color:#cbd5e1}
+[data-theme="dark"] .note{background:#161b22}
+[data-theme="dark"] .bar-row .track{background:#2d2d2d}
+[data-theme="dark"] .chip.active{background:#e5e7eb;color:#111;border-color:#e5e7eb}
+[data-theme="dark"] th,td{border-color:#2d2d2d}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+body{font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:16px;transition:background .25s,color .25s}
 .cover{background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%);color:#fff;padding:44px 28px 36px;text-align:center}
 .cover h1{font-size:28px;font-weight:700;letter-spacing:.01em}
 .cover .sub{opacity:.85;margin-top:8px;font-size:14px}
@@ -213,6 +222,8 @@ section.active{display:block}
 .entry.learning{border-left-color:var(--learning)}.entry.mastered{border-left-color:var(--mastered)}
 .entry .top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .entry .w{font-size:17px;font-weight:700}
+.say{cursor:pointer;color:#9aa3ad;display:inline-flex;vertical-align:-2px;transition:color .15s}
+.say:hover{color:var(--brand)}
 .entry .pos{font-size:12px;color:var(--brand);font-weight:600}
 .entry .ipa{font-family:Consolas,monospace;font-size:12.5px;color:var(--mut)}
 .entry .zh{font-size:13.5px;color:#374151;margin-top:4px}
@@ -257,6 +268,8 @@ th{color:var(--brand);font-weight:600;font-size:12px}
 .note{font-size:12.5px;color:var(--mut);background:#f8f9fb;border-left:3px solid var(--brand);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0}
 .ins-h{font-size:15px;color:var(--brand);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--line)}
 #insight p,#insight li{font-size:13.5px}
+.theme-btn{position:fixed;right:22px;bottom:78px;z-index:30;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:50%;width:44px;height:44px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.theme-btn:hover{transform:scale(1.08)}
 .print-btn{position:fixed;right:22px;bottom:22px;z-index:30;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35)}
 .print-btn:hover{opacity:.92}
 .empty{color:#c0c5cd;text-align:center;padding:50px 0}
@@ -311,6 +324,7 @@ th{color:var(--brand);font-weight:600;font-size:12px}
   <section id="srs"></section>
   <section id="insight"></section>
 </div>
+<button class="theme-btn" id="themeBtn" title="切换深色模式" onclick="toggleTheme()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
 <button class="print-btn" onclick="window.print()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg> 导出 PDF</button>
 <script id="data" type="application/json">__DATA__</script>
 <script>
@@ -328,11 +342,27 @@ const ICONS={
  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
  repeat:'<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
- chevron:'<polyline points="9 18 15 12 9 6"/>'
+ chevron:'<polyline points="9 18 15 12 9 6"/>',
+ speaker:'<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>'
 };
 function ic(n,s){return '<svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[n]||'')+'</svg>'}
 const srsOf=w=>localStorage.getItem('srs_'+w)||'new';
 const setSrs=(w,s)=>{localStorage.setItem('srs_'+w,s);renderList();};
+// §3.121 ⭐ 发音（Web Speech API，浏览器内置 TTS，零依赖，S3 达标）
+function say(w){try{const u=new SpeechSynthesisUtterance(w);u.lang='en-US';u.rate=0.9;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+// §3.122 ⭐ P0-2 深色模式：跟随系统 + localStorage 记忆 + 手动切换（d 键）
+(function(){const s=localStorage.getItem('theme');if(s==='dark'||(!s&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.dataset.theme='dark';})();
+function toggleTheme(){const c=document.documentElement.dataset.theme==='dark'?'light':'dark';if(c==='dark')document.documentElement.dataset.theme='dark';else delete document.documentElement.dataset.theme;localStorage.setItem('theme',c);}
+// §3.122 ⭐ P0-3 键盘导航：←/→ 翻页，[ ] 切标签，d 切深色
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(e.key==='ArrowLeft'){document.getElementById('prev').click();}
+  else if(e.key==='ArrowRight'){document.getElementById('next').click();}
+  else if(e.key==='d'||e.key==='D'){toggleTheme();}
+  else if(e.key==='['){cycleTab(-1);}
+  else if(e.key===']'){cycleTab(1);}
+});
+function cycleTab(dir){const tabs=[...document.querySelectorAll('#nav button')];const i=tabs.findIndex(b=>b.classList.contains('active'));tabs[(i+dir+tabs.length)%tabs.length].click();}
 
 // 封面统计
 document.getElementById('coverStats').innerHTML=[
@@ -369,7 +399,7 @@ function renderList(){
     const ex=(e.ex||[]).map(x=>`<div class="ex">${esc(x.en)}<div class="z">${esc(x.zh||'')}</div></div>`).join('');
     const col=(e.col||[]).map(esc).join(' · ');
     return `<div class="entry ${s}" onclick="this.classList.toggle('open')" data-w="${esc(e.w)}">
-      <div class="top"><span class="w">${esc(e.w)}</span>${e.pos?`<span class="pos">${esc(e.pos)}</span>`:''}${e.ipa?`<span class="ipa">/${esc(e.ipa)}/</span>`:''}
+      <div class="top"><span class="w">${esc(e.w)}</span><span class="say" title="发音" onclick="event.stopPropagation();say('${esc(e.w).replace(/'/g,"\\'")}')">${ic('speaker',14)}</span>${e.pos?`<span class="pos">${esc(e.pos)}</span>`:''}${e.ipa?`<span class="ipa">/${esc(e.ipa)}/</span>`:''}
       <span class="meta">${cefrHtml}${freqHtml}</span></div>
       <div class="zh">${esc(e.zh)}</div>
       <div class="detail">
