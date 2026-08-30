@@ -233,7 +233,10 @@ def _render_pdf(html_path: Path, out_dir: Optional[str], ctx: VocabularyContext)
     pdf_path = html_path.with_suffix(".pdf")
     try:
         import subprocess
+        # §3.118 ⭐ --print-to-pdf-no-header：关闭 Chrome 默认页眉页脚（时间戳/URL 信息错误），
+        # 改用模板 CSS @page 边距盒（@bottom-center/@top-center）渲染美观页脚
         cmd = [chrome, "--headless", "--disable-gpu",
+               "--print-to-pdf-no-header",
                "--print-to-pdf=" + str(pdf_path),
                "file:///" + str(html_path).replace("\\", "/")]
         subprocess.run(cmd, capture_output=True, timeout=120)

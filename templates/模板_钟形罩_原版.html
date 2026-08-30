@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN"><head><meta charset="UTF-8"><title>The Bell Jar 词汇表</title>
 <style>
-@page { size: B5; margin: 18mm 16mm 22mm 16mm; }
+@page {
+  size: B5; margin: 20mm 16mm 20mm 16mm;
+  /* §3.118 ⭐ 美观页眉页脚：页眉=书名（{{DOC_TITLE}} 运行时替换），页脚=页码，无时间戳/URL */
+  @top-center { content: "{{DOC_TITLE}}"; font-size: 8.5pt; color: #8a929c; font-family: "Cambria", "Georgia", "Times New Roman", serif; font-style: italic; letter-spacing: 0.02em; }
+  @bottom-center { content: counter(page) "  /  " counter(pages); font-size: 8pt; color: #a0a8b0; font-family: "Cambria", "Georgia", "Times New Roman", serif; }
+}
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: "Cambria", "Georgia", "Times New Roman", "SimSun", "Noto Serif CJK SC", "Source Han Serif SC", serif;

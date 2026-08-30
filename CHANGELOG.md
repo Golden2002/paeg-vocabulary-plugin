@@ -1,5 +1,15 @@
 # CHANGELOG — paeg-vocabulary-plugin（PAEG 工具生态 14.3 词汇表）
 
+## v0.1.8 (2026-08-31) — PDF 页眉页脚美观化（去时间戳/URL，页眉书名 + 页脚页码）
+
+**更新路径**：src/paeg_vocabulary/pipeline/render_html.py + templates/{模板_钟形罩_原版.html, 模板_生命现象_原版.html}
+
+- **问题**：Chrome `--print-to-pdf` 默认页眉页脚含「生成时间戳（2026/8/30 02:19）」与「file:/// 本地 URL」，信息错误且不美观。
+- **修复**：
+  - `_render_pdf` 加 `--print-to-pdf-no-header` 关闭 Chrome 默认页眉页脚
+  - 模板 CSS `@page` 边距盒：`@top-center` 显示书名（`{{DOC_TITLE}}` 运行时替换）、`@bottom-center` 显示 `第 X / 共 Y 页`（`counter(page)/counter(pages)`）
+- 实测：页眉=「Being Alive（Tim Ingold）」、页脚=「3 / 13」，无时间戳、无 URL
+
 ## v0.1.7 (2026-08-31) — spaCy POS 词形还原路径生效（动名词/名词歧义消解）
 
 **更新路径**：tests/test_spacy_pos.py（新增）+ README.md（测试说明同步）
