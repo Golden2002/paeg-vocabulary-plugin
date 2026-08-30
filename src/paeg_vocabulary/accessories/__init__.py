@@ -207,11 +207,90 @@ th{{color:#3b5b6e;font-weight:600}}
 </body></html>"""
 
 
-def generate_all_accessories(ctx, out_dir=None) -> Dict[str, str]:
-    """生成全部 3 类附件 + 高明词统计独立页。返回 {name: path}。
+# §3.120 ⭐ LLM 深度分析系统提示词（python 脚本 + 系统提示词 harness LLM 提升产物质量）
+_LLM_ANALYSIS_SYSTEM = """你是外文词汇学习分析专家。根据给定一本书的词汇统计数据，生成三部分深刻、具体、有据可依的分析（拒绝空话套话）：
+
+## 1. 高频词解读与主题聚类
+- 为什么这些词高频出现？它们揭示了本书什么主题与论证框架？
+- 把高频词聚成 3-5 个主题簇，每簇命名并举代表词。
+
+## 2. 作者语言风格画像
+- 句式特征（结合平均句长/最长句，推断长句复杂还是短句明快）
+- 用词倾向（结合 TTR 与高频词，判断书面/口语、学术/叙事、抽象/具象）
+- 可读性与难度定位
+
+## 3. 学习价值与路径建议
+- 本书词汇难度结构（结合 CEFR 分布）
+- 最值得精读掌握的词群及原因
+- 分阶段学习路径
+
+要求：中文输出、markdown 格式、## 分节、每节 3-6 条要点、直接引用统计数字作依据。"""
+
+
+def llm_analysis(ctx, chat_fn=None) -> str:
+    """§3.120 ⭐ 用 LLM 生成深刻词汇学习分析（词频解读/风格画像/学习价值）。失败返回空串。
+
+    设计：python 脚本先把「确定性统计」算好（高频词/CEFR 分布/句长/TTR），
+    再用系统提示词 harness LLM 对统计做「解读与洞察」——确定性数据打底，LLM 只负责分析。
+    """
+    if chat_fn is None:
+        try:
+            from ..llm_client import chat as _chat
+            chat_fn = _chat
+        except Exception:
+            return ""
+    from collections import Counter
+    from pathlib import Path
+
+    entries = ctx.entries or []
+    candidates = ctx.candidates or []
+    sentences = [s for s in (getattr(ctx, "clean_sentences", None) or []) if s]
+
+    _FUNC = {"the", "a", "an", "of", "in", "on", "at", "to", "for", "and", "or",
+             "but", "with", "by", "from", "as", "is", "are", "was", "were", "be",
+             "been", "being", "have", "has", "had", "do", "does", "did", "this",
+             "that", "these", "those", "it", "its", "he", "she", "they", "we",
+             "you", "i", "not", "no", "so", "if", "then", "else", "also", "such"}
+    content = [c for c in candidates if c.headword.lower() not in _FUNC]
+    top = sorted(content, key=lambda x: -x.freq_count)[:15]
+    top_desc = "、".join(f"{c.headword}({c.freq_count}次)" for c in top)
+
+    cefr_c = Counter(e.cefr_level for e in entries if e.cefr_level)
+    cefr_desc = "、".join(f"{k}×{v}" for k, v in sorted(cefr_c.items())) or "未知"
+
+    pos_c = Counter((e.pos or "其他").strip() for e in entries if e.pos)
+    pos_desc = "、".join(f"{k}×{v}" for k, v in pos_c.most_common(6)) or "未知"
+
+    sent_lens = [len(s) for s in sentences]
+    avg = round(sum(sent_lens) / len(sent_lens), 1) if sent_lens else 0
+    longest = max(sent_lens) if sent_lens else 0
+    total = sum(c.freq_count for c in candidates)
+    ttr = round(len(candidates) / total, 3) if total else 0
+
+    book = Path(str(ctx.pdf_path)).stem if ctx.pdf_path else "本书"
+
+    user = (f"书名：{book}\n词条总数：{len(entries)}\n"
+            f"高频实词（词/频次）：{top_desc}\n"
+            f"CEFR 分布：{cefr_desc}\n"
+            f"词性分布：{pos_desc}\n"
+            f"平均句长：{avg} 字符，最长句：{longest} 字符\n"
+            f"词汇密度 TTR：{ttr}\n\n请据此输出三部分分析。")
+    try:
+        raw = chat_fn(_LLM_ANALYSIS_SYSTEM, user, max_tokens=2000, temperature=0.4)
+        return (raw or "").strip()
+    except Exception:
+        try:
+            return (chat_fn(_LLM_ANALYSIS_SYSTEM, user) or "").strip()
+        except Exception:
+            return ""
+
+
+def generate_all_accessories(ctx, out_dir=None, chat_fn=None) -> Dict[str, str]:
+    """生成全部附件 + 高明词统计独立页 + LLM 深度解读。返回 {name: path}。
 
     §3.116 ⭐ 输出到插件根 output/（非 src/output）。
     高明词统计是独立 HTML 小页面（非词汇学习主文档）。
+    §3.120 ⭐ chat_fn：LLM 深度解读（智能学习解读.md）。
     """
     from pathlib import Path
     # 插件根 = src/.. 的上级 = paeg-vocabulary-plugin/
@@ -231,6 +310,14 @@ def generate_all_accessories(ctx, out_dir=None) -> Dict[str, str]:
         "短语句式统计.md": phrase_statistics(ctx),  # §3.116 ⭐ V-R5
         "SRS复习计划.md": srs_plan_note(ctx),       # ⭐ 间隔重复复习计划
     }
+    # §3.120 ⭐ LLM 深度解读（失败静默降级，不阻塞）
+    try:
+        _analysis = llm_analysis(ctx, chat_fn)
+        ctx.llm_analysis = _analysis or ""   # 存回 ctx，供交互式交付页复用（不重复调 LLM）
+        if _analysis:
+            arts["智能学习解读.md"] = _analysis
+    except Exception:
+        ctx.llm_analysis = ""
     # §3.116 ⭐ 高明词统计独立 HTML 小页面（非主文档）
     try:
         high_freq_html = make_high_freq_html(ctx.candidates, ctx.entries)

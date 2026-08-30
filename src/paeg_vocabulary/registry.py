@@ -227,9 +227,10 @@ class VocabularyRegistry:
         ctx = render_html(ctx, book_title=book_title, book_author=book_author)
         _report("渲染 HTML", 96)
 
-        # 附件
+        # 附件（§3.120 ⭐ 传 chat_fn，让 LLM 深度解读「智能学习解读.md」生效）
+        _chat = chat_fn or (cls.llm if cls.llm is not DEFAULT_LLM else None)
         try:
-            acc = generate_all_accessories(ctx)
+            acc = generate_all_accessories(ctx, chat_fn=_chat)
             ctx.accessories = acc
         except Exception as e:
             ctx.errors.append(f"附件生成失败: {str(e)[:100]}")
@@ -238,7 +239,9 @@ class VocabularyRegistry:
         # §3.119 ⭐ 交互式交付单页（自包含 HTML：分页词汇表 + 可展开附件卡片 + 导出 PDF）
         try:
             from .render.interactive import render_interactive_html
-            ctx.interactive_path = render_interactive_html(ctx, book_title=book_title)
+            ctx.interactive_path = render_interactive_html(
+                ctx, book_title=book_title,
+                llm_analysis=getattr(ctx, "llm_analysis", "") or "")
         except Exception as e:
             ctx.errors.append(f"交互式交付页生成失败: {str(e)[:100]}")
 

@@ -1,5 +1,16 @@
 # CHANGELOG — paeg-vocabulary-plugin（PAEG 工具生态 14.3 词汇表）
 
+## v0.1.10 (2026-08-31) — LLM 深度解读（python 脚本 + 系统提示词 harness LLM 提升附件质量）
+
+**更新路径**：src/paeg_vocabulary/accessories/__init__.py + render/interactive.py + registry.py
+
+- **设计**：确定性统计打底（高频词/CEFR 分布/POS 分布/句长/TTR 由 python 脚本算好），再用系统提示词 harness LLM 对统计做「解读与洞察」——LLM 只负责分析、不负责算数。
+- 新增 `llm_analysis(ctx, chat_fn)`：三段式系统提示词（①高频词解读与主题聚类 ②作者语言风格画像 ③学习价值与路径建议），输出结构化 markdown
+- 新增附件 `智能学习解读.md`（第 7 个附件）；失败静默降级不阻塞管线
+- 交互式交付页新增「智能解读」标签页：内联 markdown→HTML 极简渲染（## 分节 / 列表 / 加粗）
+- 实测：LLM 正确识别主题命题（alive→anthropology 生命人类学）、识别版权页元数据噪音（tim/franci/isbn/routledge）、按 POS 失衡/TTR 推断「名词驱动学术写作」，质量远超规则模板
+- 全量 206 passed + 1 skipped
+
 ## v0.1.9 (2026-08-31) — 交互式交付单页（自包含可部署 HTML：附件卡片化 + 分页词汇表 + 导出 PDF）
 
 **更新路径**：src/paeg_vocabulary/render/interactive.py（新增）+ registry.py + CHANGELOG.md

@@ -141,11 +141,12 @@ def _compute_stats(ctx: VocabularyContext) -> Dict[str, Any]:
 
 
 def render_interactive_html(ctx: VocabularyContext, out_dir: Optional[str] = None,
-                            book_title: str = "") -> Optional[str]:
+                            book_title: str = "", llm_analysis: str = "") -> Optional[str]:
     """生成自包含交互式交付单页，返回文件路径。"""
     if not ctx.entries:
         return None
     stats = _compute_stats(ctx)
+    stats["analysis"] = llm_analysis or ""   # §3.120 ⭐ LLM 深度解读
     title = book_title or Path(str(ctx.pdf_path or "词汇表")).stem
 
     # 数据注入（转义 </script> 防注入破坏）
@@ -254,6 +255,8 @@ th{color:var(--brand);font-weight:600;font-size:12px}
 .stat-line span:first-child{color:var(--mut)}
 .badge-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
 .note{font-size:12.5px;color:var(--mut);background:#f8f9fb;border-left:3px solid var(--brand);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0}
+.ins-h{font-size:15px;color:var(--brand);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+#insight p,#insight li{font-size:13.5px}
 .print-btn{position:fixed;right:22px;bottom:22px;z-index:30;background:var(--brand);color:#fff;border:none;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,.35)}
 .print-btn:hover{opacity:.92}
 .empty{color:#c0c5cd;text-align:center;padding:50px 0}
@@ -282,6 +285,7 @@ th{color:var(--brand);font-weight:600;font-size:12px}
   <button data-t="phrase">短语句式</button>
   <button data-t="highfreq">高明词</button>
   <button data-t="srs">SRS 计划</button>
+  <button data-t="insight">智能解读</button>
 </nav>
 <div class="wrap">
   <section id="vocab" class="active">
@@ -305,6 +309,7 @@ th{color:var(--brand);font-weight:600;font-size:12px}
   <section id="phrase"></section>
   <section id="highfreq"></section>
   <section id="srs"></section>
+  <section id="insight"></section>
 </div>
 <button class="print-btn" onclick="window.print()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg> 导出 PDF</button>
 <script id="data" type="application/json">__DATA__</script>
@@ -457,6 +462,25 @@ document.getElementById('srs').innerHTML=`
     </table>
     <div class="note">评分 ≥3 正确回忆、间隔按 EF 递增；评分 <3 失败重置 1 天。在词汇表标签页给词条标记「生词/学习中/已掌握」，进度自动保存在本机。</div>
   </div></details>`;
+
+// §3.120 ⭐ 智能解读：LLM 深度分析（markdown → HTML 极简渲染）
+function inline(s){s=esc(s);s=s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');s=s.replace(/`(.+?)`/g,'<code>$1</code>');return s;}
+function md2html(src){
+  if(!src) return '<div class="empty">暂无 LLM 智能解读（未接入 LLM 时跳过此节）</div>';
+  const lines=src.split('\n');let out='',list='';
+  const closeList=()=>{if(list){out+='</'+list+'>';list='';}};
+  for(const ln of lines){
+    const l=ln.trim();
+    if(/^##\s/.test(l)){closeList();out+='<h3 class="ins-h">'+inline(l.replace(/^##\s/,''))+'</h3>';continue;}
+    if(/^#\s/.test(l)){closeList();out+='<h2 class="ins-h">'+inline(l.replace(/^#\s/,''))+'</h2>';continue;}
+    if(/^[-*]\s/.test(l)){if(list!=='ul'){closeList();out+='<ul>';list='ul';}out+='<li>'+inline(l.replace(/^[-*]\s/,''))+'</li>';continue;}
+    if(/^\d+[.)]\s/.test(l)){if(list!=='ol'){closeList();out+='<ol>';list='ol';}out+='<li>'+inline(l.replace(/^\d+[.)]\s/,''))+'</li>';continue;}
+    if(!l){closeList();continue;}
+    closeList();out+='<p>'+inline(l)+'</p>';
+  }
+  closeList();return out;
+}
+document.getElementById('insight').innerHTML='<div class="card"><div class="body">'+md2html(D.analysis)+'</div></div>';
 
 renderList();
 </script>
